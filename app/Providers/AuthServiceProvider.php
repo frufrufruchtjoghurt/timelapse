@@ -17,7 +17,7 @@ class AuthServiceProvider extends ServiceProvider
     ];
 
     /**
-     * Register any authentication / authorization services.
+     * Set user roles for role-based authentification
      *
      * @return void
      */
@@ -25,6 +25,24 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        Gate::define('isAdmin', function($user)
+        {
+          return $user->role == 'admin';
+        });
+
+        Gate::define('isManager', function($user)
+        {
+          return $user->role == 'manager';
+        });
+
+        Gate::define('isManagerOrAdmin', function($user)
+        {
+          return $user->role == 'manager' || $user->role == 'admin';
+        });
+
+        Gate::define('isBasic', function($user)
+        {
+          return $user->role == 'basic';
+        });
     }
 }
