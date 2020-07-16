@@ -10941,6 +10941,7 @@ a.text-dark:focus {
 .btn-primary {
   background-color: #009B3F;
   color: #fff;
+  margin: 10px;
 }
 
 .card-header {
@@ -10972,7 +10973,7 @@ a.text-dark:focus {
 .form-control:focus,
 .custom-select:focus,
 .btn-primary:active {
-  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25) !important;
+  box-shadow: 0 0 0 0.2rem rgba(0, 255, 60, 0.25) !important;
 }
 
 option:hover {
@@ -11003,5 +11004,40 @@ option:hover {
 
 .creator form label span {
   color: red;
+}
+
+#delete {
+  max-width: 100px;
+}
+
+.users-selected {
+  color: black;
+}
+
+.table-sortable th {
+  cursor: pointer;
+}
+
+.table-sortable .th-sort-asc::after {
+  content: "\25B4";
+}
+
+.table-sortable .th-sort-desc::after {
+  content: "\25BE";
+}
+
+.table-sortable .th-sort-asc::after,
+.table-sortable .th-sort-desc::after {
+  margin-left: 5px;
+}
+
+.table-sortable .th-sort-asc,
+.table-sortable .th-sort-desc {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.search-user {
+  margin-bottom: 10px;
+  margin-left: 5px;
 }
 

@@ -1,5 +1,6 @@
 <?php
 
+use Faker\Factory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -30,5 +31,20 @@ class AddressesSeeder extends Seeder
         'region' => NULL,
         'country' => 'Österreich']
       ]);
+
+      $faker = Factory::create();
+      for ($i = 0; $i < 50; ++$i)
+      {
+        DB::table('addresses')->insert([
+          'street' => $faker->streetName,
+          'street_nr' => $faker->streetAddress,
+          'staircase' => NULL,
+          'door_nr' => NULL,
+          'postcode' => random_int(1000, 90000),
+          'city' => $faker->city,
+          'region' => $faker->word,
+          'country' => $faker->country
+        ]);
+      }
     }
 }

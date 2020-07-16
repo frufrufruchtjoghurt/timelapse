@@ -8,11 +8,21 @@
                 <div class="card-header">Firma anlegen</div>
 
                 <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
+                  @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                  @elseif (session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                      {{ session('error') }}
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                  @endif
 
                     <form action="{{ route('company.index') }}" method="POST">
                       @csrf
@@ -63,7 +73,7 @@
                       <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-5">
                                 <button type="submit" class="btn btn-primary">
-                                    {{ __('Anlegen') }}
+                                    {{ __('ANLEGEN') }}
                                 </button>
                             </div>
                       </div>

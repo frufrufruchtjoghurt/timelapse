@@ -8,11 +8,21 @@
                 <div class="card-header">Accountübersicht</div>
 
                 <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
+                  @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                  @elseif (session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                      {{ session('error') }}
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                  @endif
 
                   <h1>Willkommen, {{ Auth::user()->gender }} {{ Auth::user()->title }} {{ Auth::user()->last_name }}!</h1>
                   <h2>Ihre persönlichen Daten:</h2>

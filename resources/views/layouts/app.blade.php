@@ -10,7 +10,7 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <!-- <script src="{{ asset('js/app.js') }}" defer></script> -->
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -50,8 +50,8 @@
                           </a>
 
                           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                            <a href="{{ route('user.show') }}" class="dropdown-item">Benutzer verwalten</a>
-                            <a href="{{ route('company.show') }}" class="dropdown-item">Firmen verwalten</a>
+                            <a href="{{ route('user.list') }}" class="dropdown-item">Benutzer verwalten</a>
+                            <a href="{{ route('company.list') }}" class="dropdown-item">Firmen verwalten</a>
                           </div>
                         </li>
                         <li class="nav-item dropdown">
@@ -62,6 +62,7 @@
                           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                             <a href="{{ route('user.create') }}" class="dropdown-item">Benutzer erstellen</a>
                             <a href="{{ route('company.create') }}" class="dropdown-item">Firma anlegen</a>
+                            <a href="{{ route('project.create') }}" class="dropdown-item">Projekt anlegen</a>
                           </div>
                         </li>
                       @endcan

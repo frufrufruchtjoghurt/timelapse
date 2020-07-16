@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use App\Role;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -23,26 +24,28 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+      #TODO: Get role by rid from user
         $this->registerPolicies();
 
         Gate::define('isAdmin', function($user)
         {
-          return $user->role == 'admin';
+          return Role::where('id', $user->rid)->pluck('name')->first() == 'admin';
         });
 
         Gate::define('isManager', function($user)
         {
-          return $user->role == 'manager';
+          return Role::where('id', $user->rid)->pluck('name')->first() == 'manager';
         });
 
         Gate::define('isManagerOrAdmin', function($user)
         {
-          return $user->role == 'manager' || $user->role == 'admin';
+          $this_role = Role::where('id', $user->rid)->pluck('name')->first();
+          return $this_role == 'manager' || $this_role == 'admin';
         });
 
         Gate::define('isBasic', function($user)
         {
-          return $user->role == 'basic';
+          return Role::where('id', $user->rid)->pluck('name')->first() == 'basic';
         });
     }
 }
