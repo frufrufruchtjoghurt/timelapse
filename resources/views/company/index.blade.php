@@ -8,11 +8,6 @@
                 <div class="card-header">Firmenübersicht</div>
 
                 <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
 
                   @if (!$company)
                     <h1>Error 404 | Seite nicht gefunden</h1>

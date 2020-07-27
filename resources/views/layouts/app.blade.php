@@ -10,7 +10,7 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Scripts -->
-    <!-- <script src="{{ asset('js/app.js') }}" defer></script> -->
+    <script src="{{ asset('js/bootstrap.js') }}" defer></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -44,8 +44,13 @@
                       @auth
                       <!-- Creator dropdown for users, projects and companies -->
                       @can ('isManagerOrAdmin')
+                        <li class="nav-item">
+                          <a id="navbarDropdown" class="nav-link" href="#" role="button" aria-haspopup="true" aria-expanded="false" v-pre>
+                            Reparaturen
+                          </a>
+                        </li>
                         <li class="nav-item dropdown">
-                          <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                          <a id="navbar-dropdown-manager" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                             Manager<span class="caret"></span>
                           </a>
 
@@ -55,7 +60,7 @@
                           </div>
                         </li>
                         <li class="nav-item dropdown">
-                          <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                          <a id="navbar-dropdown-creator" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                             Creator<span class="caret"></span>
                           </a>
 
@@ -63,6 +68,7 @@
                             <a href="{{ route('user.create') }}" class="dropdown-item">Benutzer erstellen</a>
                             <a href="{{ route('company.create') }}" class="dropdown-item">Firma anlegen</a>
                             <a href="{{ route('project.create') }}" class="dropdown-item">Projekt anlegen</a>
+                            <a href="{{ route('system.create') }}" class="dropdown-item">System anlegen</a>
                           </div>
                         </li>
                       @endcan
@@ -107,6 +113,32 @@
         </nav>
 
         <main class="py-4">
+          <div class="container">
+            <div class="justify-content-center">
+              @if (session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+              @elseif (session('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  {{ session('error') }}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+              @elseif (session('warning'))
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                  {{ session('warning') }}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+              @endif
+            </div>
+          </div>
             @yield('content')
         </main>
     </div>

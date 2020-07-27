@@ -8,21 +8,6 @@
                 <div class="card-header">Benutzer erstellen</div>
 
                 <div class="card-body">
-                  @if (session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('success') }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                  @elseif (session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                      {{ session('error') }}
-                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                  @endif
 
                     <form action="{{ route('user.index') }}" method="POST">
                       @csrf
@@ -57,7 +42,6 @@
                         <label for="cid" class="col-md-3 col-form-label text-md-right">{{ __('Firma') }}<span>*</span></label>
                         <div class="col-md-5">
                           <select class="custom-select" name="cid" id="cid" value="{{ old('cid') }}" required>
-                              <option value="" selected disabled>Keine Auswahl</option>
                             @foreach ($companies as $company)
                               <option class="company-list" value="{{ $company->id }}">{{$company->name}}</option>
                             @endforeach

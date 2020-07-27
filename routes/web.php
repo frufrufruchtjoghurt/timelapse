@@ -40,3 +40,6 @@ Route::get('/project', 'ProjectController@index')->name('project.index')->middle
 Route::post('/project', 'ProjectController@store')->name('project.store')->middleware(['auth', 'can:isManagerOrAdmin']);
 Route::get('/project/create', 'ProjectController@create')->name('project.create')->middleware(['auth', 'can:isManagerOrAdmin']);
 Route::get('/project/create/users', 'ProjectController@usersSelector')->name('project.users')->middleware(['auth', 'can:isManagerOrAdmin']);
+
+Route::get('/system', 'SystemController@index')->name('system.index')->middleware('auth');
+Route::get('/system/create', 'SystemController@create')->name('system.create')->middleware(['auth', 'can:isManagerOrAdmin']);

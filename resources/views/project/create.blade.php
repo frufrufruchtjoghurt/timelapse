@@ -8,22 +8,6 @@
                 <div class="card-header">Projekt anlegen</div>
 
                 <div class="card-body">
-                  @if (session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('success') }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                  @elseif (session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                      {{ session('error') }}
-                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                  @endif
-
                     <form action="{{ route('project.users') }}" method="GET">
                       @csrf
                       <div class="form-group row">
@@ -39,14 +23,31 @@
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label for="cid" class="col-md-3 col-fom-label text-md-right">{{ __('Kundenfirma') }}<span>*</span></label>
+                        <label for="cid" class="col-md-3 col-form-label text-md-right">{{ __('Kundenfirma') }}<span>*</span></label>
+                        <input class="form-control col-md-3 search-input" type="text" placeholder="Firma suchen..."/>
+                      </div>
+                      <div class="form-group row">
                         <div class="col-md-5">
-                          <select class="custom-select" name="cid" id="cid" value="{{ old('cid') }}" required>
-                              <option value="" selected disabled>Keine Auswahl</option>
-                            @foreach ($companies as $company)
-                              <option class="company-list" value="{{ $company->id }}">{{$company->name}}</option>
-                            @endforeach
-                          </select>
+                          <table class="table table-sort-asc" name="cid">
+                            <thead>
+                              <tr>
+                                <th class="text-center" scope="col">Auswahl</th>
+                                <th class="sort-by searchable">Firmenname</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              @foreach ($companies as $company)
+                                <tr>
+                                  <td class="text-center">
+                                    <input type="checkbox" class="company-list" name="cid[]" value="{{ $company->id }}"/>
+                                  </td>
+                                  <td>
+                                    {{$company->name}}
+                                  </td>
+                                </tr>
+                              @endforeach
+                            </tbody>
+                          </table>
                         </div>
                       </div>
                       <div class="form-group row mb-0">
@@ -55,11 +56,12 @@
                                     {{ __('WEITER') }}
                                 </button>
                             </div>
-                      </div>
+                      </>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script src="{{ asset('js/table.js') }}"></script>
 @endsection

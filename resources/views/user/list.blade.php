@@ -8,23 +8,17 @@
                 <div class="card-header">Benutzerübersicht</div>
 
                 <div class="card-body">
-                  @if (session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('success') }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
+                  <div class="row">
+                    <input class="form-control col-md-3 search-input" type="text" placeholder="Name oder E-Mailadresse suchen..."/>
+                    <div class="form-check form-check-inline" id="roles">
+                      <input type="checkbox" class="form-check-input" name="role[]" id="role1" value="admin"/>
+                      <label for="role1" class="form-check-label">Basic </label>
+                      <input type="checkbox" class="form-check-input" name="role[]" id="role2" value="admin"/>
+                      <label for="role2" class="form-check-label">Manager </label>
+                      <input type="checkbox" class="form-check-input" name="role[]" id="role3" value="admin"/>
+                      <label for="role3" class="form-check-label">Admin </label>
                     </div>
-                  @elseif (session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                      {{ session('error') }}
-                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                  @endif
-
-                    <input class="form-control col-md-3 search-user" type="text" placeholder="Name oder E-Mailadresse suchen..."/>
+                  </div>
 
                     <table class="table table-sortable">
                       <thead>

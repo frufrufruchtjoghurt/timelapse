@@ -97,7 +97,7 @@ des Firmenstandortes und der Kamerstandorte.
 |Bundesland         |Bezeichnung des Bundeslandes zur genaueren Eingrenzung |
 |Land *             |Name des Landes                                        |
 
-### Projekts-Tabelle
+### Projects-Tabelle
 
 Speichert alle einem Projektdaten. Diese bestehen aus dem Projektnamen, dem Aktivitätsstatus (ist das Projekt aktiv
 und sichtbar für den Kunden, oder inaktiv) und einem Ablaufdatum, nach welchem das Projekt automatisch inaktiv gesetzt
@@ -124,16 +124,90 @@ eines Projekts.
 |DeepLink *         |Einbetten von Bildern auf externen Webseiten           |
 |Datenträger *      |Zusendung eines Datenträgers mit allen Daten           |
 
+### Systems-Tabelle
+
+In der Systems Tabelle werden Daten zu einem Komplettsystem hinterlegt. Diese bestehen aus der VPN-IP-Adresse, der
+ID der Kamera, des Routers, der USV, der Befestigung, evt. der Photovoltaikanlage und den Standortkoordinaten.
+
+|**Name**           |**Beschreibung** (* bedeutet verpflichtend)            |
+|:------------------|-------------------------------------------------------|
+|VPN-IP-Adresse *   |Adresse des VPN-Tunnels direkt auf die Kamera          |
+|Router-ID *        |Verweis auf den verwendeten Router                     |
+|Kamera-ID *        |Verweis auf die verwendete Kamera                      |
+|USV-ID *           |Verweis auf die verwendete USV                         |
+|Befestigungs-ID *  |Verweis auf die genutzte Befestingung                  |
+|Photovoltaik-ID    |Verweis auf die montierte Photovoltaikanlage           |
+|Koordinaten *      |longitude und latitude zur Lokalisierung des Systems   |
+
 ### Cameras-Tabelle
 
-In der Cameras Tabelle werden jegliche Kamerabezogene Daten hinterlegt. Diese bestehen aus der VPN-IP-Adresse, der
-Telefonnummer des Routers und den Standortkoordinaten.
+In dieser Tabelle werden alle kamerabezogenen Daten abgespeichert.
 
-|**Name**           |**Beschreibung** (* bedeutet verpflichtend)        |
-|:------------------|---------------------------------------------------|
-|VPN-IP-Adresse *   |Adresse des VPN-Tunnels direkt auf die Kamera      |
-|Telefonnummer *    |Telefonnummer des installierten Routers            |
-|Koordinaten *      |longitude und latitude zur Lokalisierung der Kamera|
+|**Name**           |**Beschreibung** (* bedeutet verpflichtend)            |
+|:------------------|-------------------------------------------------------|
+|Seriennummer *     |Seriennummer der Kamera                                |
+|Type *             |Beschreibung der Kameratype/des Modells                |
+|Baujahr *          |Baujahr der Kamera                                     |
+|Defekt *           |Markierung, ob die Kamera defekt ist                   |
+
+### Routers-Tabelle
+
+Die Routers Tabelle beinhaltet zusätlich einen Verweis auf die SIM-Karte, sodass eine Telefonnummer zurgeordnet 
+werden kann.
+
+|**Name**           |**Beschreibung** (* bedeutet verpflichtend)            |
+|:------------------|-------------------------------------------------------|
+|Seriennummer *     |Seriennummer des Routers                               |
+|Type *             |Beschreibung des Modells                               |
+|Baujahr *          |Baujahr des Routers                                    |
+|Defekt *           |Markierung, ob der Router defekt ist                   |
+|SIM_Cards-ID       |Verweis auf die verwendete SIM-Karte                   |
+
+### UPS-Tabelle
+
+|**Name**           |**Beschreibung** (* bedeutet verpflichtend)            |
+|:------------------|-------------------------------------------------------|
+|Seriennummer *     |Seriennummer der USV                                   |
+|Type *             |Beschreibung des Modells                               |
+|Baujahr *          |Baujahr der USV                                        |
+|Defekt *           |Markierung, ob die USV defekt ist                      |
+
+### SIM_Cards-Tabelle
+
+|**Name**           |**Beschreibung** (* bedeutet verpflichtend)            |
+|:------------------|-------------------------------------------------------|
+|Telefonnummer *    |Telefonnummer der SIM                                  |
+|Vertrag *          |Beschreibung des Vertrags                              |
+|Ausstellungsdatum *|Ausstellungsdatum der SIM                              |
+|Defekt *           |Markierung, ob die SIM defekt ist                      |
+
+### Fixtures-Tabelle
+
+**Wird nur testweise erstellt, genaue Daten noch unbekannt**
+
+|**Name**           |**Beschreibung** (* bedeutet verpflichtend)            |
+|:------------------|-------------------------------------------------------|
+|Seriennummer *     |Seriennummer der Befestigung                           |
+|Type *             |Beschreibung der Befestigungstype/des Modells          |
+|Baujahr *          |Baujahr der Befestigung                                |
+|Defekt *           |Markierung, ob die Befestigung defekt ist              |
+
+### Photovoltaics-Tabelle
+
+|**Name**           |**Beschreibung** (* bedeutet verpflichtend)                |
+|:------------------|-----------------------------------------------------------|
+|Seriennummer *     |Seriennummer der Photovoltaikanlage                        |
+|Type *             |Beschreibung der Type der Photovoltaikanlage/des Modells   |
+|Baujahr *          |Baujahr der Photovoltaikanlage                             |
+|Defekt *           |Markierung, ob die Photovoltaikanlage defekt ist           |
+
+### *Für jedes zum Inventar gehörige Element wird eine Reparatur-Tabelle angelegt*
+
+|**Name**           |**Beschreibung** (* bedeutet verpflichtend)                |
+|:------------------|-----------------------------------------------------------|
+|Element-ID *       |ID des Elements in Reparatur (Kamera-ID etc.)              |
+|Reparatur-Start    |Startdatum der Reparatur                                   |
+|Reparatur-Ende     |Datum des Erhalts des reparierten Geräts                   |
 
 ### (DeepLinks-Tabelle)
 
@@ -197,9 +271,23 @@ Für Projekte lassen sich alle oben definierten Projektdaten anpassen und zusät
 Projekte können als inaktiv markiert werden, um jeglichen Kundenzugriff zu unterbinden. Um ein Projekt zu löschen,
 muss es inaktiv sein.
 
+## Inventar
+
+Im Inventarreiter sollen Systemkomponenten zur erleichterten Inventur von Managern und Administratoren angelegt und bearbeitet werden können.
+
+### Element anlegen
+
+Per Dropdown soll das anzulegende Element gewählt werden. Hierbei können anschließend jeweils Seriennummer, Type und Baujahr eingetragen werden. Sollte es sich um eine Kamera handeln, kann zusätlich bereits die IP-Adresse eingetragen werden. SIM-Karten werden mit der Telefonnummer und einer Type abgespeichert. Alle anderen Elemente (Router, USV, Befestigung und Photovoltaikanlage)
+
+### Element ändern
+
+Hierbei können Elemente verändert und als defekt markiert werden. Geräte in Reparatur können mit einem Startdatum der Reparatur versehen werden und bei Rücksendung mit einem Enddatum. Nur nach mehrmaligem Bestätigen kann ein Element gelöscht werden.
+
 ## Projektübersicht
 
 Die Projektübersicht zeigt angemeldeten Kunden alle zugeordneten Projekte an, sodass diese aufgerufen werden können.
+Es soll verhindert werden, dass Kunden Zeitraffervideos herunterladen können, um zu verhindern, dass eine Bestellung
+des Films überflüssig wird. Es soll für das aktuelle Bild ein Download-Button eingeblendet werden.
 Je nach angeforderten Features, sind unterschiedliche Ansichten verfügbar:
 
 - Standard
@@ -217,7 +305,7 @@ Je nach angeforderten Features, sind unterschiedliche Ansichten verfügbar:
 
 ## Einstellungen für Kunden
 
-Kunden können Titel, Anrede, Vorname und Name anpassen, als auch das eigene Passwort verändern. Weitere Eingriffe sind
+Kunden können die angegebene E-Mail-Adresse anpassen, als auch das eigene Passwort verändern. Weitere Eingriffe sind
 nicht erlaubt und erfordern die Kontaktaufnahme mit einem Administrator oder Manager.
 
 --------------------------------------------------------------

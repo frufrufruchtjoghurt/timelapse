@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -105,7 +105,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-function searchUser(table, filter, search_list) {
+function search(table, filter, search_list) {
   var table_body = table.tBodies[0];
   var tr = Array.from(table_body.querySelectorAll("tr"));
 
@@ -128,7 +128,7 @@ function searchUser(table, filter, search_list) {
   }
 }
 
-document.querySelectorAll(".search-user").forEach(function (input_field) {
+document.querySelectorAll(".search-input").forEach(function (input_field) {
   input_field.addEventListener("keyup", function () {
     var table_element = document.querySelector("table");
     var filter = input_field.value.toUpperCase();
@@ -136,7 +136,7 @@ document.querySelectorAll(".search-user").forEach(function (input_field) {
     table_element.querySelectorAll(".searchable").forEach(function (col) {
       search_cols.push(Array.prototype.indexOf.call(col.parentElement.children, col));
     });
-    searchUser(table_element, filter, search_cols);
+    search(table_element, filter, search_cols);
   });
 });
 
@@ -146,8 +146,8 @@ function sortTable(table, column) {
   var table_body = table.tBodies[0];
   var rows = Array.from(table_body.querySelectorAll("tr"));
   var sorted_rows = rows.sort(function (a, b) {
-    var a_col_text = a.querySelectorAll("td")[column].textContent.trim();
-    var b_col_text = b.querySelectorAll("td")[column].textContent.trim();
+    var a_col_text = a.querySelectorAll("td")[column].textContent.trim().toLowerCase();
+    var b_col_text = b.querySelectorAll("td")[column].textContent.trim().toLowerCase();
     return a_col_text > b_col_text ? 1 * dir_mod : -1 * dir_mod;
   });
 
@@ -173,29 +173,27 @@ document.querySelectorAll(".table-sortable th").forEach(function (header_cell) {
     });
   }
 });
+document.querySelectorAll(".table-sort-asc .sort-by").forEach(function (sort_base) {
+  var table_element = sort_base.parentElement;
+
+  while (table_element.tagName.toLowerCase() != "table") {
+    table_element = table_element.parentElement;
+  }
+
+  var header_index = Array.prototype.indexOf.call(sort_base.parentElement.children, sort_base);
+  sortTable(table_element, header_index, true);
+});
 
 /***/ }),
 
-/***/ "./resources/sass/app.scss":
-/*!*********************************!*\
-  !*** ./resources/sass/app.scss ***!
-  \*********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-
-/***/ 0:
-/*!***************************************************************!*\
-  !*** multi ./resources/js/table.js ./resources/sass/app.scss ***!
-  \***************************************************************/
+/***/ 1:
+/*!*************************************!*\
+  !*** multi ./resources/js/table.js ***!
+  \*************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /home/pi/timelapse/resources/js/table.js */"./resources/js/table.js");
-module.exports = __webpack_require__(/*! /home/pi/timelapse/resources/sass/app.scss */"./resources/sass/app.scss");
+module.exports = __webpack_require__(/*! /home/pi/timelapse/resources/js/table.js */"./resources/js/table.js");
 
 
 /***/ })

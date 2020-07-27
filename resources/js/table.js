@@ -1,4 +1,4 @@
-function searchUser(table, filter, search_list) {
+function search(table, filter, search_list) {
   const table_body = table.tBodies[0];
   const tr = Array.from(table_body.querySelectorAll("tr"));
 
@@ -21,7 +21,7 @@ function searchUser(table, filter, search_list) {
   }
 }
 
-document.querySelectorAll(".search-user").forEach(input_field => {
+document.querySelectorAll(".search-input").forEach(input_field => {
   input_field.addEventListener("keyup", () => {
     const table_element = document.querySelector("table");
     const filter = input_field.value.toUpperCase();
@@ -30,7 +30,7 @@ document.querySelectorAll(".search-user").forEach(input_field => {
       search_cols.push(Array.prototype.indexOf.call(col.parentElement.children, col));
     });
 
-    searchUser(table_element, filter, search_cols);
+    search(table_element, filter, search_cols);
   });
 });
 
@@ -41,8 +41,8 @@ function sortTable(table, column, asc = true)
   const rows = Array.from(table_body.querySelectorAll("tr"));
 
   const sorted_rows = rows.sort((a, b) => {
-    const a_col_text = a.querySelectorAll("td")[column].textContent.trim();
-    const b_col_text = b.querySelectorAll("td")[column].textContent.trim();
+    const a_col_text = a.querySelectorAll("td")[column].textContent.trim().toLowerCase();
+    const b_col_text = b.querySelectorAll("td")[column].textContent.trim().toLowerCase();
 
     return a_col_text > b_col_text ? (1 * dir_mod) : (-1 * dir_mod);
   });
@@ -70,4 +70,15 @@ document.querySelectorAll(".table-sortable th").forEach(header_cell => {
       sortTable(table_element, header_index, !is_ascending);
     });
   }
+});
+
+document.querySelectorAll(".table-sort-asc .sort-by").forEach(sort_base => {
+  let table_element = sort_base.parentElement;
+  while (table_element.tagName.toLowerCase() != "table")
+  {
+    table_element = table_element.parentElement;
+  }
+  const header_index = Array.prototype.indexOf.call(sort_base.parentElement.children, sort_base);
+
+  sortTable(table_element, header_index, true);
 });
