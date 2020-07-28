@@ -43,3 +43,24 @@ Route::get('/project/create/users', 'ProjectController@usersSelector')->name('pr
 
 Route::get('/system', 'SystemController@index')->name('system.index')->middleware('auth');
 Route::get('/system/create', 'SystemController@create')->name('system.create')->middleware(['auth', 'can:isManagerOrAdmin']);
+
+Route::get('/camera', 'CameraController@index')->name('camera.index')->middleware(['auth', 'can:isManagerOrAdmin']);
+Route::get('/camera/create', 'CameraController@create')->name('camera.create')->middleware(['auth', 'can:isManagerOrAdmin']);
+
+Route::get('/fixture', 'FixtureController@index')->name('fixture.index')->middleware(['auth', 'can:isManagerOrAdmin']);
+Route::get('/fixture/create', 'FixtureController@create')->name('fixture.create')->middleware(['auth', 'can:isManagerOrAdmin']);
+
+Route::get('/heater', 'HeaterController@index')->name('heater.index')->middleware(['auth', 'can:isManagerOrAdmin']);
+Route::get('/heater/create', 'HeaterController@create')->name('heater.create')->middleware(['auth', 'can:isManagerOrAdmin']);
+
+Route::get('/photovoltaic', 'PhotovoltaicController@index')->name('photovoltaic.index')->middleware(['auth', 'can:isManagerOrAdmin']);
+Route::get('/photovoltaic/create', 'PhotovoltaicController@create')->name('photovoltaic.create')->middleware(['auth', 'can:isManagerOrAdmin']);
+
+Route::get('/router', 'RouterController@index')->name('router.index')->middleware(['auth', 'can:isManagerOrAdmin']);
+Route::get('/router/create', 'RouterController@create')->name('router.create')->middleware(['auth', 'can:isManagerOrAdmin']);
+
+Route::get('/sim', 'SimController@index')->name('sim.index')->middleware(['auth', 'can:isManagerOrAdmin']);
+Route::get('/sim/create', 'SimController@create')->name('sim.create')->middleware(['auth', 'can:isManagerOrAdmin']);
+
+Route::get('/ups', 'UpsController@index')->name('ups.index')->middleware(['auth', 'can:isManagerOrAdmin']);
+Route::get('/ups/create', 'UpsController@create')->name('ups.create')->middleware(['auth', 'can:isManagerOrAdmin']);

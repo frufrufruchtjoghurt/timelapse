@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class SystemController extends Controller
+class PhotovoltaicController extends Controller
 {
   public function index()
   {
@@ -12,12 +12,12 @@ class SystemController extends Controller
   }
 
     /**
-   * Show links to creatable components of the system
+   * Show page for photovoltaic creation
    *
    *  @return \Illuminate\Contracts\Support\Renderable
    */
   public function create()
   {
-    return view('system.create');
+    return view('photovoltaic.create');
   }
 }

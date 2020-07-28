@@ -44,11 +44,6 @@
                       @auth
                       <!-- Creator dropdown for users, projects and companies -->
                       @can ('isManagerOrAdmin')
-                        <li class="nav-item">
-                          <a id="navbarDropdown" class="nav-link" href="#" role="button" aria-haspopup="true" aria-expanded="false" v-pre>
-                            Reparaturen
-                          </a>
-                        </li>
                         <li class="nav-item dropdown">
                           <a id="navbar-dropdown-manager" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                             Manager<span class="caret"></span>
@@ -68,8 +63,13 @@
                             <a href="{{ route('user.create') }}" class="dropdown-item">Benutzer erstellen</a>
                             <a href="{{ route('company.create') }}" class="dropdown-item">Firma anlegen</a>
                             <a href="{{ route('project.create') }}" class="dropdown-item">Projekt anlegen</a>
-                            <a href="{{ route('system.create') }}" class="dropdown-item">System anlegen</a>
+                            <a href="{{ route('system.create') }}" class="dropdown-item">Systemkomponenten anlegen</a>
                           </div>
+                        </li>
+                        <li class="nav-item">
+                          <a id="navbarDropdown" class="nav-link" href="#" role="button" aria-haspopup="true" aria-expanded="false" v-pre>
+                            Reparaturen
+                          </a>
                         </li>
                       @endcan
                       <!-- Logout option -->
@@ -137,6 +137,7 @@
                   </button>
                 </div>
               @endif
+              @yield('alert')
             </div>
           </div>
             @yield('content')
