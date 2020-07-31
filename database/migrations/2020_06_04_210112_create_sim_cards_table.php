@@ -15,7 +15,7 @@ class CreateSimCardsTable extends Migration
     {
         Schema::create('sim_cards', function (Blueprint $table) {
             $table->id();
-            $table->integer('telephone_nr');
+            $table->string('telephone_nr');
             $table->string('contract');
             $table->year('issue_date');
             $table->boolean('broken')

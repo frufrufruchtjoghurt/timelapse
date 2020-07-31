@@ -28,7 +28,7 @@
                       <div class="form-group row">
                         <label for="build_year_s" class="col-md-3 col-form-label text-md-right">Ausstellungsdatum<span>*</span></label>
                         <div class="col-md-3">
-                            <input id="build_year_s" type="text" class="form-control" name="build_year_s" value="{{ old('build_year_s') }}" required>
+                            <input id="build_year_s" type="date" class="form-control" name="build_year_s" value="{{ old('build_year_s') }}" required>
                         </div>
                       </div>
 

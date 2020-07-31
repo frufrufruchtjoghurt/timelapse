@@ -18,6 +18,15 @@ class CreateProjectsTable extends Migration
               ->unique()
               ->primary();
             $table->string('name');
+            $table->unsignedBigInteger('cid');
+            $table->unsignedBigInteger('sid');
+            $table->string('vpn_ip')
+              ->nullable();
+            $table->string('longitude')
+              ->nullable();
+            $table->string('latitude')
+              ->nullable();
+            $table->date('start_date');
             $table->boolean('inactive')
               ->default(false);
             $table->dateTime('inactivity_date')

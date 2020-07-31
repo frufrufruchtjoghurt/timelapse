@@ -15,7 +15,7 @@ class CreatePhotovoltaicsTable extends Migration
     {
         Schema::create('photovoltaics', function (Blueprint $table) {
             $table->id();
-            $table->integer('serial_nr');
+            $table->string('serial_nr');
             $table->string('model');
             $table->year('build_year');
             $table->boolean('broken')

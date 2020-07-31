@@ -7,11 +7,104 @@
             <div class="card">
                 <div class="card-header">Systemkomponenten anlegen</div>
 
-                <div class="card-body">
+                <div class="card-body justify-content-center">
 
-
+                  <div class="btn-group">
+                    <a href="{{ route('router.create') }}" class="btn btn-primary">Router anlegen</a>
+                    <a href="{{ route('sim.create') }}" class="btn btn-primary">SIM-Karte anlegen</a>
+                    <a href="{{ route('ups.create') }}" class="btn btn-primary">USV anlegen</a>
+                    <a href="{{ route('fixture.create') }}" class="btn btn-primary">Gehäuse anlegen</a>
+                    <a href="{{ route('heating.create') }}" class="btn btn-primary">Heizung anlegen</a>
+                    <a href="{{ route('photovoltaic.create') }}" class="btn btn-primary">Photovoltaik anlegen</a>
+                  </div>
                 </div>
             </div>
+            <div class="text-center font-weight-bold text-uppercase">
+              - oder -
+            </div>
+            <div class="card">
+              <div class="card-header">System zusammenfügen</div>
+
+              <div class="card-body">
+                <form action="{{ route('system.index') }}" method="POST">
+                  @csrf
+                  <div class="form-group row">
+                    <label for="fixture" class="col-md-3 col-form-label text-md-right">Gehäuse<span>*</span></label>
+
+                    <div class="col-md-6">
+                      <select class="form-control" id="fixture" name="fixture" required>
+                        @foreach ($fixtures as $fixture)
+                          <option value="{{ $fixture->id }}">Type: $fixture->model - SN: $fixture->serial_nr - Reparaturen: $fixture->repairs_count</option>
+                        @endforeach
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="router" class="col-md-3 col-form-label text-md-right">Router<span>*</span></label>
+
+                    <div class="col-md-6">
+                      <select class="form-control" id="router" name="router" required>
+                        @foreach ($routers as $router)
+                          <option value="{{ $router->id }}">Type: $router->model - SN: $router->serial_nr - Reparaturen: $router->repairs_count</option>
+                        @endforeach
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="sim" class="col-md-3 col-form-label text-md-right">SIM-Karte<span>*</span></label>
+
+                    <div class="col-md-6">
+                      <select class="form-control" id="sim" name="sim" required>
+                        @foreach ($sims as $sim)
+                          <option value="{{ $sim->id }}">Vertrag: $sim->contract - TelNr: $sim->telephone_nr - Reparaturen: $sim->repairs_count</option>
+                        @endforeach
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="ups" class="col-md-3 col-form-label text-md-right">USV<span>*</span></label>
+
+                    <div class="col-md-6">
+                      <select class="form-control" id="ups" name="ups" required>
+                        @foreach ($ups as $ups)
+                          <option value="{{ $ups->id }}">Vertrag: $ups->contract - TelNr: $ups->telephone_nr - Reparaturen: $ups->repairs_count</option>
+                        @endforeach
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="heating" class="col-md-3 col-form-label text-md-right">Heizung</label>
+
+                    <div class="col-md-6">
+                      <select class="form-control" id="heating" name="heating">
+                        @foreach ($heatings as $heating)
+                          <option value="{{ $heating->id }}">Vertrag: $heating->contract - TelNr: $heating->telephone_nr - Reparaturen: $heating->repairs_count</option>
+                        @endforeach
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="photovoltaic" class="col-md-3 col-form-label text-md-right">Photovoltaikanlage</label>
+
+                    <div class="col-md-6">
+                      <select class="form-control" id="photovoltaic" name="photovoltaic">
+                        @foreach ($photovoltaics as $photovoltaic)
+                          <option value="{{ $photovoltaic->id }}">Vertrag: $photovoltaic->contract - TelNr: $photovoltaic->telephone_nr - Reparaturen: $photovoltaic->repairs_count</option>
+                        @endforeach
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group row mb-0">
+                        <div class="col-md-6 offset-md-5">
+                            <button type="submit" class="btn btn-primary">
+                                {{ __('ANLEGEN') }}
+                            </button>
+                        </div>
+                  </div>
+                </form>
+              </div>
+          </div>
         </div>
     </div>
 </div>

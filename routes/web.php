@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CameraController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -41,26 +42,34 @@ Route::post('/project', 'ProjectController@store')->name('project.store')->middl
 Route::get('/project/create', 'ProjectController@create')->name('project.create')->middleware(['auth', 'can:isManagerOrAdmin']);
 Route::get('/project/create/users', 'ProjectController@usersSelector')->name('project.users')->middleware(['auth', 'can:isManagerOrAdmin']);
 
-Route::get('/system', 'SystemController@index')->name('system.index')->middleware('auth');
-Route::get('/system/create', 'SystemController@create')->name('system.create')->middleware(['auth', 'can:isManagerOrAdmin']);
-
 Route::get('/camera', 'CameraController@index')->name('camera.index')->middleware(['auth', 'can:isManagerOrAdmin']);
 Route::get('/camera/create', 'CameraController@create')->name('camera.create')->middleware(['auth', 'can:isManagerOrAdmin']);
+Route::post('/camera', 'CameraController@store')->name('camera.store')->middleware(['auth', 'can:isManagerOrAdmin']);
 
-Route::get('/fixture', 'FixtureController@index')->name('fixture.index')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/fixture/create', 'FixtureController@create')->name('fixture.create')->middleware(['auth', 'can:isManagerOrAdmin']);
+Route::get('/system', 'SystemController@index')->name('system.index')->middleware('auth');
+Route::get('/system/create', 'SystemController@create')->name('system.create')->middleware(['auth', 'can:isManagerOrAdmin']);
+Route::post('/system', 'SystemController@store')->name('system.store')->middleware(['auth', 'can:isManagerOrAdmin']);
 
-Route::get('/heater', 'HeaterController@index')->name('heater.index')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/heater/create', 'HeaterController@create')->name('heater.create')->middleware(['auth', 'can:isManagerOrAdmin']);
+Route::get('/system/fixture', 'FixtureController@index')->name('fixture.index')->middleware(['auth', 'can:isManagerOrAdmin']);
+Route::get('/system/fixture/create', 'FixtureController@create')->name('fixture.create')->middleware(['auth', 'can:isManagerOrAdmin']);
+Route::post('/system/fixture', 'FixtureController@store')->name('fixture.store')->middleware(['auth', 'can:isManagerOrAdmin']);
 
-Route::get('/photovoltaic', 'PhotovoltaicController@index')->name('photovoltaic.index')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/photovoltaic/create', 'PhotovoltaicController@create')->name('photovoltaic.create')->middleware(['auth', 'can:isManagerOrAdmin']);
+Route::get('/system/heater', 'HeatingController@index')->name('heating.index')->middleware(['auth', 'can:isManagerOrAdmin']);
+Route::get('/system/heater/create', 'HeatingController@create')->name('heating.create')->middleware(['auth', 'can:isManagerOrAdmin']);
+Route::post('/system/heater', 'HeatingController@store')->name('heating.store')->middleware(['auth', 'can:isManagerOrAdmin']);
 
-Route::get('/router', 'RouterController@index')->name('router.index')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/router/create', 'RouterController@create')->name('router.create')->middleware(['auth', 'can:isManagerOrAdmin']);
+Route::get('/system/photovoltaic', 'PhotovoltaicController@index')->name('photovoltaic.index')->middleware(['auth', 'can:isManagerOrAdmin']);
+Route::get('/system/photovoltaic/create', 'PhotovoltaicController@create')->name('photovoltaic.create')->middleware(['auth', 'can:isManagerOrAdmin']);
+Route::post('/system/photovoltaic', 'PhotovoltaicController@store')->name('photovoltaic.store')->middleware(['auth', 'can:isManagerOrAdmin']);
 
-Route::get('/sim', 'SimController@index')->name('sim.index')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/sim/create', 'SimController@create')->name('sim.create')->middleware(['auth', 'can:isManagerOrAdmin']);
+Route::get('/system/router', 'RouterController@index')->name('router.index')->middleware(['auth', 'can:isManagerOrAdmin']);
+Route::get('/system/router/create', 'RouterController@create')->name('router.create')->middleware(['auth', 'can:isManagerOrAdmin']);
+Route::post('/system/router', 'RouterController@store')->name('router.store')->middleware(['auth', 'can:isManagerOrAdmin']);
 
-Route::get('/ups', 'UpsController@index')->name('ups.index')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/ups/create', 'UpsController@create')->name('ups.create')->middleware(['auth', 'can:isManagerOrAdmin']);
+Route::get('/system/sim', 'SimController@index')->name('sim.index')->middleware(['auth', 'can:isManagerOrAdmin']);
+Route::get('/system/sim/create', 'SimController@create')->name('sim.create')->middleware(['auth', 'can:isManagerOrAdmin']);
+Route::get('/system/sim', 'SimController@store')->name('sim.store')->middleware(['auth', 'can:isManagerOrAdmin']);
+
+Route::get('/system/ups', 'UpsController@index')->name('ups.index')->middleware(['auth', 'can:isManagerOrAdmin']);
+Route::get('/system/ups/create', 'UpsController@create')->name('ups.create')->middleware(['auth', 'can:isManagerOrAdmin']);
+Route::get('/system/ups', 'UpsController@store')->name('ups.store')->middleware(['auth', 'can:isManagerOrAdmin']);

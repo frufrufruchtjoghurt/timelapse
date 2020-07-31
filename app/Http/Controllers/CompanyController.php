@@ -81,7 +81,7 @@ class CompanyController extends Controller
 
     if (Company::where([['name', $company->name], ['aid', $company->aid]])->exists())
     {
-      return \redirect(\route('company.create'))->with('success', 'Firma bereits angelegt!');
+      return \redirect(\route('company.create'))->with('error', 'Firma bereits angelegt!');
     }
 
     $company->save();

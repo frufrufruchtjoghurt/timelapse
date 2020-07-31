@@ -63,6 +63,7 @@
                             <a href="{{ route('user.create') }}" class="dropdown-item">Benutzer erstellen</a>
                             <a href="{{ route('company.create') }}" class="dropdown-item">Firma anlegen</a>
                             <a href="{{ route('project.create') }}" class="dropdown-item">Projekt anlegen</a>
+                            <a href="{{ route('camera.create') }}" class="dropdown-item">Kamera anlegen</a>
                             <a href="{{ route('system.create') }}" class="dropdown-item">Systemkomponenten anlegen</a>
                           </div>
                         </li>

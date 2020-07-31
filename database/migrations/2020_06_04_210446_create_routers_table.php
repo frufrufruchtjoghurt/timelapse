@@ -15,18 +15,12 @@ class CreateRoutersTable extends Migration
     {
         Schema::create('routers', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('sim_id');
-            $table->integer('serial_nr');
+            $table->string('serial_nr');
             $table->string('model');
             $table->year('build_year');
             $table->boolean('broken')
               ->default(false);
             $table->timestamps();
-
-            $table->foreign('sim_id')
-              ->references('id')
-              ->on('sim_cards')
-              ->onUpdate('cascade');
         });
     }
 

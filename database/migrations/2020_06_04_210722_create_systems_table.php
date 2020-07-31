@@ -1,5 +1,6 @@
 <?php
 
+use App\Photovoltaic;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,26 +15,31 @@ class CreateSystemsTable extends Migration
     public function up()
     {
         Schema::create('systems', function (Blueprint $table) {
-            $table->unsignedBigInteger('cam_id');
-            $table->unsignedBigInteger('router_id');
-            $table->unsignedBigInteger('ups_id');
-            $table->unsignedBigInteger('fixture_id');
+            $table->unsignedBigInteger('router_id')
+              ->unique();
+            $table->unsignedBigInteger('sim_id')
+              ->unique();
+            $table->unsignedBigInteger('ups_id')
+              ->unique();
+            $table->unsignedBigInteger('fixture_id')
+              ->unique();
+            $table->unsignedBigInteger('heating_id')
+              ->unique()
+              ->nullable();
             $table->unsignedBigInteger('photovoltaic_id')
-              ->nullable();
-            $table->string('vpn_ip')
-              ->nullable();
-            $table->string('longitude')
-              ->nullable();
-            $table->string('latitude')
+              ->unique()
               ->nullable();
             $table->timestamps();
 
-            $table->foreign('cam_id')
+            $table->foreign('heating_id')
               ->references('id')
-              ->on('cameras');
+              ->on('heatings');
             $table->foreign('router_id')
               ->references('id')
               ->on('routers');
+            $table->foreign('sim_id')
+              ->references('id')
+              ->on('sim_cards');
             $table->foreign('ups_id')
               ->references('id')
               ->on('ups');
@@ -44,7 +50,7 @@ class CreateSystemsTable extends Migration
               ->references('id')
               ->on('photovoltaics');
 
-            $table->primary(['cam_id', 'router_id', 'ups_id', 'fixture_id']);
+            $table->primary(['router_id', 'ups_id', 'fixture_id']);
         });
     }
 

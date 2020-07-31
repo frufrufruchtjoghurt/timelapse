@@ -5,30 +5,30 @@
     <div class="row justify-content-center">
         <div class="col-sm-12">
             <div class="card">
-                <div class="card-header">Kamera anlegen</div>
+                <div class="card-header">Heizung anlegen</div>
 
                 <div class="card-body">
 
-                    <form action="{{ route('camera.index') }}" method="POST">
+                    <form action="{{ route('heating.index') }}" method="POST">
                       @csrf
                       <div class="form-group row">
-                        <label for="serial_nr_c" class="col-md-3 col-form-label text-md-right">Seriennummer<span>*</span></label>
+                        <label for="serial_nr_h" class="col-md-3 col-form-label text-md-right">Seriennummer<span>*</span></label>
 
                         <div class="col-md-6">
-                            <input id="serial_nr_c" type="text" class="form-control" name="serial_nr_c" value="{{ old('serial_nr_c') }}" required>
+                            <input id="serial_nr_h" type="text" class="form-control" name="serial_nr_h" value="{{ old('serial_nr_h') }}" required>
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label for="type_c" class="col-md-3 col-form-label text-md-right">Type<span>*</span></label>
+                        <label for="type_h" class="col-md-3 col-form-label text-md-right">Type<span>*</span></label>
 
                         <div class="col-md-4">
-                            <input id="type_c" type="text" class="form-control" name="type_c" value="{{ old('type_c') }}" required>
+                            <input id="type_h" type="text" class="form-control" name="type_h" value="{{ old('type_h') }}" required>
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label for="build_year_c" class="col-md-3 col-form-label text-md-right">Baujahr<span>*</span></label>
+                        <label for="build_year_h" class="col-md-3 col-form-label text-md-right">Baujahr<span>*</span></label>
                         <div class="col-md-3">
-                            <input id="build_year_c" type="text" class="form-control" name="build_year_c" value="{{ old('build_year_c') }}" required>
+                            <input id="build_year_h" type="date" class="form-control" name="build_year_h" value="{{ old('build_year_h') }}" required>
                         </div>
                       </div>
 

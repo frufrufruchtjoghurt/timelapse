@@ -15,7 +15,7 @@ class CreateFixturesTable extends Migration
     {
         Schema::create('fixtures', function (Blueprint $table) {
             $table->id();
-            $table->integer('serial_nr');
+            $table->string('serial_nr');
             $table->string('model');
             $table->year('build_year');
             $table->boolean('broken')
