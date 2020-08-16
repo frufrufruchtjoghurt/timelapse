@@ -32,18 +32,17 @@ class HeatingController extends Controller
       $heating->serial_nr = request('serial_nr_h');
       $heating->model = request('type_h');
 
-      setlocale(LC_TIME, ['de_at', 'de_de', 'de']);
-      $year = request('build_year_h');
-      if ($year > strftime('%Y') || $year < YEAR_MIN)
+      $date = request('purchase_date_h');
+      if ($date > date('Y-m-d') || $date < YEAR_MIN)
       {
-        return redirect(route('system.heating.create'))->with('error', 'Es wurde kein gültiges Jahr angegeben!');
+        return redirect(route('router.create'))->with('error', 'Es wurde kein gültiges Jahr angegeben!');
       }
-      $heating->build_year = $year;
+      $heating->purchase_date = $date;
 
       $first_match = Heating::where([
         'serial_nr' => $heating->serial_nr,
         'model' => $heating->model,
-        'build_year' => $heating->build_year
+        'purchase_date' => $heating->purchase_date
       ]);
 
       if ($first_match->exists())

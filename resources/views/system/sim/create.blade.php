@@ -12,23 +12,23 @@
                     <form action="{{ route('sim.index') }}" method="POST">
                       @csrf
                       <div class="form-group row">
-                        <label for="serial_nr_s" class="col-md-3 col-form-label text-md-right">Telefonnummer<span>*</span></label>
+                        <label for="telephone_nr_s" class="col-md-3 col-form-label text-md-right">Telefonnummer<span>*</span></label>
 
                         <div class="col-md-4">
-                            <input id="serial_nr_s" type="text" class="form-control" name="serial_nr_s" value="{{ old('serial_nr_s') }}" required>
+                            <input id="telephone_nr_s" type="text" class="form-control" name="telephone_nr_s" value="{{ old('telephone_nr_s') }}" required>
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label for="type_s" class="col-md-3 col-form-label text-md-right">Vertrag<span>*</span></label>
+                        <label for="contract_s" class="col-md-3 col-form-label text-md-right">Vertrag<span>*</span></label>
 
                         <div class="col-md-5">
-                            <input id="type_s" type="text" class="form-control" name="type_s" value="{{ old('type_s') }}" required>
+                            <input id="contract_s" contract="text" class="form-control" name="contract_s" value="{{ old('contract_s') }}" required>
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label for="build_year_s" class="col-md-3 col-form-label text-md-right">Ausstellungsdatum<span>*</span></label>
+                        <label for="purchase_date_s" class="col-md-3 col-form-label text-md-right">Kaufdatum<span>*</span></label>
                         <div class="col-md-3">
-                            <input id="build_year_s" type="date" class="form-control" name="build_year_s" value="{{ old('build_year_s') }}" required>
+                            <input id="purchase_date_s" type="date" class="form-control" name="purchase_date_s" value="{{ old('purchase_date_s') }}" required>
                         </div>
                       </div>
 

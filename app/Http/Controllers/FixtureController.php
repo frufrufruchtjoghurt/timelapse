@@ -32,18 +32,17 @@ class FixtureController extends Controller
       $fixture->serial_nr = request('serial_nr_f');
       $fixture->model = request('type_f');
 
-      setlocale(LC_TIME, ['de_at', 'de_de', 'de']);
-      $year = request('build_year_f');
-      if ($year > strftime('%Y') || $year < YEAR_MIN)
+      $date = request('purchase_date_f');
+      if ($date > date('Y-m-d') || $date < YEAR_MIN)
       {
-        return redirect(route('system.fixture.create'))->with('error', 'Es wurde kein gültiges Jahr angegeben!');
+        return redirect(route('router.create'))->with('error', 'Es wurde kein gültiges Jahr angegeben!');
       }
-      $fixture->build_year = $year;
+      $fixture->purchase_date = $date;
 
       $first_match = Fixture::where([
         'serial_nr' => $fixture->serial_nr,
         'model' => $fixture->model,
-        'build_year' => $fixture->build_year
+        'purchase_date' => $fixture->purchase_date
       ]);
 
       if ($first_match->exists())

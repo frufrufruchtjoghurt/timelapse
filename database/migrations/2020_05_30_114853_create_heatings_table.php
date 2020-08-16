@@ -17,7 +17,7 @@ class CreateHeatingsTable extends Migration
             $table->id();
             $table->string('serial_nr');
             $table->string('model');
-            $table->year('build_year');
+            $table->date('purchase_date');
             $table->boolean('broken')
               ->default(false);
             $table->timestamps();

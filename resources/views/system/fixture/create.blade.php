@@ -26,9 +26,9 @@
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label for="build_year_f" class="col-md-3 col-form-label text-md-right">Baujahr<span>*</span></label>
+                        <label for="purchase_date_f" class="col-md-3 col-form-label text-md-right">Baujahr<span>*</span></label>
                         <div class="col-md-3">
-                            <input id="build_year_f" type="date" class="form-control" name="build_year_f" value="{{ old('build_year_f') }}" required>
+                            <input id="purchase_date_f" type="date" class="form-control" name="purchase_date_f" value="{{ old('purchase_date_f') }}" required>
                         </div>
                       </div>
 

@@ -32,18 +32,17 @@ class PhotovoltaicController extends Controller
       $photovoltaic->serial_nr = request('serial_nr_p');
       $photovoltaic->model = request('type_p');
 
-      setlocale(LC_TIME, ['de_at', 'de_de', 'de']);
-      $year = request('build_year_p');
-      if ($year > strftime('%Y') || $year < YEAR_MIN)
+      $date = request('purchase_date_p');
+      if ($date > date('Y-m-d') || $date < YEAR_MIN)
       {
-        return redirect(route('system.photovoltaic.create'))->with('error', 'Es wurde kein gültiges Jahr angegeben!');
+        return redirect(route('router.create'))->with('error', 'Es wurde kein gültiges Jahr angegeben!');
       }
-      $photovoltaic->build_year = $year;
+      $photovoltaic->purchase_date = $date;
 
       $first_match = Photovoltaic::where([
         'serial_nr' => $photovoltaic->serial_nr,
         'model' => $photovoltaic->model,
-        'build_year' => $photovoltaic->build_year
+        'purchase_date' => $photovoltaic->purchase_date
       ]);
 
       if ($first_match->exists())

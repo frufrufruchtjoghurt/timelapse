@@ -6,6 +6,8 @@ use App\Router;
 use Exception;
 use Illuminate\Http\Request;
 
+define('YEAR_MIN', date('Y-m-d', strtotime('January 01 2000')));
+
 class RouterController extends Controller
 {
   public function index()
@@ -32,18 +34,17 @@ class RouterController extends Controller
       $router->serial_nr = request('serial_nr_r');
       $router->model = request('type_r');
 
-      setlocale(LC_TIME, ['de_at', 'de_de', 'de']);
-      $year = request('build_year_r');
-      if ($year > strftime('%Y') || $year < YEAR_MIN)
+      $date = request('purchase_date_r');
+      if ($date > date('Y-m-d') || $date < YEAR_MIN)
       {
         return redirect(route('router.create'))->with('error', 'Es wurde kein gültiges Jahr angegeben!');
       }
-      $router->build_year = $year;
+      $router->purchase_date = $date;
 
       $first_match = Router::where([
         'serial_nr' => $router->serial_nr,
         'model' => $router->model,
-        'build_year' => $router->build_year
+        'purchase_date' => $router->purchase_date
       ]);
 
       if ($first_match->exists())

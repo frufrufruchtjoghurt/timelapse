@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Sim;
+use App\SimCard;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -27,28 +27,27 @@ class SimController extends Controller
   {
     try
     {
-      $sim = new Sim();
+      $sim = new SimCard();
 
-      $sim->serial_nr = request('serial_nr_s');
-      $sim->model = request('type_s');
+      $sim->telephone_nr = request('telephone_nr_s');
+      $sim->contract = request('contract_s');
 
-      setlocale(LC_TIME, ['de_at', 'de_de', 'de']);
-      $year = request('build_year_s');
-      if ($year > strftime('%Y') || $year < YEAR_MIN)
+      $date = request('purchase_date_s');
+      if ($date > date('Y-m-d') || $date < YEAR_MIN)
       {
-        return redirect(route('system.sim.create'))->with('error', 'Es wurde kein gültiges Jahr angegeben!');
+        return redirect(route('router.create'))->with('error', 'Es wurde kein gültiges Jahr angegeben!');
       }
-      $sim->build_year = $year;
+      $sim->purchase_date = $date;
 
-      $first_match = Sim::where([
-        'serial_nr' => $sim->serial_nr,
-        'model' => $sim->model,
-        'build_year' => $sim->build_year
+      $first_match = SimCard::where([
+        'telephone_nr' => $sim->telephone_nr,
+        'contract' => $sim->contract,
+        'purchase_date' => $sim->purchase_date
       ]);
 
       if ($first_match->exists())
       {
-        return redirect(route('system.sim.create'))->with('error', 'Eine Sim-Karte mit der Konfiguration wurde bereits angelegt!');
+        return redirect(route('system.sim.create'))->with('error', 'Eine Sim-Karte mit dieser Konfiguration wurde bereits angelegt!');
       }
 
       $sim->save();

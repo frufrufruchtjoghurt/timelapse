@@ -17,7 +17,7 @@ class CreateSimCardsTable extends Migration
             $table->id();
             $table->string('telephone_nr');
             $table->string('contract');
-            $table->year('issue_date');
+            $table->date('purchase_date');
             $table->boolean('broken')
               ->default(false);
             $table->timestamps();

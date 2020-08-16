@@ -32,18 +32,17 @@ class UpsController extends Controller
       $ups->serial_nr = request('serial_nr_u');
       $ups->model = request('type_u');
 
-      setlocale(LC_TIME, ['de_at', 'de_de', 'de']);
-      $year = request('build_year_u');
-      if ($year > strftime('%Y') || $year < YEAR_MIN)
+      $date = request('purchase_date_u');
+      if ($date > date('Y-m-d') || $date < YEAR_MIN)
       {
-        return redirect(route('system.ups.create'))->with('error', 'Es wurde kein gültiges Jahr angegeben!');
+        return redirect(route('router.create'))->with('error', 'Es wurde kein gültiges Jahr angegeben!');
       }
-      $ups->build_year = $year;
+      $ups->purchase_date = $date;
 
       $first_match = Ups::where([
         'serial_nr' => $ups->serial_nr,
         'model' => $ups->model,
-        'build_year' => $ups->build_year
+        'purchase_date' => $ups->purchase_date
       ]);
 
       if ($first_match->exists())

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Fixture;
 use App\Heating;
 use App\Photovoltaic;
+use App\Repair;
 use App\Router;
 use App\SimCard;
 use App\System;
@@ -12,6 +13,7 @@ use App\Ups;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SystemController extends Controller
 {
@@ -28,60 +30,54 @@ class SystemController extends Controller
   public function create()
   {
     return view('system.create', [
-      'fixtures' => Fixture::leftJoin('systems', 'fixtures.id', '=', 'systems.fixture_id')
-        ->where('fixtures.broken', '=', false)
+      'fixtures' => Fixture::select('id', 'serial_nr', 'model', 'repair_c.repair_count', 'purchase_date')
+        ->leftJoin('systems', 'fixtures.id', '=', 'systems.router_id')
+        ->joinSub(Repair::select('element_id', DB::raw('count(element_id) as repair_count'))
+            ->where('type', '=', 'f')->groupBy('element_id'), 'repair_c', function($join) {
+            $join->on('fixtures.id', '=', 'element_id');
+        })
+        ->where('broken', '=', false)
+        ->get(),
+      'routers' => Router::select('id', 'serial_nr', 'model', 'repair_c.repair_count', 'purchase_date')
+        ->leftJoin('systems', 'routers.id', '=', 'systems.router_id')
+        ->leftJoinSub(Repair::select('element_id', DB::raw('count(element_id) as repair_count'))
+            ->where('type', '=', 'r')->groupBy('element_id'), 'repair_c', function($join) {
+            $join->on('routers.id', '=', 'element_id');
+        })
+        ->where('broken', '=', false)
+        ->get(),
+      'sims' => SimCard::select('id', 'telephone_nr', 'contract', 'repair_c.repair_count', 'purchase_date')
+        ->leftJoin('systems', 'sim_cards.id', '=', 'systems.router_id')
+        ->joinSub(Repair::select('element_id', DB::raw('count(element_id) as repair_count'))
+            ->where('type', '=', 's')->groupBy('element_id'), 'repair_c', function($join) {
+            $join->on('sim_cards.id', '=', 'element_id');
+        })
+        ->where('broken', '=', false)
+        ->get(),
+      'ups' => Ups::select('id', 'serial_nr', 'model', 'repair_c.repair_count', 'purchase_date')
+        ->leftJoin('systems', 'ups.id', '=', 'systems.router_id')
+        ->joinSub(Repair::select('element_id', DB::raw('count(element_id) as repair_count'))
+            ->where('type', '=', 'u')->groupBy('element_id'), 'repair_c', function($join) {
+            $join->on('ups.id', '=', 'element_id');
+        })
+        ->where('broken', '=', false)
+        ->get(),
+      'heatings' => Heating::select('id', 'serial_nr', 'model', 'repair_c.repair_count', 'purchase_date')
+          ->leftJoin('systems', 'heatings.id', '=', 'systems.router_id')
+          ->joinSub(Repair::select('element_id', DB::raw('count(element_id) as repair_count'))
+              ->where('type', '=', 'h')->groupBy('element_id'), 'repair_c', function($join) {
+              $join->on('heatings.id', '=', 'element_id');
+          })
+          ->where('broken', '=', false)
+          ->get(),
+      'photovoltaics' => Photovoltaic::select('id', 'serial_nr', 'model', 'repair_c.repair_count', 'purchase_date')
+        ->leftJoin('systems', 'photovoltaics.id', '=', 'systems.router_id')
+        ->joinSub(Repair::select('element_id', DB::raw('count(element_id) as repair_count'))
+            ->where('type', '=', 'p')->groupBy('element_id'), 'repair_c', function($join) {
+            $join->on('photovoltaics.id', '=', 'element_id');
+        })
+        ->where('broken', '=', false)
         ->get()
-        ->loadCount(['repairs', function(Builder $query) {
-          $query->where([
-            'fixtures.id' => 'repairs.element_id',
-            'repair.type' => 'f'
-          ]);
-        }]),
-      'routers' => Router::leftJoin('systems', 'routers.id', '=', 'systems.router_id')
-        ->where('routers.broken', '=', false)
-        ->get()
-        ->loadCount(['repairs', function(Builder $query) {
-          $query->where([
-            'routers.id' => 'repairs.element_id',
-            'repair.type' => 'r'
-          ]);
-        }]),
-      'sims' => SimCard::leftJoin('systems', 'sim_cards.id', '=', 'systems.sim_id')
-        ->where('sim_cards.broken', '=', false)
-        ->get()
-        ->loadCount(['repairs', function(Builder $query) {
-          $query->where([
-            'sim_cards.id' => 'repairs.element_id',
-            'repair.type' => 's'
-          ]);
-        }]),
-      'ups' => Ups::leftJoin('systems', 'ups.id', '=', 'systems.ups_id')
-        ->where('ups.broken', '=', false)
-        ->get()
-        ->loadCount(['repairs', function(Builder $query) {
-          $query->where([
-            'ups.id' => 'repairs.element_id',
-            'repair.type' => 'u'
-          ]);
-        }]),
-      'heatings' => Heating::leftJoin('systems', 'heatings.id', '=', 'systems.heating_id')
-        ->where('heatings.broken', '=', false)
-        ->get()
-        ->loadCount(['repairs', function(Builder $query) {
-          $query->where([
-            'heatings.id' => 'repairs.element_id',
-            'repair.type' => 'h'
-          ]);
-        }]),
-      'photovoltaics' => Photovoltaic::leftJoin('systems', 'photovoltaics.id', '=', 'systems.photovoltaic_id')
-        ->where('photovoltaics.broken', '=', false)
-        ->get()
-        ->loadCount(['repairs', function(Builder $query) {
-          $query->where([
-            'photovoltaics.id' => 'repairs.element_id',
-            'repair.type' => 'p'
-          ]);
-        }])
       ]);
   }
 

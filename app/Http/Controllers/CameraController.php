@@ -6,7 +6,7 @@ use App\Camera;
 use Exception;
 use Illuminate\Http\Request;
 
-define('YEAR_MIN', 2000);
+define('YEAR_MIN', date('Y-m-d', strtotime('January 01 2000')));
 
 class CameraController extends Controller
 {
