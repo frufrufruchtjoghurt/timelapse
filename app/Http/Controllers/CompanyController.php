@@ -253,8 +253,5 @@ class CompanyController extends Controller
         \error_log($e->getMessage());
         return \redirect(\route('company.list'))->with('error', 'Es ist ein Fehler aufgetreten!');
       }
-
-
-      return \redirect(\route('company.list'))->with('success', 'Nutzer erfolgreich entfernt!');
     }
 }

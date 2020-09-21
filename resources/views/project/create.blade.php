@@ -27,6 +27,11 @@
                         <input class="form-control col-md-3 search-input" type="text" placeholder="Firma suchen..."/>
                       </div>
                       <div class="form-group row">
+                        <div class="col-md-6 offset-md-5">
+                          <button type="submit" class="btn btn-primary float-right">
+                              {{ __('WEITER') }}
+                          </button>
+                        </div>
                         <div class="col-md-5">
                           <table class="table table-sort-asc" name="cid">
                             <thead>
@@ -50,13 +55,6 @@
                           </table>
                         </div>
                       </div>
-                      <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-5">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('WEITER') }}
-                                </button>
-                            </div>
-                      </>
                     </form>
                 </div>
             </div>

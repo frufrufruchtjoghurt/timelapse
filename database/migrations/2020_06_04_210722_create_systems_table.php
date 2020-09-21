@@ -15,13 +15,13 @@ class CreateSystemsTable extends Migration
     public function up()
     {
         Schema::create('systems', function (Blueprint $table) {
+            $table->unsignedBigInteger('fixture_id')
+              ->unique();
             $table->unsignedBigInteger('router_id')
               ->unique();
             $table->unsignedBigInteger('sim_id')
               ->unique();
             $table->unsignedBigInteger('ups_id')
-              ->unique();
-            $table->unsignedBigInteger('fixture_id')
               ->unique();
             $table->unsignedBigInteger('heating_id')
               ->unique()
@@ -50,7 +50,7 @@ class CreateSystemsTable extends Migration
               ->references('id')
               ->on('photovoltaics');
 
-            $table->primary(['router_id', 'ups_id', 'fixture_id']);
+            $table->primary(['fixture_id', 'router_id', 'ups_id']);
         });
     }
 

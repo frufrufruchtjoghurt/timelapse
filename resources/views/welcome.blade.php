@@ -26,9 +26,11 @@
                 <div class="card-header">Dashboard</div>
 
                 <div class="card-body">
-
-                  <!-- Show active projects here! -->
-
+                @if ($projects)
+                  @foreach ($projects as $project)
+                      <button class="btn btn-primary">{{ $project[1] }} (ID: {{ $project[0] }})</button>
+                  @endforeach
+                @endif
                 </div>
             </div>
         </div>

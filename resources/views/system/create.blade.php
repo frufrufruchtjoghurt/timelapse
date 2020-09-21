@@ -10,10 +10,10 @@
                 <div class="card-body justify-content-center">
 
                   <div class="btn-group">
+                    <a href="{{ route('fixture.create') }}" class="btn btn-primary">Gehäuse anlegen</a>
                     <a href="{{ route('router.create') }}" class="btn btn-primary">Router anlegen</a>
                     <a href="{{ route('sim.create') }}" class="btn btn-primary">SIM-Karte anlegen</a>
                     <a href="{{ route('ups.create') }}" class="btn btn-primary">USV anlegen</a>
-                    <a href="{{ route('fixture.create') }}" class="btn btn-primary">Gehäuse anlegen</a>
                     <a href="{{ route('heating.create') }}" class="btn btn-primary">Heizung anlegen</a>
                     <a href="{{ route('photovoltaic.create') }}" class="btn btn-primary">Photovoltaik anlegen</a>
                   </div>
@@ -79,6 +79,7 @@
 
                     <div class="col-md-6">
                       <select class="form-control" id="heating" name="heating">
+                        <option value="0">Keine Heizung</option>
                         @foreach ($heatings as $heating)
                           <option value="{{ $heating->id }}">Type: {{ $heating->model }} - SN: {{ $heating->serial_nr }} - Reparaturen: {{ $heating->repair_count ?? 0 }}</option>
                         @endforeach
@@ -90,6 +91,7 @@
 
                     <div class="col-md-6">
                       <select class="form-control" id="photovoltaic" name="photovoltaic">
+                        <option value="0">Keine Photovoltaikanlage</option>
                         @foreach ($photovoltaics as $photovoltaic)
                           <option value="{{ $photovoltaic->id }}">Type: {{ $photovoltaic->model }} - SN: {{ $photovoltaic->serial_nr }} - Reparaturen: {{ $photovoltaic->repair_count ?? 0 }}</option>
                         @endforeach

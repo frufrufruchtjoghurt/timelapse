@@ -52,6 +52,8 @@
                           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                             <a href="{{ route('user.list') }}" class="dropdown-item">Benutzer verwalten</a>
                             <a href="{{ route('company.list') }}" class="dropdown-item">Firmen verwalten</a>
+                            <a href="{{ route('camera.list') }}" class="dropdown-item">Kameras verwalten</a>
+                            <a href="{{ route('system.list') }}" class="dropdown-item">System/-komponenten verwalten</a>
                           </div>
                         </li>
                         <li class="nav-item dropdown">
@@ -64,7 +66,7 @@
                             <a href="{{ route('company.create') }}" class="dropdown-item">Firma anlegen</a>
                             <a href="{{ route('project.create') }}" class="dropdown-item">Projekt anlegen</a>
                             <a href="{{ route('camera.create') }}" class="dropdown-item">Kamera anlegen</a>
-                            <a href="{{ route('system.create') }}" class="dropdown-item">Systemkomponenten anlegen</a>
+                            <a href="{{ route('system.create') }}" class="dropdown-item">System/-komponenten anlegen</a>
                           </div>
                         </li>
                         <li class="nav-item">

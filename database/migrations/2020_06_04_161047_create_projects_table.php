@@ -19,7 +19,9 @@ class CreateProjectsTable extends Migration
               ->primary();
             $table->string('name');
             $table->unsignedBigInteger('cid');
-            $table->unsignedBigInteger('sid');
+            $table->unsignedBigInteger('s_fid');
+            $table->unsignedBigInteger('s_rid');
+            $table->unsignedBigInteger('s_uid');
             $table->string('vpn_ip')
               ->nullable();
             $table->string('longitude')
