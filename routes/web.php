@@ -1,6 +1,17 @@
 <?php
 
 use App\Http\Controllers\CameraController;
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\FixtureController;
+use App\Http\Controllers\HeatingController;
+use App\Http\Controllers\PhotovoltaicController;
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\RouterController;
+use App\Http\Controllers\SimController;
+use App\Http\Controllers\SystemController;
+use App\Http\Controllers\UpsController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -15,95 +26,141 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', 'Controller@index')->name('index')->middleware('auth');
-
 Auth::routes(['register' => false]);
 
-Route::post('/user', 'UserController@store')->name('user.store')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/user', 'UserController@index')->name('user.index')->middleware('auth');
-Route::get('/users/create', 'UserController@create')->name('user.create')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/users/list', 'UserController@list')->name('user.list')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::post('/users/{id}', 'UserController@save')->name('user.save')->middleware('auth', 'can:isManagerOrAdmin');
-Route::get('/users/{id}', 'UserController@show')->name('user.show')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/users/{id}/edit', 'UserController@edit')->name('user.edit')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::delete('/users/{id}', 'UserController@destroy')->name('user.destroy')->middleware(['auth', 'can:isManagerOrAdmin']);
+// Group of all routes, which require authentication
+Route::middleware('auth')->group(function ()
+{
+  Route::get('/', [Controller::class, 'index'])->name('index');
 
-Route::get('/company', 'CompanyController@index')->name('company.index')->middleware('auth');
-Route::post('/company', 'CompanyController@store')->name('company.store')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/company/create', 'CompanyController@create')->name('company.create')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/company/list', 'CompanyController@list')->name('company.list')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::post('/company/{id}', 'CompanyController@save')->name('company.save')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/company/{id}', 'CompanyController@show')->name('company.show')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/company/{id}/edit', 'CompanyController@edit')->name('company.edit')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::delete('/company/{id}', 'CompanyController@destroy')->name('company.destroy')->middleware(['auth', 'can:isManagerOrAdmin']);
+  // Group of routes, which require the user to be either manager or administrator
+  Route::middleware('can:isManagerOrAdmin')->group(function ()
+  {
+    Route::prefix('user')->name('user.')->group(function ()
+    {
+      Route::post('', [UserController::class, 'store'])->name('store');
+      Route::get('', [UserController::class, 'index'])->name('index');
+      Route::get('create', [UserController::class, 'create'])->name('create');
+      Route::get('list', [UserController::class, 'list'])->name('list');
+      Route::post('{id}', [UserController::class, 'save'])->name('save');
+      Route::get('{id}', [UserController::class, 'show'])->name('show');
+      Route::get('{id}/edit', [UserController::class, 'edit'])->name('edit');
+      Route::delete('{id}', [UserController::class, 'destroy'])->name('destroy');
+    });
 
-Route::get('/project', 'ProjectController@index')->name('project.index')->middleware('auth');
-Route::post('/project', 'ProjectController@store')->name('project.store')->middleware(['auth', 'can:isManagerOrAdmin']);
-// Route::get('/project/{id}', 'ProjectController@show')->name('project.show')->middleware(['auth', 'can:hasProjectAccess']);
-Route::get('/project/create', 'ProjectController@create')->name('project.create')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/project/create/users', 'ProjectController@usersSelector')->name('project.users')->middleware(['auth', 'can:isManagerOrAdmin']);
+    Route::prefix('company')->name('company.')->group(function ()
+    {
+      Route::get('', [CompanyController::class, 'index'])->name('index');
+      Route::post('', [CompanyController::class, 'store'])->name('store');
+      Route::get('create', [CompanyController::class, 'create'])->name('create');
+      Route::get('list', [CompanyController::class, 'list'])->name('list');
+      Route::post('{id}', [CompanyController::class, 'save'])->name('save');
+      Route::get('{id}', [CompanyController::class, 'show'])->name('show');
+      Route::get('{id}/edit', [CompanyController::class, 'edit'])->name('edit');
+      Route::delete('{id}', [CompanyController::class, 'destroy'])->name('destroy');
+    });
 
-Route::get('/camera', 'CameraController@index')->name('camera.index')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/camera/create', 'CameraController@create')->name('camera.create')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/camera/list', 'CameraController@list')->name('camera.list')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/camera/{id}/edit', 'CameraController@edit')->name('camera.edit')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::post('/camera/{id}/edit', 'CameraController@save')->name('camera.save')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::delete('/camera/{id}', 'CameraController@destroy')->name('camera.destroy')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::post('/camera', 'CameraController@store')->name('camera.store')->middleware(['auth', 'can:isManagerOrAdmin']);
+    Route::prefix('project')->name('project.')->group(function ()
+    {
+      Route::get('', [ProjectController::class, 'index'])->name('index');
+      Route::post('', [ProjectController::class, 'store'])->name('store');
+      Route::get('create', [ProjectController::class, 'create'])->name('create');
+      Route::get('create/users', [ProjectController::class, 'users'])->name('users');
+    });
 
-Route::get('/system/fixture', 'FixtureController@index')->name('fixture.index')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/system/fixture/create', 'FixtureController@create')->name('fixture.create')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/system/fixture/list', 'FixtureController@list')->name('fixture.list')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/system/fixture/{id}/edit', 'FixtureController@edit')->name('fixture.edit')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::post('/system/fixture/{id}/edit', 'FixtureController@save')->name('fixture.save')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::delete('/system/fixture/{id}', 'FixtureController@destroy')->name('fixture.destroy')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::post('/system/fixture', 'FixtureController@store')->name('fixture.store')->middleware(['auth', 'can:isManagerOrAdmin']);
+    Route::prefix('camera')->name('camera.')->group(function ()
+    {
+      Route::get('', [CameraController::class, 'index'])->name('index');
+      Route::get('create', [CameraController::class, 'create'])->name('create');
+      Route::get('list', [CameraController::class, 'list'])->name('list');
+      Route::get('{id}/edit', [CameraController::class, 'edit'])->name('edit');
+      Route::post('{id}/edit', [CameraController::class, 'save'])->name('save');
+      Route::delete('{id}', [CameraController::class, 'destroy'])->name('destroy');
+      Route::post('', [CameraController::class, 'store'])->name('store');
+    });
 
-Route::get('/system/heater', 'HeatingController@index')->name('heating.index')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/system/heater/create', 'HeatingController@create')->name('heating.create')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/system/heater/list', 'HeatingController@list')->name('heating.list')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/system/heater/{id}/edit', 'HeatingController@edit')->name('heating.edit')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::post('/system/heater/{id}/edit', 'HeatingController@save')->name('heating.save')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::delete('/system/heater/{id}', 'HeatingController@destroy')->name('heating.destroy')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::post('/system/heater', 'HeatingController@store')->name('heating.store')->middleware(['auth', 'can:isManagerOrAdmin']);
+    Route::prefix('system')->group(function ()
+    {
+      Route::name('system.')->group(function ()
+      {
+        Route::get('', [SystemController::class, 'index'])->name('index');
+        Route::get('list', [SystemController::class, 'list'])->name('list');
+        Route::get('create', [SystemController::class, 'create'])->name('create');
+        Route::get('{id_f}/{id_r}/{id_u}', [SystemController::class, 'show'])->name('show');
+        Route::post('{id_f}/{id_r}/{id_u}', [SystemController::class, 'save'])->name('save');
+        Route::get('{id_f}/{id_r}/{id_u}/edit', [SystemController::class, 'edit'])->name('edit');
+        Route::delete('{id_f}/{id_r}/{id_u}', [SystemController::class, 'destroy'])->name('destroy');
+        Route::post('', [SystemController::class, 'store'])->name('store');
+      });
 
-Route::get('/system/photovoltaic', 'PhotovoltaicController@index')->name('photovoltaic.index')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/system/photovoltaic/create', 'PhotovoltaicController@create')->name('photovoltaic.create')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/system/photovoltaic/list', 'PhotovoltaicController@list')->name('photovoltaic.list')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/system/photovoltaic/{id}/edit', 'PhotovoltaicController@edit')->name('photovoltaic.edit')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::post('/system/photovoltaic/{id}/edit', 'PhotovoltaicController@save')->name('photovoltaic.save')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::delete('/system/photovoltaic/{id}', 'PhotovoltaicController@destroy')->name('photovoltaic.destroy')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::post('/system/photovoltaic', 'PhotovoltaicController@store')->name('photovoltaic.store')->middleware(['auth', 'can:isManagerOrAdmin']);
+      Route::prefix('fixture')->name('fixture.')->group(function ()
+      {
+        Route::get('', [FixtureController::class, 'index'])->name('index');
+        Route::get('create', [FixtureController::class, 'create'])->name('create');
+        Route::get('list', [FixtureController::class, 'list'])->name('list');
+        Route::get('{id}/edit', [FixtureController::class, 'edit'])->name('edit');
+        Route::post('{id}/edit', [FixtureController::class, 'save'])->name('save');
+        Route::delete('{id}', [FixtureController::class, 'destroy'])->name('destroy');
+        Route::post('', [FixtureController::class, 'store'])->name('store');
+      });
 
-Route::get('/system/router', 'RouterController@index')->name('router.index')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/system/router/create', 'RouterController@create')->name('router.create')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/system/router/list', 'RouterController@list')->name('router.list')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/system/router/{id}/edit', 'RouterController@edit')->name('router.edit')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::post('/system/router/{id}/edit', 'RouterController@save')->name('router.save')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::delete('/system/router/{id}', 'RouterController@destroy')->name('router.destroy')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::post('/system/router', 'RouterController@store')->name('router.store')->middleware(['auth', 'can:isManagerOrAdmin']);
+      Route::prefix('heating')->name('heating.')->group(function ()
+      {
+        Route::get('', [HeatingController::class, 'index'])->name('index');
+        Route::get('create', [HeatingController::class, 'create'])->name('create');
+        Route::get('list', [HeatingController::class, 'list'])->name('list');
+        Route::get('{id}/edit', [HeatingController::class, 'edit'])->name('edit');
+        Route::post('{id}/edit', [HeatingController::class, 'save'])->name('save');
+        Route::delete('{id}', [HeatingController::class, 'destroy'])->name('destroy');
+        Route::post('', [HeatingController::class, 'store'])->name('store');
+      });
 
-Route::get('/system/sim', 'SimController@index')->name('sim.index')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/system/sim/create', 'SimController@create')->name('sim.create')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/system/sim/list', 'SimController@list')->name('sim.list')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/system/sim/{id}/edit', 'SimController@edit')->name('sim.edit')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::post('/system/sim/{id}/edit', 'SimController@save')->name('sim.save')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::delete('/system/sim/{id}', 'SimController@destroy')->name('sim.destroy')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::post('/system/sim', 'SimController@store')->name('sim.store')->middleware(['auth', 'can:isManagerOrAdmin']);
+      Route::prefix('photovoltaic')->name('photovoltaic.')->group(function ()
+      {
+        Route::get('', [PhotovoltaicController::class, 'index'])->name('index');
+        Route::get('create', [PhotovoltaicController::class, 'create'])->name('create');
+        Route::get('list', [PhotovoltaicController::class, 'list'])->name('list');
+        Route::get('{id}/edit', [PhotovoltaicController::class, 'edit'])->name('edit');
+        Route::post('{id}/edit', [PhotovoltaicController::class, 'save'])->name('save');
+        Route::delete('{id}', [PhotovoltaicController::class, 'destroy'])->name('destroy');
+        Route::post('', [PhotovoltaicController::class, 'store'])->name('store');
+      });
 
-Route::get('/system/ups', 'UpsController@index')->name('ups.index')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/system/ups/create', 'UpsController@create')->name('ups.create')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/system/ups/list', 'UpsController@list')->name('ups.list')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/system/ups/{id}/edit', 'UpsController@edit')->name('ups.edit')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::post('/system/ups/{id}/edit', 'UpsController@save')->name('ups.save')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::delete('/system/ups/{id}', 'UpsController@destroy')->name('ups.destroy')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::post('/system/ups', 'UpsController@store')->name('ups.store')->middleware(['auth', 'can:isManagerOrAdmin']);
+      Route::prefix('router')->name('router.')->group(function ()
+      {
+        Route::get('', [RouterController::class, 'index'])->name('index');
+        Route::get('create', [RouterController::class, 'create'])->name('create');
+        Route::get('list', [RouterController::class, 'list'])->name('list');
+        Route::get('{id}/edit', [RouterController::class, 'edit'])->name('edit');
+        Route::post('{id}/edit', [RouterController::class, 'save'])->name('save');
+        Route::delete('{id}', [RouterController::class, 'destroy'])->name('destroy');
+        Route::post('', [RouterController::class, 'store'])->name('store');
+      });
 
-Route::get('/system', 'SystemController@index')->name('system.index')->middleware('auth');
-Route::get('/system/list', 'SystemController@list')->name('system.list')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/system/create', 'SystemController@create')->name('system.create')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/system/{id_f}/{id_r}/{id_u}', 'SystemController@show')->name('system.show')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::post('/system/{id_f}/{id_r}/{id_u}', 'SystemController@save')->name('system.save')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::get('/system/{id_f}/{id_r}/{id_u}/edit', 'SystemController@edit')->name('system.edit')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::delete('/system/{id_f}/{id_r}/{id_u}', 'SystemController@destroy')->name('system.destroy')->middleware(['auth', 'can:isManagerOrAdmin']);
-Route::post('/system', 'SystemController@store')->name('system.store')->middleware(['auth', 'can:isManagerOrAdmin']);
+      Route::prefix('sim')->name('sim.')->group(function ()
+      {
+        Route::get('', [SimController::class, 'index'])->name('index');
+        Route::get('create', [SimController::class, 'create'])->name('create');
+        Route::get('list', [SimController::class, 'list'])->name('list');
+        Route::get('{id}/edit', [SimController::class, 'edit'])->name('edit');
+        Route::post('{id}/edit', [SimController::class, 'save'])->name('save');
+        Route::delete('{id}', [SimController::class, 'destroy'])->name('destroy');
+        Route::post('', [SimController::class, 'store'])->name('store');
+      });
+
+      Route::prefix('ups')->name('ups.')->group(function ()
+      {
+        Route::get('', [UpsController::class, 'index'])->name('index');
+        Route::get('create', [UpsController::class, 'create'])->name('create');
+        Route::get('list', [UpsController::class, 'list'])->name('list');
+        Route::get('{id}/edit', [UpsController::class, 'edit'])->name('edit');
+        Route::post('{id}/edit', [UpsController::class, 'save'])->name('save');
+        Route::delete('{id}', [UpsController::class, 'destroy'])->name('destroy');
+        Route::post('', [UpsController::class, 'store'])->name('store');
+      });
+
+    });
+
+  });
+
+});
