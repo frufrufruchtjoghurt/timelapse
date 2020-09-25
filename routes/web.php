@@ -31,7 +31,7 @@ Auth::routes(['register' => false]);
 // Group of all routes, which require authentication
 Route::middleware('auth')->group(function ()
 {
-  Route::get('/', [Controller::class, 'index'])->name('index');
+  Route::get('/', [Controller::class, 'index'])->name('home');
 
   // Group of routes, which require the user to be either manager or administrator
   Route::middleware('can:isManagerOrAdmin')->group(function ()
@@ -160,6 +160,12 @@ Route::middleware('auth')->group(function ()
       });
 
     });
+
+  });
+
+  Route::middleware('project.access')->prefix('project')->name('project.')->group(function ()
+  {
+    Route::get('{id}', [ProjectController::class, 'show'])->name('show');
 
   });
 

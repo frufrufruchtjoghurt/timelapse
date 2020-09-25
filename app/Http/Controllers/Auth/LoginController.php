@@ -29,6 +29,20 @@ class LoginController extends Controller
     protected $redirectTo = RouteServiceProvider::HOME;
 
     /**
+     * Max attempts before timeout.
+     *
+     * @var int
+     */
+    protected $maxAttempts = 3;
+
+    /**
+     * Timeout in minutes after too many login attempts.
+     *
+     * @var int
+     */
+    protected $decayMinutes = 5;
+
+    /**
      * Create a new controller instance.
      *
      * @return void

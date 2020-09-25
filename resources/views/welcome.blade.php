@@ -25,12 +25,16 @@
             <div class="card">
                 <div class="card-header">Dashboard</div>
 
-                <div class="card-body">
-                @if ($projects)
-                  @foreach ($projects as $project)
-                      <button class="btn btn-primary">{{ $project[1] }} (ID: {{ $project[0] }})</button>
-                  @endforeach
-                @endif
+                  <div class="card-body">
+                  @if ($projects)
+                    @foreach ($projects as $project)
+                      <form action="{{ route('project.show', ['id' => $project[0]]) }}" method="get">
+                        @csrf
+                        <button type="submit" class="btn btn-primary">{{ $project[1] }} (ID: {{ $project[0] }})</button>
+                      </form>
+                    @endforeach
+                  @endif
+                  </div>
                 </div>
             </div>
         </div>

@@ -54,7 +54,7 @@ class ProjectController extends Controller
     return view('project.create', ['companies' => Company::all()]);
   }
 
-  public function usersSelector()
+  public function users()
   {
     $project = new Project;
 
