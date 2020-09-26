@@ -1,5 +1,16 @@
 @extends('layouts.app')
 
+@section('alert')
+  @error('name')
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    Projekt{{ $message }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  @enderror
+@endsection
+
 @section('content')
 <div class="container creator">
     <div class="row justify-content-center">
@@ -19,7 +30,7 @@
                         <label for="name" class="col-md-2 col-form-label text-md-right">Projektname<span>*</span></label>
 
                         <div class="col-md-3">
-                            <input id="name" type="text" class="form-control" name="name" value="{{ old('name') }}" required>
+                            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required>
                         </div>
                       </div>
                       <div class="form-group row">

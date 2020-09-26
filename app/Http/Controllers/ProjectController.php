@@ -54,24 +54,29 @@ class ProjectController extends Controller
     return view('project.create', ['companies' => Company::all()]);
   }
 
-  public function users()
+  public function users(Request $request)
   {
     $project = new Project;
 
-    $project->project_nr = \request('project_nr');
-    $project->name = \request('name');
+    $request->validate([
+      'name' => 'required|alpha_dash',
+      'project_nr' => 'required|numeric'
+    ]);
+
+    $project->project_nr = request('project_nr');
+    $project->name = request('name');
 
     try
     {
       if (Project::where('project_nr', $project->project_nr)->exists())
       {
-        return \redirect(route('project.create'))->with('error', 'Ein Projekt mit der angegebenen Projektnummer existiert bereits!');
+        return redirect(route('project.create'))->with('error', 'Ein Projekt mit der angegebenen Projektnummer existiert bereits!');
       }
     }
     catch (Exception $e)
     {
-      \error_log($e->getMessage());
-      return \redirect(route('project.create'))->with('error', 'Bei einer Überprüfung der Projektnummer ist ein Fehler aufgetreten!');
+      error_log($e->getMessage());
+      return redirect(route('project.create'))->with('error', 'Bei einer Überprüfung der Projektnummer ist ein Fehler aufgetreten!');
     }
 
     try
@@ -150,7 +155,7 @@ class ProjectController extends Controller
     {
       Cache::put('project', $project, now()->addMinutes(30));
       Cache::put('cid', $cids);
-      return \view('project.users', [
+      return view('project.users', [
         'cids' => Cache::get('cid'),
         'users' => User::all(),
         'systems' => $systems,
@@ -161,8 +166,8 @@ class ProjectController extends Controller
     {
       Cache::forget('project');
       Cache::forget('cid');
-      \error_log($e->getMessage());
-      return \redirect(route('project.create'))->with('error', 'Beim Speichern des Projekts ist ein Fehler aufgetreten!');
+      error_log($e->getMessage());
+      return redirect(route('project.create'))->with('error', 'Beim Speichern des Projekts ist ein Fehler aufgetreten!');
     }
   }
 
@@ -217,8 +222,8 @@ class ProjectController extends Controller
     catch (Exception $e)
     {
       Cache::forget('project_users');
-      \error_log($e->getMessage());
-      return \redirect(route('project.create'))->with('error', 'Beim Speichern der Projektkunden ist ein Fehler aufgetreten!');
+      error_log($e->getMessage());
+      return redirect(route('project.create'))->with('error', 'Beim Speichern der Projektkunden ist ein Fehler aufgetreten!');
     }
 
     try
@@ -257,7 +262,7 @@ class ProjectController extends Controller
     Cache::forget('project');
     Cache::forget('cid');
     Cache::forget('project_users');
-    return \redirect(\route('project.create'))->with('success', 'Projekt und Projektkunden erfolgreich gespeichert!');
+    return redirect(route('project.create'))->with('success', 'Projekt und Projektkunden erfolgreich gespeichert!');
   }
 
   public function show($id)
