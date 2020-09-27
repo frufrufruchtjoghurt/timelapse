@@ -20,6 +20,7 @@ class CreateCamerasTable extends Migration
             $table->date('purchase_date');
             $table->boolean('broken')
               ->default(false);
+            $table->char('storage');
             $table->timestamps();
         });
     }
