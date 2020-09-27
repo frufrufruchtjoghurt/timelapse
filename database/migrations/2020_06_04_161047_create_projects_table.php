@@ -19,17 +19,26 @@ class CreateProjectsTable extends Migration
               ->primary();
             $table->string('name');
             $table->unsignedBigInteger('cid');
-            $table->unsignedBigInteger('s_fid');
-            $table->unsignedBigInteger('s_rid');
-            $table->unsignedBigInteger('s_uid');
+            $table->unsignedBigInteger('sid');
             $table->string('vpn_ip')
               ->nullable();
             $table->string('longitude')
               ->nullable();
             $table->string('latitude')
               ->nullable();
+            $table->string('film_studio')
+              ->nullable();
             $table->date('start_date');
-            $table->boolean('inactive')
+            $table->date('end_date');
+            $table->boolean('invisible')
+              ->default(false);
+            $table->boolean('setup_done')
+              ->default(false);
+            $table->boolean('film_done')
+              ->default(false);
+            $table->boolean('film_send')
+              ->default(false);
+            $table->boolean('completed')
               ->default(false);
             $table->dateTime('inactivity_date')
               ->nullable();
