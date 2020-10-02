@@ -37,34 +37,32 @@
                         <label for="cid" class="col-md-3 col-form-label text-md-right">{{ __('Kundenfirma') }}<span>*</span></label>
                         <input class="form-control col-md-3 search-input" type="text" placeholder="Firma suchen..."/>
                       </div>
-                      <div class="form-group row">
-                        <div class="col-md-6 offset-md-5">
-                          <button type="submit" class="btn btn-primary float-right">
-                              {{ __('WEITER') }}
-                          </button>
-                        </div>
-                        <div class="col-md-5 table-responsive">
-                          <table class="table table-sort-asc align-center" name="cid">
-                            <thead>
+                      <div class="col-md-5 table-responsive scroll-wrapper">
+                        <table class="table table-sort-asc align-center scroll-wrapper" name="cid">
+                          <thead>
+                            <tr>
+                              <th class="text-center" scope="col">Auswahl</th>
+                              <th class="sort-by searchable">Firmenname</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            @foreach ($companies as $company)
                               <tr>
-                                <th class="text-center" scope="col">Auswahl</th>
-                                <th class="sort-by searchable">Firmenname</th>
+                                <td class="text-center">
+                                  <input type="checkbox" class="company-list" name="cid[]" value="{{ $company->id }}"/>
+                                </td>
+                                <td>
+                                  {{$company->name}}
+                                </td>
                               </tr>
-                            </thead>
-                            <tbody>
-                              @foreach ($companies as $company)
-                                <tr>
-                                  <td class="text-center">
-                                    <input type="checkbox" class="company-list" name="cid[]" value="{{ $company->id }}"/>
-                                  </td>
-                                  <td>
-                                    {{$company->name}}
-                                  </td>
-                                </tr>
-                              @endforeach
-                            </tbody>
-                          </table>
-                        </div>
+                            @endforeach
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="col-md-6 offset-md-5">
+                        <button type="submit" class="btn btn-primary float-right">
+                            {{ __('WEITER') }}
+                        </button>
                       </div>
                     </form>
                 </div>

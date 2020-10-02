@@ -13,8 +13,8 @@
                       @csrf
                       <input class="form-control col-md-3 search-input" type="text" placeholder="Name suchen..."/>
                       <div class="form-group row">
-                        <label for="users" class="col-md-3 col-fom-label text-md-right">{{ __('Kunden') }}:<span>*</span></label>
-                        <div class="col-md-5">
+                        <label for="users" class="col-md-2 col-fom-label text-md-right">{{ __('Kunden') }}:<span>*</span></label>
+                        <div class="col-md-9 table-responsive scroll-wrapper">
                           <table class="table table-sort-asc" name="users">
                             <thead>
                               <tr>
@@ -22,6 +22,9 @@
                                 <th scope="col">Titel</th>
                                 <th class="sort-by searchable" scope="col">Name</th>
                                 <th class="searchable" scope="col">Vorname</th>
+                                <th class="text-center" scope="col">Archiv</th>
+                                <th class="text-center" scope="col">Deeplink</th>
+                                <th class="text-center" scope="col">Speichermedium</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -41,6 +44,15 @@
                                     <td>
                                       {{ $user->first_name }}
                                     </td>
+                                    <td class="text-center">
+                                      <input type="checkbox" class="users-select" name="archive[]" value="{{ $user->id }}"/>
+                                    </td>
+                                    <td class="text-center">
+                                      <input type="checkbox" class="users-select" name="deeplink[]" value="{{ $user->id }}"/>
+                                    </td>
+                                    <td class="text-center">
+                                      <input type="checkbox" class="users-select" name="storage[]" value="{{ $user->id }}"/>
+                                    </td>
                                   </tr>
                                 @endif
                               @endforeach
@@ -50,14 +62,10 @@
                         </div>
                       </div>
 
-                      <div class="form-group row">
-                        <label for="date" class="col-md-3 col-fom-label text-md-right">{{ __('Startdatum') }}:<span>*</span></label>
-                        <input name="date" class="form-control col-md-3" type="date"/>
-                      </div>
                       <input class="form-control col-md-3 search-input" type="text" placeholder="System suchen..."/>
                       <div class="form-group row">
-                        <label for="system" class="col-md-3 col-fom-label text-md-right">{{ __('Systeme') }}:<span>*</span></label>
-                        <div class="col-md-5 table-responsive">
+                        <label for="system" class="col-md-2 col-fom-label text-md-right">{{ __('Systeme') }}:<span>*</span></label>
+                        <div class="col-md-9 table-responsive scroll-wrapper">
                           <table class="table table-sort-asc" name="system">
                             <thead>
                               <tr>
@@ -124,8 +132,8 @@
 
                       <input class="form-control col-md-3 search-input" type="text" placeholder="Kamera suchen..."/>
                       <div class="form-group row">
-                        <label for="camera" class="col-md-3 col-fom-label text-md-right">{{ __('Kameras') }}:<span>*</span></label>
-                        <div class="col-md-5 table-responsive">
+                        <label for="camera" class="col-md-2 col-fom-label text-md-right">{{ __('Kameras') }}:<span>*</span></label>
+                        <div class="col-md-9 table-responsive scroll-wrapper">
                           <table class="table table-sort-asc" name="camera">
                             <thead>
                               <tr>
@@ -159,6 +167,11 @@
                             </tbody>
                           </table>
                         </div>
+                      </div>
+
+                      <div class="form-group row">
+                        <label for="date" class="col-md-3 col-fom-label text-md-right">{{ __('Startdatum') }}:<span>*</span></label>
+                        <input name="date" class="form-control col-md-3" type="date"/>
                       </div>
 
                       <div class="form-group row mb-0">

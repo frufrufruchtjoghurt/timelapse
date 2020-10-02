@@ -128,9 +128,10 @@ class ProjectController extends Controller
           ->where('type', '=', 'p')->groupBy('element_id'), 'rc_p', function($join) {
             $join->on('p.id', '=', 'element_id');
         })
-        ->leftJoin('projects as j', 'j.s_fid', '=', 'y.fixture_id')
+        ->leftJoin('projects as j', 'j.sid', '=', 'y.id')
         ->whereDate('j.inactivity_date', '<=', date('Y-m-d'))
         ->orWhereNull('j.project_nr')
+        ->where('r.storage', '=', 0)
         ->get();
 
       $cameras = DB::table('cameras as c')
@@ -142,6 +143,7 @@ class ProjectController extends Controller
         ->leftJoin('projects as j', 'j.cid', '=', 'c.id')
         ->whereDate('j.inactivity_date', '<=', date('Y-m-d'))
         ->orWhereNull('j.project_nr')
+        ->where('c.storage', '=', 0)
         ->get();
     }
     catch (Exception $e)
@@ -185,19 +187,13 @@ class ProjectController extends Controller
     try
     {
       $user_ids = $_POST['users'];
-      $id_string = request('system');
+      $system_id = request('system');
 
-      if (!$id_string)
+      if (!$system_id)
       {
         return redirect(route('project.users', ['cid' => Cache::get('cid'), 'users' => User::all()]))
           ->with('error', 'Bitte wählen Sie ein System aus!');
       }
-
-      $system_ids = explode(';', $id_string);
-
-      $id_f = $system_ids[0];
-      $id_r = $system_ids[1];
-      $id_u = $system_ids[2];
     }
     catch (Exception $e)
     {
@@ -241,9 +237,7 @@ class ProjectController extends Controller
       }
 
       $project->cid = $camera_id;
-      $project->s_fid = $id_f;
-      $project->s_rid = $id_r;
-      $project->s_uid = $id_u;
+      $project->sid = $system_id;
       $project->start_date = $date;
 
       $project->save();
