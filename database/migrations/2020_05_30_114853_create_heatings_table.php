@@ -20,7 +20,8 @@ class CreateHeatingsTable extends Migration
             $table->date('purchase_date');
             $table->boolean('broken')
               ->default(false);
-            $table->integer('storage');
+            $table->integer('storage')
+              ->default(0);
             $table->timestamps();
         });
     }
