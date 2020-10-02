@@ -57,7 +57,7 @@
                       <input class="form-control col-md-3 search-input" type="text" placeholder="System suchen..."/>
                       <div class="form-group row">
                         <label for="system" class="col-md-3 col-fom-label text-md-right">{{ __('Systeme') }}:<span>*</span></label>
-                        <div class="col-md-5">
+                        <div class="col-md-5 table-responsive">
                           <table class="table table-sort-asc" name="system">
                             <thead>
                               <tr>
@@ -76,7 +76,7 @@
                               @foreach ($systems as $system)
                                   <tr>
                                     <td class="text-center">
-                                      <input type="radio" class="users-select" name="system" value="{{ $system->id_f }};{{ $system->id_r }};{{ $system->id_u }}"/>
+                                      <input type="radio" class="users-select" name="system" value="{{ $system-id }}"/>
                                     </td>
                                     <td>
                                       {{ $system->model_f }}
@@ -125,7 +125,7 @@
                       <input class="form-control col-md-3 search-input" type="text" placeholder="Kamera suchen..."/>
                       <div class="form-group row">
                         <label for="camera" class="col-md-3 col-fom-label text-md-right">{{ __('Kameras') }}:<span>*</span></label>
-                        <div class="col-md-5">
+                        <div class="col-md-5 table-responsive">
                           <table class="table table-sort-asc" name="camera">
                             <thead>
                               <tr>

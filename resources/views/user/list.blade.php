@@ -9,24 +9,16 @@
 
                 <div class="card-body">
                   <div class="row">
-                    <input class="form-control col-md-3 search-input" type="text" placeholder="Name oder E-Mailadresse suchen..."/>
-                    <div class="form-check form-check-inline" id="roles">
-                      <input type="checkbox" class="form-check-input" name="role[]" id="role1" value="admin"/>
-                      <label for="role1" class="form-check-label">Basic </label>
-                      <input type="checkbox" class="form-check-input" name="role[]" id="role2" value="admin"/>
-                      <label for="role2" class="form-check-label">Manager </label>
-                      <input type="checkbox" class="form-check-input" name="role[]" id="role3" value="admin"/>
-                      <label for="role3" class="form-check-label">Admin </label>
-                    </div>
+                    <input class="form-control col-md-4 search-input" type="text" placeholder="Name, E-Mailadresse oder Benutzerrolle suchen..."/>
                   </div>
 
-                    <table class="table table-sortable">
+                    <table class="table table-sortable table-responsive">
                       <thead>
                         <tr>
                           <th class="searchable" scope="col">Name</th>
                           <th class="searchable" scope="col">Vorname</th>
                           <th class="searchable" scope="col">E-Mailadresse</th>
-                          <th class="no-sort" scope="col">Benutzerrolle</th>
+                          <th class="searchable no-sort" scope="col">Benutzerrolle</th>
                           <th class="no-sort" scope="col">Aktion</th>
                         </tr>
                       </thead>

@@ -28,7 +28,7 @@
               <div class="card-body">
                 <input class="form-control col-md-3 search-input" type="text" placeholder="Komponentenname suchen..."/>
 
-                <table class="table table-sortable">
+                <table class="table table-sortable table-responsive">
                   <thead>
                     <tr>
                       <th class="searchable" scope="col">Gehäuse</th>

@@ -43,8 +43,8 @@
                               {{ __('WEITER') }}
                           </button>
                         </div>
-                        <div class="col-md-5">
-                          <table class="table table-sort-asc" name="cid">
+                        <div class="col-md-5 table-responsive">
+                          <table class="table table-sort-asc align-center" name="cid">
                             <thead>
                               <tr>
                                 <th class="text-center" scope="col">Auswahl</th>

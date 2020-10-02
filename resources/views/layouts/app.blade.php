@@ -11,6 +11,11 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/bootstrap.js') }}" defer></script>
+    <script>
+      $('table').on('scroll', function () {
+        $("#"+this.id+" > *").width($(this).width() + $(this).scrollLeft());
+      });
+    </script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
