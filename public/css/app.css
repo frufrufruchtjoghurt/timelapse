@@ -10903,6 +10903,10 @@ a.text-dark:focus {
   max-height: 55px;
 }
 
+.navbar {
+  max-height: 15vh;
+}
+
 .card-header,
 .btn-primary {
   background-color: #009B3F;
@@ -11005,5 +11009,10 @@ option:hover {
 .search-input {
   margin-bottom: 10px;
   margin-left: 5px;
+}
+
+.scroll-wrapper {
+  overflow: auto;
+  max-height: 30vh;
 }
 
