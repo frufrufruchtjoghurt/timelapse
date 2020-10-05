@@ -29,7 +29,8 @@ class CreateProjectsTable extends Migration
             $table->string('film_studio')
               ->nullable();
             $table->date('start_date');
-            $table->date('end_date');
+            $table->date('end_date')
+              ->nullable();
             $table->boolean('invisible')
               ->default(false);
             $table->boolean('setup_done')
