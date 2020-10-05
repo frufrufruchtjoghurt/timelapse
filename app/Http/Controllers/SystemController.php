@@ -394,6 +394,7 @@ class SystemController extends Controller
     {
       $system = new System();
 
+      $system->name = request('name');
       $system->fixture_id = request('fixture');
       $system->router_id = request('router');
       $system->sim_id = request('sim');

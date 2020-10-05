@@ -29,6 +29,14 @@
                 <form action="{{ route('system.index') }}" method="POST">
                   @csrf
                   <div class="form-group row">
+                    <label for="name" class="col-md-3 col-form-label text-md-right">Bezeichnung<span>*</span></label>
+
+                    <div class="col-md-6">
+                      <input id="name" type="text" class="form-control" name="name" value="{{ old('name') }}" required>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
                     <label for="fixture" class="col-md-3 col-form-label text-md-right">Gehäuse<span>*</span></label>
 
                     <div class="col-md-6">
