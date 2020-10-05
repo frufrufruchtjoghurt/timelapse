@@ -2,10 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Camera;
 use App\Company;
+use App\Fixture;
+use App\Heating;
+use App\Photovoltaic;
 use App\Project;
 use App\Projectuser;
 use App\Repair;
+use App\Router;
+use App\SimCard;
+use App\System;
+use App\Ups;
 use App\User;
 use ArrayObject;
 use Exception;
@@ -135,7 +143,8 @@ class ProjectController extends Controller
         ->get();
 
       $cameras = DB::table('cameras as c')
-        ->select('c.id', 'c.model', 'c.serial_nr', 'c.purchase_date', DB::raw('IFNULL(rc.count, 0) as count'))
+        ->select('c.id', 'c.model', 'c.serial_nr', 'c.purchase_date', DB::raw('IFNULL(rc.count, 0) as count'),
+          'j.inactivity_date')
         ->leftJoinSub(Repair::select('element_id', DB::raw('count(element_id) as count'))
           ->where('type', '=', 'c')->groupBy('element_id'), 'rc', function($join) {
             $join->on('c.id', '=', 'element_id');
@@ -204,12 +213,21 @@ class ProjectController extends Controller
 
     try
     {
+      $archive = $_POST['archive'];
+      $deeplink = $_POST['deeplink'];
+      $datastore = $_POST['datastore'];
+
       foreach ($user_ids as $user_id)
       {
         $project_user = new Projectuser;
 
         $project_user->project_nr = $project_nr;
         $project_user->uid = $user_id;
+
+        // Check the selected features for each user
+        $project_user->archive = ($archive && $archive->array_search($user_id));
+        $project_user->deeplink = ($deeplink && $deeplink->array_search($user_id));
+        $project_user->storage_medium = ($datastore && $datastore->array_search($user_id));
 
         $project_user_cache[] = $project_user;
       }
@@ -246,6 +264,25 @@ class ProjectController extends Controller
       {
         $project_user->save();
       }
+
+      // Update camera storage
+      Camera::where('id', $camera_id)
+        ->update('storage', $project->project_nr);
+
+      // Get system and update component storage
+      $system = System::where('id', $system_id)->get();
+      Fixture::where('id', $system->fixture_id)
+        ->update('storage', $project->project_nr);
+      Router::where('id', $system->router_id)
+        ->update('storage', $project->project_nr);
+      SimCard::where('id', $system->sim_id)
+        ->update('storage', $project->project_nr);
+      Ups::where('id', $system->ups_id)
+        ->update('storage', $project->project_nr);
+      Heating::where('id', $system->heating_id)
+        ->update('storage', $project->project_nr);
+      Photovoltaic::where('id', $system->photovoltaic_id)
+        ->update('storage', $project->project_nr);
     }
     catch (Exception $e)
     {
