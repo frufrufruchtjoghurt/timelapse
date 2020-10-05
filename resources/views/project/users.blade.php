@@ -51,7 +51,7 @@
                                       <input type="checkbox" class="users-select" name="deeplink[]" value="{{ $user->id }}"/>
                                     </td>
                                     <td class="text-center">
-                                      <input type="checkbox" class="users-select" name="storage[]" value="{{ $user->id }}"/>
+                                      <input type="checkbox" class="users-select" name="datastore[]" value="{{ $user->id }}"/>
                                     </td>
                                   </tr>
                                 @endif
@@ -156,10 +156,10 @@
                                       {{ $camera->count }}
                                     </td>
                                     <td>
-                                      @if (!$system->inactivity_date)
+                                      @if (!$camera->inactivity_date)
                                         nie
                                       @else
-                                        {{ $system->inactivity_date }}
+                                        {{ $camera->inactivity_date }}
                                       @endif
                                     </td>
                                   </tr>
