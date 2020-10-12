@@ -17,11 +17,11 @@ class CameraController extends Controller
 
   }
 
-    /**
-   * Show page for camera creation
-   *
-   *  @return \Illuminate\Contracts\Support\Renderable
-   */
+  /**
+ * Show page for camera creation
+ *
+ *  @return \Illuminate\Contracts\Support\Renderable
+ */
   public function create()
   {
     return view('camera.create');
@@ -30,7 +30,8 @@ class CameraController extends Controller
   public function list()
   {
     return view('camera.list', ['cameras' => DB::table('cameras', 'c')
-      ->select('c.id', 'c.model', 'c.serial_nr', 'c.purchase_date', DB::raw('IFNULL(rc.count, 0) as count'))
+      ->select('c.id', 'c.model', 'c.serial_nr', 'c.purchase_date', DB::raw('IFNULL(rc.count, 0) as count'),
+        'c.storage')
       ->leftJoinSub(Repair::select('element_id', DB::raw('count(element_id) as count'))
         ->where('type', '=', 'c')->groupBy('element_id'), 'rc', function($join) {
           $join->on('c.id', '=', 'element_id');

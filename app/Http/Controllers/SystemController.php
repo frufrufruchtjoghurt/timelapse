@@ -30,7 +30,7 @@ class SystemController extends Controller
   public function create()
   {
     return view('system.create', [
-      'fixtures' => Fixture::select('id', 'serial_nr', 'model', 'repair_c.repair_count', 'purchase_date')
+      'fixtures' => Fixture::select('fixtures.id', 'serial_nr', 'model', 'repair_c.repair_count', 'purchase_date')
         ->leftJoin('systems', 'fixtures.id', '=', 'systems.fixture_id')
         ->leftJoinSub(Repair::select('element_id', DB::raw('count(element_id) as repair_count'))
             ->where('type', '=', 'f')->groupBy('element_id'), 'repair_c', function($join) {
@@ -39,7 +39,7 @@ class SystemController extends Controller
         ->where('broken', '=', false)
         ->whereNull('systems.fixture_id')
         ->get(),
-      'routers' => Router::select('id', 'serial_nr', 'model', 'repair_c.repair_count', 'purchase_date')
+      'routers' => Router::select('routers.id', 'serial_nr', 'model', 'repair_c.repair_count', 'purchase_date')
         ->leftJoin('systems', 'routers.id', '=', 'systems.router_id')
         ->leftJoinSub(Repair::select('element_id', DB::raw('count(element_id) as repair_count'))
             ->where('type', '=', 'r')->groupBy('element_id'), 'repair_c', function($join) {
@@ -48,7 +48,7 @@ class SystemController extends Controller
         ->where('broken', '=', false)
         ->whereNull('systems.router_id')
         ->get(),
-      'sims' => SimCard::select('id', 'telephone_nr', 'contract', 'repair_c.repair_count', 'purchase_date')
+      'sims' => SimCard::select('sim_cards.id', 'telephone_nr', 'contract', 'repair_c.repair_count', 'purchase_date')
         ->leftJoin('systems', 'sim_cards.id', '=', 'systems.sim_id')
         ->leftJoinSub(Repair::select('element_id', DB::raw('count(element_id) as repair_count'))
             ->where('type', '=', 's')->groupBy('element_id'), 'repair_c', function($join) {
@@ -57,7 +57,7 @@ class SystemController extends Controller
         ->where('broken', '=', false)
         ->whereNull('systems.sim_id')
         ->get(),
-      'ups' => Ups::select('id', 'serial_nr', 'model', 'repair_c.repair_count', 'purchase_date')
+      'ups' => Ups::select('ups.id', 'serial_nr', 'model', 'repair_c.repair_count', 'purchase_date')
         ->leftJoin('systems', 'ups.id', '=', 'systems.ups_id')
         ->leftJoinSub(Repair::select('element_id', DB::raw('count(element_id) as repair_count'))
             ->where('type', '=', 'u')->groupBy('element_id'), 'repair_c', function($join) {
@@ -66,7 +66,7 @@ class SystemController extends Controller
         ->where('broken', '=', false)
         ->whereNull('systems.ups_id')
         ->get(),
-      'heatings' => Heating::select('id', 'serial_nr', 'model', 'repair_c.repair_count', 'purchase_date')
+      'heatings' => Heating::select('heatings.id', 'serial_nr', 'model', 'repair_c.repair_count', 'purchase_date')
         ->leftJoin('systems', 'heatings.id', '=', 'systems.heating_id')
         ->leftJoinSub(Repair::select('element_id', DB::raw('count(element_id) as repair_count'))
             ->where('type', '=', 'h')->groupBy('element_id'), 'repair_c', function($join) {
@@ -75,7 +75,7 @@ class SystemController extends Controller
         ->where('broken', '=', false)
         ->whereNull('systems.heating_id')
         ->get(),
-      'photovoltaics' => Photovoltaic::select('id', 'serial_nr', 'model', 'repair_c.repair_count', 'purchase_date')
+      'photovoltaics' => Photovoltaic::select('photovoltaics.id', 'serial_nr', 'model', 'repair_c.repair_count', 'purchase_date')
         ->leftJoin('systems', 'photovoltaics.id', '=', 'systems.photovoltaic_id')
         ->leftJoinSub(Repair::select('element_id', DB::raw('count(element_id) as repair_count'))
             ->where('type', '=', 'p')->groupBy('element_id'), 'repair_c', function($join) {
@@ -90,12 +90,12 @@ class SystemController extends Controller
   public function list()
   {
     $systems = DB::table('systems as y')
-      ->select('f.id as id_f', 'f.model as model_f', DB::raw('IFNULL(rc_f.count, 0) as count_f'),
+      ->select('y.id', 'y.name', 'f.id as id_f', 'f.model as model_f', DB::raw('IFNULL(rc_f.count, 0) as count_f'),
         'r.id as id_r', 'r.model as model_r', DB::raw('IFNULL(rc_r.count, 0) as count_r'), 's.id as id_s',
         's.contract as model_s', DB::raw('IFNULL(rc_s.count, 0) as count_s'), 'u.id as id_u', 'u.model as model_u',
         DB::raw('IFNULL(rc_u.count, 0) as count_u'), 'h.id as id_h', 'h.model as model_h',
         DB::raw('IFNULL(rc_h.count, 0) as count_h'), 'p.id as id_p', 'p.model as model_p',
-        DB::raw('IFNULL(rc_p.count, 0) as count_p'))
+        DB::raw('IFNULL(rc_p.count, 0) as count_p'), 'r.storage as storage')
       ->join('fixtures as f', 'f.id', '=', 'y.fixture_id')
       ->leftJoinSub(Repair::select('element_id', DB::raw('count(element_id) as count'))
         ->where('type', '=', 'f')->groupBy('element_id'), 'rc_f', function($join) {
@@ -142,7 +142,8 @@ class SystemController extends Controller
           ])
           ->firstOrFail();
 
-        $fixture = Fixture::select('id', 'model', 'serial_nr', 'purchase_date', DB::raw('IFNULL(rc.count, 0) as count'))
+        $fixture = Fixture::select('id', 'model', 'serial_nr', 'purchase_date', DB::raw('IFNULL(rc.count, 0) as count'),
+          'storage')
           ->leftJoinSub(Repair::select('element_id', DB::raw('count(element_id) as count'))
           ->where('type', '=', 'f')->groupBy('element_id'), 'rc', function($join) {
               $join->on('id', '=', 'element_id');
@@ -284,7 +285,7 @@ class SystemController extends Controller
         'old_ups' => $old_ups,
         'old_heating' => $old_heating,
         'old_photovoltaic' => $old_photovoltaic,
-        'fixtures' => Fixture::select('id', 'serial_nr', 'model', 'repair_c.repair_count', 'purchase_date')
+        'fixtures' => Fixture::select('fixtures.id', 'serial_nr', 'model', 'repair_c.repair_count', 'purchase_date')
         ->leftJoin('systems', 'fixtures.id', '=', 'systems.fixture_id')
         ->leftJoinSub(Repair::select('element_id', DB::raw('count(element_id) as repair_count'))
             ->where('type', '=', 'f')->groupBy('element_id'), 'repair_c', function($join) {
@@ -293,7 +294,7 @@ class SystemController extends Controller
         ->where('broken', '=', false)
         ->whereNull('systems.fixture_id')
         ->get(),
-      'routers' => Router::select('id', 'serial_nr', 'model', 'repair_c.repair_count', 'purchase_date')
+      'routers' => Router::select('routers.id', 'serial_nr', 'model', 'repair_c.repair_count', 'purchase_date')
         ->leftJoin('systems', 'routers.id', '=', 'systems.router_id')
         ->leftJoinSub(Repair::select('element_id', DB::raw('count(element_id) as repair_count'))
             ->where('type', '=', 'r')->groupBy('element_id'), 'repair_c', function($join) {
@@ -302,7 +303,7 @@ class SystemController extends Controller
         ->where('broken', '=', false)
         ->whereNull('systems.router_id')
         ->get(),
-      'sims' => SimCard::select('id', 'telephone_nr', 'contract', 'repair_c.repair_count', 'purchase_date')
+      'sims' => SimCard::select('sim_cards.id', 'telephone_nr', 'contract', 'repair_c.repair_count', 'purchase_date')
         ->leftJoin('systems', 'sim_cards.id', '=', 'systems.sim_id')
         ->leftJoinSub(Repair::select('element_id', DB::raw('count(element_id) as repair_count'))
             ->where('type', '=', 's')->groupBy('element_id'), 'repair_c', function($join) {
@@ -311,7 +312,7 @@ class SystemController extends Controller
         ->where('broken', '=', false)
         ->whereNull('systems.sim_id')
         ->get(),
-      'ups' => Ups::select('id', 'serial_nr', 'model', 'repair_c.repair_count', 'purchase_date')
+      'ups' => Ups::select('ups.id', 'serial_nr', 'model', 'repair_c.repair_count', 'purchase_date')
         ->leftJoin('systems', 'ups.id', '=', 'systems.ups_id')
         ->leftJoinSub(Repair::select('element_id', DB::raw('count(element_id) as repair_count'))
             ->where('type', '=', 'u')->groupBy('element_id'), 'repair_c', function($join) {
@@ -320,7 +321,7 @@ class SystemController extends Controller
         ->where('broken', '=', false)
         ->whereNull('systems.ups_id')
         ->get(),
-      'heatings' => Heating::select('id', 'serial_nr', 'model', 'repair_c.repair_count', 'purchase_date')
+      'heatings' => Heating::select('heatings.id', 'serial_nr', 'model', 'repair_c.repair_count', 'purchase_date')
         ->leftJoin('systems', 'heatings.id', '=', 'systems.heating_id')
         ->leftJoinSub(Repair::select('element_id', DB::raw('count(element_id) as repair_count'))
             ->where('type', '=', 'h')->groupBy('element_id'), 'repair_c', function($join) {
@@ -329,7 +330,7 @@ class SystemController extends Controller
         ->where('broken', '=', false)
         ->whereNull('systems.heating_id')
         ->get(),
-      'photovoltaics' => Photovoltaic::select('id', 'serial_nr', 'model', 'repair_c.repair_count', 'purchase_date')
+      'photovoltaics' => Photovoltaic::select('photovoltaics.id', 'serial_nr', 'model', 'repair_c.repair_count', 'purchase_date')
         ->leftJoin('systems', 'photovoltaics.id', '=', 'systems.photovoltaic_id')
         ->leftJoinSub(Repair::select('element_id', DB::raw('count(element_id) as repair_count'))
             ->where('type', '=', 'p')->groupBy('element_id'), 'repair_c', function($join) {
@@ -399,8 +400,10 @@ class SystemController extends Controller
       $system->router_id = request('router');
       $system->sim_id = request('sim');
       $system->ups_id = request('ups');
-      $system->photovoltaic_id = request('photovoltaic');
-      $system->heating_id = request('heating');
+      $p_id = request('photovoltaic');
+      $h_id = request('heating');
+      $system->photovoltaic_id = $p_id ? $p_id : NULL;
+      $system->heating_id = $h_id ? $h_id : NULL;
 
       if (System::where(['fixture_id' => $system->fixture_id])->exists()
         || System::where(['router_id' => $system->router_id])->exists()

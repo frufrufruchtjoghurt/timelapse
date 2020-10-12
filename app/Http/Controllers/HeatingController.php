@@ -29,7 +29,8 @@ class HeatingController extends Controller
   public function list()
   {
     return view('system.heating.list', ['heatings' => DB::table('heatings', 'h')
-    ->select('h.id', 'h.model', 'h.serial_nr', 'h.purchase_date', DB::raw('IFNULL(rc.count, 0) as count'))
+    ->select('h.id', 'h.model', 'h.serial_nr', 'h.purchase_date', DB::raw('IFNULL(rc.count, 0) as count'),
+      'h.storage')
     ->leftJoinSub(Repair::select('element_id', DB::raw('count(element_id) as count'))
       ->where('type', '=', 'h')->groupBy('element_id'), 'rc', function($join) {
         $join->on('h.id', '=', 'element_id');

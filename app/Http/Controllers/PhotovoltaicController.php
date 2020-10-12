@@ -29,7 +29,8 @@ class PhotovoltaicController extends Controller
   public function list()
   {
     return view('system.photovoltaic.list', ['photovoltaics' => DB::table('photovoltaics', 'p')
-    ->select('p.id', 'p.model', 'p.serial_nr', 'p.purchase_date', DB::raw('IFNULL(rc.count, 0) as count'))
+    ->select('p.id', 'p.model', 'p.serial_nr', 'p.purchase_date', DB::raw('IFNULL(rc.count, 0) as count'),
+      'p.storage')
     ->leftJoinSub(Repair::select('element_id', DB::raw('count(element_id) as count'))
       ->where('type', '=', 'p')->groupBy('element_id'), 'rc', function($join) {
         $join->on('p.id', '=', 'element_id');

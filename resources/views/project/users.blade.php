@@ -84,7 +84,7 @@
                               @foreach ($systems as $system)
                                   <tr>
                                     <td class="text-center">
-                                      <input type="radio" class="users-select" name="system" value="{{ $system-id }}"/>
+                                      <input type="radio" class="users-select" name="system" value="{{ $system->id }}"/>
                                     </td>
                                     <td>
                                       {{ $system->model_f }}

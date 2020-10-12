@@ -12,6 +12,16 @@
                   <h1>Komponenten</h1>
                   <ul>
                       <li>
+                        <strong>
+                          Zugeordnet:
+                          @if (!$fixture->storage)
+                              Lager
+                            @else
+                              Projekt Nr.: {{ $fixture->storage }}
+                            @endif
+                        </strong>
+                      </li>
+                      <li>
                         <strong>Gehäuse: </strong>
                       </li>
                       <ul>

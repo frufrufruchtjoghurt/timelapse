@@ -18,6 +18,7 @@
                         <th class="searchable" scope="col">Seriennummer</th>
                         <th scope="col">Kaufdatum</th>
                         <th scope="col">Reparaturen</th>
+                        <th scope="col">Projekt</th>
                         <th class="no-sort" scope="col"></th>
                         <th class="no-sort" scope="col"></th>
                       </tr>
@@ -40,6 +41,13 @@
                             </td>
                             <td>
                               {{ $router->count }}
+                            </td>
+                            <td>
+                              @if (!$router->storage)
+                                im Lager
+                              @else
+                                {{ $router->storage }}
+                              @endif
                             </td>
                             <td>
                               <form action="{{ route('router.destroy', ['id' => $router->id]) }}" method="POST">

@@ -29,7 +29,8 @@ class SimController extends Controller
   public function list()
   {
     return view('system.sim.list', ['sim_cards' => DB::table('sim_cards', 's')
-    ->select('s.id', 's.contract', 's.telephone_nr', 's.purchase_date', DB::raw('IFNULL(rc.count, 0) as count'))
+    ->select('s.id', 's.contract', 's.telephone_nr', 's.purchase_date', DB::raw('IFNULL(rc.count, 0) as count'),
+      's.storage')
     ->leftJoinSub(Repair::select('element_id', DB::raw('count(element_id) as count'))
       ->where('type', '=', 's')->groupBy('element_id'), 'rc', function($join) {
         $join->on('s.id', '=', 'element_id');

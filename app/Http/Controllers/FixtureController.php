@@ -29,7 +29,8 @@ class FixtureController extends Controller
   public function list()
   {
     return view('system.fixture.list', ['fixtures' => DB::table('fixtures', 'f')
-    ->select('f.id', 'f.model', 'f.serial_nr', 'f.purchase_date', DB::raw('IFNULL(rc.count, 0) as count'))
+    ->select('f.id', 'f.model', 'f.serial_nr', 'f.purchase_date', DB::raw('IFNULL(rc.count, 0) as count'),
+      'f.storage')
     ->leftJoinSub(Repair::select('element_id', DB::raw('count(element_id) as count'))
       ->where('type', '=', 'f')->groupBy('element_id'), 'rc', function($join) {
         $join->on('f.id', '=', 'element_id');

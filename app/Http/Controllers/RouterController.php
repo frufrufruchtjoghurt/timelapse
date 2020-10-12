@@ -28,7 +28,8 @@ class RouterController extends Controller
   public function list()
   {
     return view('system.router.list', ['routers' => DB::table('routers', 'r')
-    ->select('r.id', 'r.model', 'r.serial_nr', 'r.purchase_date', DB::raw('IFNULL(rc.count, 0) as count'))
+    ->select('r.id', 'r.model', 'r.serial_nr', 'r.purchase_date', DB::raw('IFNULL(rc.count, 0) as count'),
+      'r.storage')
     ->leftJoinSub(Repair::select('element_id', DB::raw('count(element_id) as count'))
       ->where('type', '=', 'r')->groupBy('element_id'), 'rc', function($join) {
         $join->on('r.id', '=', 'element_id');

@@ -18,6 +18,7 @@
                         <th class="searchable" scope="col">Seriennummer</th>
                         <th scope="col">Kaufdatum</th>
                         <th scope="col">Reparaturen</th>
+                        <th scope="col">Projekt</th>
                         <th class="no-sort" scope="col"></th>
                         <th class="no-sort" scope="col"></th>
                       </tr>
@@ -40,6 +41,13 @@
                             </td>
                             <td>
                               {{ $photovoltaic->count }}
+                            </td>
+                            <td>
+                              @if (!$photovoltaic->storage)
+                                im Lager
+                              @else
+                                {{ $photovoltaic->storage }}
+                              @endif
                             </td>
                             <td>
                               <form action="{{ route('photovoltaic.destroy', ['id' => $photovoltaic->id]) }}" method="POST">

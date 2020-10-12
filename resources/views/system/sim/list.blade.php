@@ -18,6 +18,7 @@
                         <th class="searchable" scope="col">Telefonnummer</th>
                         <th scope="col">Kaufdatum</th>
                         <th scope="col">Reparaturen</th>
+                        <th scope="col">Projekt</th>
                         <th class="no-sort" scope="col"></th>
                       </tr>
                     </thead>
@@ -39,6 +40,13 @@
                             </td>
                             <td>
                               {{ $sim_card->count }}
+                            </td>
+                            <td>
+                              @if (!$sim_card->storage)
+                                im Lager
+                              @else
+                                {{ $sim_card->storage }}
+                              @endif
                             </td>
                             <td>
                               <form action="{{ route('sim.destroy', ['id' => $sim_card->id]) }}" method="POST">

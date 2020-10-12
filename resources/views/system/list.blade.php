@@ -31,6 +31,8 @@
                 <table class="table table-sortable table-responsive">
                   <thead>
                     <tr>
+                      <th scope="col">ID</th>
+                      <th class="searchable" scope="col">Name</th>
                       <th class="searchable" scope="col">Gehäuse</th>
                       <th class="searchable" scope="col">Router</th>
                       <th class="searchable" scope="col">Sim-Karte</th>
@@ -38,6 +40,7 @@
                       <th class="searchable" scope="col">Heizung</th>
                       <th class="searchable" scope="col">Photovoltaik</th>
                       <th scope="col">Reparaturen (gesamt)</th>
+                      <th scope="col">Projekt</th>
                       <th class="no-sort" scope="col">Aktion</th>
                     </tr>
                   </thead>
@@ -47,6 +50,12 @@
                         <form action="{{ route('system.show', ['id_f'=>$system->id_f, 'id_r'=>$system->id_r, 'id_u'=>$system->id_u]) }}"
                           method="GET">
                           @csrf
+                          <td>
+                            {{ $system->id }}
+                          </td>
+                          <td>
+                            {{ $system->name }}
+                          </td>
                           <td>
                             {{ $system->model_f }}
                           </td>
@@ -76,6 +85,13 @@
                           <td>
                             {{ $system->count_f + $system->count_r + $system->count_s + $system->count_u
                               + $system->count_h + $system->count_p }}
+                          </td>
+                          <td>
+                            @if (!$system->storage)
+                              im Lager
+                            @else
+                              {{ $system->storage }}
+                            @endif
                           </td>
                           <td>
                             <button class="btn btn-primary ml-auto float-right">ANZEIGEN</button>

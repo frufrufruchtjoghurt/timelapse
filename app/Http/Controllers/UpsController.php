@@ -29,7 +29,8 @@ class UpsController extends Controller
   public function list()
   {
     return view('system.ups.list', ['ups' => DB::table('ups', 'u')
-    ->select('u.id', 'u.model', 'u.serial_nr', 'u.purchase_date', DB::raw('IFNULL(rc.count, 0) as count'))
+    ->select('u.id', 'u.model', 'u.serial_nr', 'u.purchase_date', DB::raw('IFNULL(rc.count, 0) as count'),
+    'u.storage')
     ->leftJoinSub(Repair::select('element_id', DB::raw('count(element_id) as count'))
       ->where('type', '=', 'u')->groupBy('element_id'), 'rc', function($join) {
         $join->on('u.id', '=', 'element_id');
