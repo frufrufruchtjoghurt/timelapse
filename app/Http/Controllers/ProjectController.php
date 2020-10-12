@@ -74,6 +74,8 @@ class ProjectController extends Controller
     $project->project_nr = request('project_nr');
     $project->name = request('name');
 
+    error_log($project->project_nr);
+
     try
     {
       if (Project::where('project_nr', $project->project_nr)->exists())
@@ -89,18 +91,16 @@ class ProjectController extends Controller
 
     try
     {
-      $cids = $_GET['cid'];
-    }
-    catch (Exception $e)
-    {
-      return redirect(route('project.create', ['companies' => Company::all()]))
-        ->with('error', 'Bitte wählen Sie mindestens eine Firma aus!');
-    }
+      $cids = $request->cid;
 
-    try
-    {
+      if(!$cids)
+      {
+        return redirect(route('project.create', ['companies' => Company::all()]))
+        ->with('error', 'Bitte wählen Sie mindestens eine Firma aus!');
+      }
+
       $systems = DB::table('systems as y')
-        ->select('f.id as id_f', 'f.model as model_f', DB::raw('IFNULL(rc_f.count, 0) as count_f'),
+        ->select('y.id as id', 'f.id as id_f', 'f.model as model_f', DB::raw('IFNULL(rc_f.count, 0) as count_f'),
           'r.id as id_r', 'r.model as model_r', DB::raw('IFNULL(rc_r.count, 0) as count_r'), 's.id as id_s',
           's.contract as model_s', DB::raw('IFNULL(rc_s.count, 0) as count_s'), 'u.id as id_u', 'u.model as model_u',
           DB::raw('IFNULL(rc_u.count, 0) as count_u'), 'h.id as id_h', 'h.model as model_h',
@@ -164,8 +164,8 @@ class ProjectController extends Controller
 
     try
     {
-      Cache::put('project', $project, now()->addMinutes(30));
-      Cache::put('cid', $cids);
+      Cache::put('project', $project, now()->addMinutes(10));
+      Cache::put('cid', $cids, now()->addMinutes(10));
       return view('project.users', [
         'cids' => Cache::get('cid'),
         'users' => User::all(),
@@ -182,7 +182,7 @@ class ProjectController extends Controller
     }
   }
 
-  public function store()
+  public function store(Request $request)
   {
     if (!Cache::has('project') || !Cache::has('cid'))
     {
@@ -192,10 +192,10 @@ class ProjectController extends Controller
         ->with('warning', 'Beim Speichern des Projekts ist ein Fehler aufgetreten, bitte erstellen Sie das Projekt erneut!');
     }
 
-    $project_nr = Cache::get('project')->project_nr;
+    $project = Cache::get('project');
     try
     {
-      $user_ids = $_POST['users'];
+      $user_ids = $request->users;
       $system_id = request('system');
 
       if (!$system_id)
@@ -206,6 +206,7 @@ class ProjectController extends Controller
     }
     catch (Exception $e)
     {
+      error_log($e->getMessage());
       return redirect(route('project.users', ['cid' => Cache::get('cid'), 'users' => User::all()]))
         ->with('error', 'Bitte wählen Sie mindestens einen Kunden aus!');
     }
@@ -213,25 +214,25 @@ class ProjectController extends Controller
 
     try
     {
-      $archive = $_POST['archive'];
-      $deeplink = $_POST['deeplink'];
-      $datastore = $_POST['datastore'];
+      $archive = $request->archive;
+      $deeplink = $request->deeplink;
+      $datastore = $request->datastore;
 
       foreach ($user_ids as $user_id)
       {
         $project_user = new Projectuser;
 
-        $project_user->project_nr = $project_nr;
+        $project_user->pid = $project->project_nr;
         $project_user->uid = $user_id;
 
         // Check the selected features for each user
-        $project_user->archive = ($archive && $archive->array_search($user_id));
-        $project_user->deeplink = ($deeplink && $deeplink->array_search($user_id));
-        $project_user->storage_medium = ($datastore && $datastore->array_search($user_id));
+        $project_user->archive = in_array($user_id, $archive);
+        $project_user->deeplink = in_array($user_id, $deeplink);
+        $project_user->storage_medium = in_array($user_id, $datastore);
 
         $project_user_cache[] = $project_user;
       }
-      Cache::put('project_users', $project_user_cache, now()->addMinutes(30));
+      Cache::put('project_users', $project_user_cache, now()->addMinutes(10));
     }
     catch (Exception $e)
     {
@@ -243,8 +244,6 @@ class ProjectController extends Controller
     try
     {
       $date = request('date');
-
-      $project = Cache::get('project');
 
       $camera_id = request('camera');
 
@@ -258,6 +257,8 @@ class ProjectController extends Controller
       $project->sid = $system_id;
       $project->start_date = $date;
 
+      $pid = $project->project_nr;
+
       $project->save();
 
       foreach ($project_user_cache as $project_user)
@@ -267,25 +268,27 @@ class ProjectController extends Controller
 
       // Update camera storage
       Camera::where('id', $camera_id)
-        ->update('storage', $project->project_nr);
+        ->update(['storage' => $pid]);
 
       // Get system and update component storage
-      $system = System::where('id', $system_id)->get();
+      $system = System::where('id', $system_id)->first();
       Fixture::where('id', $system->fixture_id)
-        ->update('storage', $project->project_nr);
+        ->update(['storage' => $pid]);
       Router::where('id', $system->router_id)
-        ->update('storage', $project->project_nr);
+        ->update(['storage' => $pid]);
       SimCard::where('id', $system->sim_id)
-        ->update('storage', $project->project_nr);
+        ->update(['storage' => $pid]);
       Ups::where('id', $system->ups_id)
-        ->update('storage', $project->project_nr);
+        ->update(['storage' => $pid]);
       Heating::where('id', $system->heating_id)
-        ->update('storage', $project->project_nr);
+        ->update(['storage' => $pid]);
       Photovoltaic::where('id', $system->photovoltaic_id)
-        ->update('storage', $project->project_nr);
+        ->update(['storage' => $pid]);
+
     }
     catch (Exception $e)
     {
+      error_log($e->getMessage());
       return redirect(route('project.create'))
         ->with('error', 'Ein Fehler ist aufgetreten! Bitte versuchen Sie es erneut');
     }
