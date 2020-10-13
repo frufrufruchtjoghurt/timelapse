@@ -57,6 +57,7 @@
                           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                             <a href="{{ route('user.list') }}" class="dropdown-item">Benutzer verwalten</a>
                             <a href="{{ route('company.list') }}" class="dropdown-item">Firmen verwalten</a>
+                            <a href="{{ route('project.list') }}" class="dropdown-item">Firmen verwalten</a>
                             <a href="{{ route('camera.list') }}" class="dropdown-item">Kameras verwalten</a>
                             <a href="{{ route('system.list') }}" class="dropdown-item">System/-komponenten verwalten</a>
                           </div>

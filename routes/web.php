@@ -66,6 +66,7 @@ Route::middleware('auth')->group(function ()
       Route::post('', [ProjectController::class, 'store'])->name('store');
       Route::get('create', [ProjectController::class, 'create'])->name('create');
       Route::get('create/users', [ProjectController::class, 'users'])->name('users');
+      Route::get('list', [ProjectController::class, 'list'])->name('list');
     });
 
     Route::prefix('camera')->name('camera.')->group(function ()

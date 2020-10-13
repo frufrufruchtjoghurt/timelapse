@@ -299,6 +299,17 @@ class ProjectController extends Controller
     return redirect(route('project.create'))->with('success', 'Projekt und Projektkunden erfolgreich gespeichert!');
   }
 
+  public function list()
+  {
+    return view('project.list', ['project' => DB::table('projects', 'p')
+      ->select('p.project_nr', 'p.name', 'p.start_date', 'p.end_date', 'p.invisible', 's.name as system',
+        'c.model as camera')
+      ->join('cameras as c', 'c.id', '=', 'p.cid')
+      ->join('systems as s', 's.id', '=', 'p.sid')
+      ->get()
+      ]);
+  }
+
   public function show($id)
   {
     try
