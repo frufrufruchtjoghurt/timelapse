@@ -301,7 +301,7 @@ class ProjectController extends Controller
 
   public function list()
   {
-    return view('project.list', ['project' => DB::table('projects', 'p')
+    return view('project.list', ['projects' => DB::table('projects', 'p')
       ->select('p.project_nr', 'p.name', 'p.start_date', 'p.end_date', 'p.invisible', 's.name as system',
         'c.model as camera')
       ->join('cameras as c', 'c.id', '=', 'p.cid')
@@ -315,12 +315,13 @@ class ProjectController extends Controller
     try
     {
       $project = Project::findOrFail($id);
-      return view('project.show', ['project' => $project]);
+      $projectusers = Projectuser::where('pid', $id)->get();
+      return view('project.show', ['project' => $project, 'users' => $projectusers]);
     }
     catch (Exception $e)
     {
       error_log($e->getMessage());
-      return redirect(route('index'))->with('error', 'Ein Fehler ist aufgetreten!');
+      return redirect(route('project.list'))->with('error', 'Ein Fehler ist aufgetreten!');
     }
   }
 }

@@ -67,6 +67,7 @@ Route::middleware('auth')->group(function ()
       Route::get('create', [ProjectController::class, 'create'])->name('create');
       Route::get('create/users', [ProjectController::class, 'users'])->name('users');
       Route::get('list', [ProjectController::class, 'list'])->name('list');
+      Route::get('{id}', [ProjectController::class, 'show'])->name('show');
     });
 
     Route::prefix('camera')->name('camera.')->group(function ()
@@ -166,7 +167,7 @@ Route::middleware('auth')->group(function ()
 
   Route::middleware('project.access')->prefix('project')->name('project.')->group(function ()
   {
-    Route::get('{id}', [ProjectController::class, 'show'])->name('show');
+    // Route::get('{id}', [ProjectController::class, 'show'])->name('show');
 
   });
 

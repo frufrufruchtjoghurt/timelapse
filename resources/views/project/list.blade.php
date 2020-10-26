@@ -27,7 +27,7 @@
                       @foreach ($projects as $project)
                         <tr>
                           <td>
-                            {{ $project->prject_nr }}
+                            {{ $project->project_nr }}
                           </td>
                           <td>
                             {{ $project->name }}
@@ -50,9 +50,9 @@
                           </td>
                           <td>
                             @if ($project->invisible)
-                              nicht sichtbar
+                              nur Verwaltung
                             @else
-                              sichtbar
+                              alle Projektkunden
                             @endif
                           </td>
                           <td>
