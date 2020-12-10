@@ -17,8 +17,8 @@ class AddConstraintsOnProjectsTable extends Migration
           $table->foreign('cid')
             ->references('id')
             ->on('cameras');
-          $table->foreign(['s_fid', 's_rid', 's_uid'], 'sid')
-            ->references(['fixture_id', 'router_id', 'ups_id'])
+          $table->foreign('sid')
+            ->references('id')
             ->on('systems');
         });
     }

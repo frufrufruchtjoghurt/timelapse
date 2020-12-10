@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Address;
+use App\Models\Address;
 use Faker\Factory;
 
 class CompaniesSeeder extends Seeder

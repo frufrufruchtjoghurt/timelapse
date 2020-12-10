@@ -1,6 +1,6 @@
 <?php
 
-use App\Photovoltaic;
+use App\Models\Models\Models\Models\Models\Models\Models\Models\Models\Models\Models\Models\Models\Models\Models\Photovoltaic;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,11 +15,12 @@ class CreateSystemsTable extends Migration
     public function up()
     {
         Schema::create('systems', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('fixture_id')
               ->unique();
             $table->unsignedBigInteger('router_id')
               ->unique();
-            $table->unsignedBigInteger('sim_id')
+            $table->unsignedBigInteger('sim_card_id')
               ->unique();
             $table->unsignedBigInteger('ups_id')
               ->unique();
@@ -37,7 +38,7 @@ class CreateSystemsTable extends Migration
             $table->foreign('router_id')
               ->references('id')
               ->on('routers');
-            $table->foreign('sim_id')
+            $table->foreign('sim_card_id')
               ->references('id')
               ->on('sim_cards');
             $table->foreign('ups_id')
@@ -49,8 +50,6 @@ class CreateSystemsTable extends Migration
             $table->foreign('photovoltaic_id')
               ->references('id')
               ->on('photovoltaics');
-
-            $table->primary(['fixture_id', 'router_id', 'ups_id']);
         });
     }
 

@@ -25,7 +25,7 @@ class CreateDeeplinksTable extends Migration
             $table->timestamps();
 
             $table->foreign('pid')
-              ->references('project_nr')
+              ->references('id')
               ->on('projects')
               ->cascadeOnDelete();
         });

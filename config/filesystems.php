@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => 'custom',
+    'default' => env('FILESYSTEM_DRIVER', 'local'),
 
     /*
     |--------------------------------------------------------------------------
@@ -46,11 +46,6 @@ return [
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),
-        ],
-
-        'custom' => [
-          'driver' => 'local',
-          'root' => '/home/pi/timelapse_pictures/'
         ],
 
         'public' => [

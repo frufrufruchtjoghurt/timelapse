@@ -14,14 +14,10 @@ class CreateProjectsTable extends Migration
     public function up()
     {
         Schema::create('projects', function (Blueprint $table) {
-            $table->unsignedBigInteger('project_nr')
-              ->unique()
-              ->primary();
+            $table->id();
             $table->string('name');
             $table->unsignedBigInteger('cid');
-            $table->unsignedBigInteger('s_fid');
-            $table->unsignedBigInteger('s_rid');
-            $table->unsignedBigInteger('s_uid');
+            $table->unsignedBigInteger('sid');
             $table->string('vpn_ip')
               ->nullable();
             $table->string('longitude')
@@ -29,6 +25,8 @@ class CreateProjectsTable extends Migration
             $table->string('latitude')
               ->nullable();
             $table->date('start_date');
+            $table->date('end_date')
+                ->nullable();
             $table->boolean('inactive')
               ->default(false);
             $table->dateTime('inactivity_date')

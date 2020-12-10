@@ -30,7 +30,7 @@ class CreateFeaturesTable extends Migration
               ->cascadeOnDelete()
               ->onUpdate('cascade');
             $table->foreign('pid')
-              ->references('project_nr')
+              ->references('id')
               ->on('projects')
               ->cascadeOnDelete()
               ->onUpdate('cascade');

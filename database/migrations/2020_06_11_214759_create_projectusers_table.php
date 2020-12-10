@@ -19,7 +19,7 @@ class CreateProjectusersTable extends Migration
           $table->timestamps();
 
           $table->foreign('project_nr')
-            ->references('project_nr')
+            ->references('id')
             ->on('projects');
           $table->foreign('uid')
             ->references('id')
