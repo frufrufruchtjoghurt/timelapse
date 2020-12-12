@@ -6,6 +6,7 @@ use App\Models\Project;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\DropDown;
 use Orchid\Screen\Actions\Link;
+use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Layouts\Persona;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
@@ -112,16 +113,53 @@ class ProjectListLayout extends Table
                         ->list([
 
                             Link::make(__('Edit'))
-                                ->route('platform.projects.edit', $project->project_nr)
+                                ->route('platform.projects.edit', $project->id)
                                 ->icon('pencil'),
 
                             Button::make(__('Delete'))
                                 ->method('remove')
-                                ->confirm(__('Are you sure you want to delete the project?'))
+                                ->confirm(__('Möchten Sie das Project wirklich löschen?'))
                                 ->parameters([
-                                    'id' => $project->project_nr,
+                                    'id' => $project->id,
                                 ])
                                 ->icon('trash'),
+
+                            Button::make(__('Inaktiv setzen'))
+                                ->method('changeActiveStatus')
+                                ->confirm(__('Möchten Sie das Projekt wirklich aktivieren und für alle Benutzer sichtbar machen?'))
+                                ->parameters([
+                                    'id' => $project->id,
+                                ])
+                                ->icon('close')
+                                ->canSee(!$project->inactive),
+
+                            Button::make(__('Aktiv setzen'))
+                                ->method('changeActiveStatus')
+                                ->confirm(__('Möchten Sie das Projekt wirklich deaktivieren und für alle Benutzer unsichtbar machen?'))
+                                ->parameters([
+                                    'id' => $project->id,
+                                ])
+                                ->icon('check')
+                                ->canSee($project->inactive),
+
+                            ModalToggle::make(__('Inaktivitätsdatum einstellen'))
+                                ->modal('inactivityDate')
+                                ->method('setInactivityDate')
+                                ->parameters([
+                                    'id' => $project->id,
+                                ])
+                                ->icon('clock')
+                                ->confirm(__('Wollen Sie dieses Inaktivitätsdatum wirklich einstellen?'))
+                                ->canSee($project->inactivity_date == null && !$project->inactive),
+
+                            Button::make(__('Inaktivitätsdatum entfernen'))
+                                ->method('removeInactivityDate')
+                                ->confirm(__('Möchten Sie das Inaktivitätsdatum wirklich entfernen?'))
+                                ->parameters([
+                                    'id' => $project->id,
+                                ])
+                                ->icon('close')
+                                ->canSee($project->inactivity_date != null && !$project->inactive),
                         ]);
                 }),
         ];

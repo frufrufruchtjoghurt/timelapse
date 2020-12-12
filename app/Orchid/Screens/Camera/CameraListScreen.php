@@ -3,8 +3,6 @@
 namespace App\Orchid\Screens\Camera;
 
 use App\Models\Camera;
-use App\Models\Company;
-use App\Orchid\Layouts\Camera\CameraListLayout;
 use App\Orchid\Layouts\ReusableComponentListLayout;
 use Illuminate\Http\Request;
 use Orchid\Screen\Actions\Link;

@@ -95,6 +95,6 @@ class Project extends Model
 
     public function users()
     {
-        return $this->hasManyThrough(User::class, Projectuser::class, 'project_nr', 'id', 'id', 'uid');
+        return $this->hasManyThrough(User::class, Feature::class, 'pid', 'id', 'id', 'uid');
     }
 }

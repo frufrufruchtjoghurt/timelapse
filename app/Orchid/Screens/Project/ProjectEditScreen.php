@@ -12,6 +12,7 @@ use App\Orchid\Layouts\Project\ProjectCompaniesListener;
 use App\Orchid\Layouts\Project\ProjectUsersListener;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use Orchid\Support\Facades\Alert;
 use \Orchid\Support\Facades\Toast;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\CheckBox;
@@ -277,11 +278,6 @@ class ProjectEditScreen extends Screen
 
         foreach ($users as $user)
         {
-            $p_user = new ProjectUser();
-            $p_user->uid = $user;
-            $p_user->project_nr = $project->id;
-            $p_user->save();
-
             $features = new Feature();
             $features->fill($request->get($user));
             $features->uid = $user;
@@ -292,5 +288,23 @@ class ProjectEditScreen extends Screen
         Toast::success(__('Projekt wurde erfolgreich gespeichert!'));
 
         return redirect()->route('platform.projects');
+    }
+
+    public function remove(Request $request)
+    {
+        $project = Project::findOrFail($request->get('id'));
+
+        if (!$project->inactive)
+        {
+            Alert::error(__('Unable to delete active project!'));
+        }
+        else
+        {
+            Feature::where('pid', $project->id)->delete();
+
+            $project->delete();
+
+            Toast::success(__('Project has been deleted!'));
+        }
     }
 }
