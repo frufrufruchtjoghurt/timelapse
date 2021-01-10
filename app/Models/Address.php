@@ -79,7 +79,7 @@ class Address extends Model
      */
     public function companies()
     {
-        return $this->hasMany(Company::class, 'aid');
+        return $this->hasMany(Company::class);
     }
 
     /**

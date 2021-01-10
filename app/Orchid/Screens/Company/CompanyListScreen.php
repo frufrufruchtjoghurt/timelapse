@@ -56,7 +56,7 @@ class CompanyListScreen extends Screen
     public function commandBar(): array
     {
         return [
-            Link::make(__('Create new'))
+            Link::make(__('Hinzufügen'))
                 ->icon('pencil')
                 ->route('platform.companies.edit')
         ];

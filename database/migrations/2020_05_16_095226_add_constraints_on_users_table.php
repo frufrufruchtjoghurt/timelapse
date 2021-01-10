@@ -14,7 +14,7 @@ class AddConstraintsOnUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-          $table->foreign('cid')
+          $table->foreign('company_id')
             ->references('id')
             ->on('companies')
             ->onDelete('set null')

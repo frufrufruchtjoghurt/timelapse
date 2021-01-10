@@ -24,14 +24,14 @@ class CompanyEditScreen extends Screen
      *
      * @var string
      */
-    public $name = 'Create Company';
+    public $name = 'Firma erstellen';
 
     /**
      * Display header description.
      *
      * @var string
      */
-    public $description = 'Name and Address of a Company';
+    public $description = 'Firmenname, Anschrift, E-Mail und Telefonnummer einfügen';
 
     /**
      * @var array
@@ -58,7 +58,15 @@ class CompanyEditScreen extends Screen
         $this->exists = $company->exists;
 
         if ($this->exists) {
-            $this->name = __('Edit company');
+            $this->name = __('Firma bearbeiten');
+            $phone_nr = explode('/', $company->phone_nr);
+
+            return [
+                'company' => $company,
+                'phone_country_code' => $phone_nr[0],
+                'phone_code' => $phone_nr[1],
+                'phone_nr' => $phone_nr[2],
+            ];
         }
 
         return [
@@ -74,21 +82,21 @@ class CompanyEditScreen extends Screen
     public function commandBar(): array
     {
         return [
-            Button::make(__('Create company'))
+            Button::make(__('Firma erstellen'))
                 ->icon('pencil')
                 ->method('createOrUpdate')
                 ->canSee(!$this->exists),
 
-            Button::make(__('Update'))
+            Button::make(__('Änderungen speichern'))
                 ->icon('note')
                 ->method('createOrUpdate')
                 ->canSee($this->exists),
 
-            Button::make(__('Remove'))
+            Button::make(__('Löschen'))
                 ->icon('trash')
                 ->method('remove')
                 ->canSee($this->exists)
-                ->confirm(__('Are you sure you want to delete the company?')),
+                ->confirm(__('Möchten Sie diese Firma wirklich löschen?')),
         ];
     }
 
@@ -102,55 +110,83 @@ class CompanyEditScreen extends Screen
         return [
             Layout::rows([
                 Input::make('company.name')
-                    ->title(__('Company name'))
+                    ->title(__('Firmenname'))
                     ->type('text')
                     ->required(),
 
                 Group::make([
-                    Relation::make('company.aid')
-                        ->title(__('Address'))
+                    Relation::make('company.address_id')
+                        ->title(__('Adresse'))
                         ->fromModel(Address::class, 'street')
                         ->displayAppend('full')
                         ->required(),
 
-                    ModalToggle::make(__('Add Address'))
+                    ModalToggle::make(__('Adresse hinzufügen'))
                         ->modal('addNewAddress')
                         ->icon('map')
                         ->method('saveAddress'),
                 ])->fullWidth(),
+
+                Input::make('company.email')
+                    ->type('email')
+                    ->required()
+                    ->title(__('E-Mail'))
+                    ->placeholder(__('company@example.com')),
+
+                Group::make([
+                    Input::make('+')
+                        ->type('text')
+                        ->disabled()
+                        ->value('+')
+                        ->title('+'),
+
+                    Input::make('phone_country_code')
+                        ->type('text')
+                        ->title(__('Ländervorwahl'))
+                        ->placeholder(__('43')),
+
+                    Input::make('phone_code')
+                        ->type('text')
+                        ->title(__('Vorwahl'))
+                        ->placeholder(__('664')),
+
+                    Input::make('phone_nr')
+                        ->type('text')
+                        ->title(__('Nummer')),
+                ])
             ]),
 
             Layout::modal('addNewAddress', [
                 Layout::rows([
                     Group::make([
                         Input::make('address.street')
-                            ->title(__('Street'))
+                            ->title(__('Straße'))
                             ->type('text')
                             ->autofocus()
                             ->required(),
 
                         Input::make('address.street_nr')
-                            ->title(__('Street number'))
+                            ->title(__('Hausnummer'))
                             ->type('text')
                             ->required(),
 
                         Input::make('address.staircase')
-                            ->title(__('Staircase'))
+                            ->title(__('Stiege'))
                             ->type('number'),
 
                         Input::make('address.door_nr')
-                            ->title(__('Door number'))
+                            ->title(__('Türnummer'))
                             ->type('number'),
                     ]),
 
                     Group::make([
                         Input::make('address.postcode')
-                            ->title(__('Postcode'))
+                            ->title(__('PLZ'))
                             ->type('number')
                             ->required(),
 
                         Input::make('address.city')
-                            ->title(__('City'))
+                            ->title(__('Stadt'))
                             ->type('text')
                             ->required(),
                     ]),
@@ -161,7 +197,7 @@ class CompanyEditScreen extends Screen
                             ->type('text'),
 
                         Input::make('address.country')
-                            ->title(__('Country'))
+                            ->title(__('Land'))
                             ->type('text')
                             ->required(),
                     ]),

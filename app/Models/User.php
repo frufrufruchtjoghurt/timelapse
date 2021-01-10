@@ -18,13 +18,14 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'cid',
+        'company_id',
         'title',
         'gender',
         'first_name',
         'last_name',
         'inactive',
         'email',
+        'phone_nr',
         'password',
         'permissions',
     ];
@@ -61,6 +62,7 @@ class User extends Authenticatable
         'first_name',
         'last_name',
         'email',
+        'phone_nr',
         'permissions',
     ];
 
@@ -84,12 +86,12 @@ class User extends Authenticatable
      */
     public function company()
     {
-        return $this->belongsTo(Company::class, 'cid');
+        return $this->belongsTo(Company::class);
     }
 
     public function features()
     {
-        return $this->hasMany(Feature::class, 'uid');
+        return $this->hasMany(Feature::class);
     }
 
     /**

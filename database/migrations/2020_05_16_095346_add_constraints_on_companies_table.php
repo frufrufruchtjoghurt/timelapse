@@ -14,7 +14,7 @@ class AddConstraintsOnCompaniesTable extends Migration
     public function up()
     {
       Schema::table('companies', function (Blueprint $table) {
-        $table->foreign('aid')
+        $table->foreign('address_id')
           ->references('id')
           ->on('addresses')
           ->onUpdate('cascade');

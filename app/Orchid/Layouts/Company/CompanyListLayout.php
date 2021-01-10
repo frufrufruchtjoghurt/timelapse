@@ -6,6 +6,7 @@ use App\Models\Company;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\DropDown;
 use Orchid\Screen\Actions\Link;
+use Orchid\Screen\Layouts\Persona;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
 
@@ -29,18 +30,21 @@ class CompanyListLayout extends Table
     protected function columns(): array
     {
         return [
-            TD::set('name', __('Company name'))
+            TD::make('name', __('Firma'))
                 ->sort()
                 ->cantHide()
-                ->filter(TD::FILTER_TEXT),
+                ->filter(TD::FILTER_TEXT)
+                ->render(function (Company $company) {
+                    return new Persona($company->presenter());
+                }),
 
-            TD::set('address', __('Address'))
+            TD::make('address', __('Address'))
                 ->filter(TD::FILTER_TEXT)
                 ->render(function (Company $company) {
                     return $company->address()->get()->first()->getFullAttribute();
                 }),
 
-            TD::set('updated_at', __('Zuletzt Bearbeitet'))
+            TD::make('updated_at', __('Zuletzt Bearbeitet'))
                 ->sort()
                 ->render(function (Company $company) {
                     if ($company->updated_at == null)
@@ -50,7 +54,7 @@ class CompanyListLayout extends Table
                     return $company->updated_at->toDateTimeString();
                 }),
 
-            TD::set(__('Actions'))
+            TD::make(__('Actions'))
                 ->align(TD::ALIGN_CENTER)
                 ->width('100px')
                 ->render(function (Company $company) {

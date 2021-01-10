@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Orchid\Presenters\CompanyPresenter;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Orchid\Filters\Filterable;
@@ -18,7 +19,9 @@ class Company extends Model
      */
     protected $fillable = [
         'name',
-        'aid',
+        'address_id',
+        'phone_nr',
+        'email',
     ];
 
     /**
@@ -42,6 +45,8 @@ class Company extends Model
      */
     protected $allowedFilters = [
         'name',
+        'phone_nr',
+        'email',
     ];
 
     /**
@@ -59,7 +64,7 @@ class Company extends Model
      */
     public function address()
     {
-        return $this->belongsTo(Address::class, 'aid');
+        return $this->belongsTo(Address::class);
     }
 
     /**
@@ -67,6 +72,10 @@ class Company extends Model
      */
     public function users()
     {
-        return $this->hasMany(User::class, 'cid');
+        return $this->hasMany(User::class);
+    }
+
+    public function presenter() {
+        return new CompanyPresenter($this);
     }
 }
