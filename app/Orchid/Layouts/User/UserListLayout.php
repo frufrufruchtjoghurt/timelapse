@@ -7,6 +7,7 @@ namespace App\Orchid\Layouts\User;
 use App\Models\User;
 use App\Orchid\Presenters\UserPresenter;
 //use Orchid\Platform\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\DropDown;
 use Orchid\Screen\Actions\Link;
@@ -28,22 +29,31 @@ class UserListLayout extends Table
     public function columns(): array
     {
         return [
-            TD::set('last_name', __('Benutzer'))
+            TD::make('last_name', __('Benutzer'))
                 ->sort()
                 ->cantHide()
                 ->render(function (User $user) {
                     return new Persona($user->presenter());
                 }),
 
-            TD::set('email', __('Email'))
-                ->sort()
+            TD::make('email', __('E-Mail'))
                 ->cantHide()
-                ->filter(TD::FILTER_TEXT)
                 ->render(function (User $user) {
                     return $user->email;
                 }),
 
-            TD::set('updated_at', __('Zuletzt Bearbeitet'))
+            TD::make('phone_nr', __('Telefonnr.'))
+                ->cantHide()
+                ->render(function (User $user) {
+                    return $user->phone_nr;
+                }),
+
+            TD::make('name', __('Firma'))
+                ->render(function (User $user) {
+                    return new Persona($user->company()->get()->first()->presenter());
+                }),
+
+            TD::make('updated_at', __('Zuletzt Bearbeitet'))
                 ->sort()
                 ->render(function (User $user) {
                     if ($user->updated_at == null)
@@ -53,7 +63,7 @@ class UserListLayout extends Table
                     return $user->updated_at->toDateTimeString();
                 }),
 
-            TD::set(__('Actions'))
+            TD::make(__('Aktionen'))
                 ->align(TD::ALIGN_CENTER)
                 ->width('100px')
                 ->render(function (User $user) {
@@ -61,18 +71,19 @@ class UserListLayout extends Table
                         ->icon('options-vertical')
                         ->list([
 
-                            Link::make(__('Edit'))
+                            Link::make(__('Bearbeiten'))
                                 ->route('platform.users.edit', $user->id)
                                 ->icon('pencil'),
 
-                            Button::make(__('Delete'))
+                            Button::make(__('Löschen'))
                                 ->method('remove')
-                                ->confirm(__('Are you sure you want to delete the user?'))
+                                ->confirm(__('Möchten Sie diesen Kunden wirklich löschen?'))
                                 ->parameters([
                                     'id' => $user->id,
                                 ])
                                 ->icon('trash'),
-                        ]);
+                        ])
+                        ->canSee(Auth::user()->id != $user->id && (Auth::user()->hasAccess('admin') || (!$user->hasAccess('manager') && !$user->hasAccess('admin'))));
                 }),
         ];
     }

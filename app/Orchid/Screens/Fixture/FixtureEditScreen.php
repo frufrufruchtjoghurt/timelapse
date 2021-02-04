@@ -4,6 +4,7 @@ namespace App\Orchid\Screens\Fixture;
 
 use App\Models\Fixture;
 use App\Orchid\Layouts\ReusableComponentEditLayout;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Screen;
@@ -74,21 +75,15 @@ class FixtureEditScreen extends Screen
     public function commandBar(): array
     {
         return [
-            Button::make(__('Create fixture'))
+            Button::make(__('Gehäuse erstellen'))
                 ->icon('pencil')
                 ->method('createOrUpdate')
                 ->canSee(!$this->exists),
 
-            Button::make(__('Update'))
+            Button::make(__('Änderungen speichern'))
                 ->icon('note')
                 ->method('createOrUpdate')
                 ->canSee($this->exists),
-
-            Button::make(__('Remove'))
-                ->icon('trash')
-                ->method('remove')
-                ->canSee($this->exists)
-                ->confirm(__('Are you sure you want to delete the fixture?')),
         ];
     }
 
@@ -100,7 +95,7 @@ class FixtureEditScreen extends Screen
     public function layout(): array
     {
         return [
-            new ReusableComponentEditLayout('fixture', $this->broken, $this->exists)
+            new ReusableComponentEditLayout('fixture', $this->broken, $this->exists, false, false, false)
         ];
     }
 
@@ -108,47 +103,25 @@ class FixtureEditScreen extends Screen
      * @param Fixture $fixture
      * @param Request $request
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function createOrUpdate(Fixture $fixture, Request $request)
     {
         $request->validate([
-            'fixture.serial_nr' => 'required',
             'fixture.model' => 'required',
             'fixture.purchase_date' => 'required|date_format:Y-m-d|before_or_equal:today',
         ]);
 
         $fixture->fill($request->get('fixture'));
+        if ($fixture->supplyUnit()->exists()) {
+            Toast::error(__('Status kann nicht geändert werden! Gehäuse ist Teil einer Versorgungseinheit!'));
+        }
         $fixture->broken = $this->exists ? $request->get('fixture.broken') : $this->broken;
 
         $fixture->save();
 
-        Toast::info(__('Fixture was saved.'));
+        Toast::info(__('Gehäuse wurde gespeichert.'));
 
         return redirect()->route('platform.fixtures');
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function remove(Request $request)
-    {
-        $fixture = Fixture::findOrFail($request->get('id'));
-
-        if ($fixture->system()->get()->first() != null)
-        {
-            Alert::error(__('Unable to delete fixture assigned to a system!'));
-        }
-        else
-        {
-            $fixture->delete();
-
-            Toast::success(__('Fixture has been deleted!'));
-
-            return redirect()->route('platform.fixtures');
-
-        }
     }
 }

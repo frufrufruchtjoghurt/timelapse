@@ -5,6 +5,8 @@ declare(strict_types=1);
 use App\Orchid\Screens\Camera\CameraEditScreen;
 use App\Orchid\Screens\Camera\CameraListScreen;
 use App\Orchid\Screens\Company\CompanyListScreen;
+use App\Orchid\Screens\Cooling\CoolingEditScreen;
+use App\Orchid\Screens\Cooling\CoolingListScreen;
 use App\Orchid\Screens\Fixture\FixtureEditScreen;
 use App\Orchid\Screens\Fixture\FixtureListScreen;
 use App\Orchid\Screens\Heating\HeatingEditScreen;
@@ -18,6 +20,8 @@ use App\Orchid\Screens\Router\RouterEditScreen;
 use App\Orchid\Screens\Router\RouterListScreen;
 use App\Orchid\Screens\SimCard\SimCardEditScreen;
 use App\Orchid\Screens\SimCard\SimCardListScreen;
+use App\Orchid\Screens\SupplyUnit\SupplyUnitEditScreen;
+use App\Orchid\Screens\SupplyUnit\SupplyUnitListScreen;
 use App\Orchid\Screens\System\SystemEditScreen;
 use App\Orchid\Screens\System\SystemListScreen;
 use App\Orchid\Screens\Ups\UpsEditScreen;
@@ -50,7 +54,7 @@ Route::screen('profile', UserProfileScreen::class)
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
-            ->push(__('Profile'), route('platform.profile'));
+            ->push(__('Profil'), route('platform.profile'));
     });
 
 // Platform > Users
@@ -59,7 +63,7 @@ Route::screen('users/createOrEdit/{users?}', UserEditScreen::class)
     ->breadcrumbs(function (Trail $trail, $user = null) {
         return $trail
             ->parent('platform.users')
-            ->push(__('Edit'), route('platform.users.edit', $user));
+            ->push(__('Bearbeiten'), route('platform.users.edit', $user));
     });
 
 // Platform > Users > User
@@ -68,7 +72,7 @@ Route::screen('users', UserListScreen::class)
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
-            ->push(__('Users'), route('platform.users'));
+            ->push(__('Kunden'), route('platform.users'));
     });
 
 // Platform > Companies
@@ -77,7 +81,7 @@ Route::screen('company/createOrEdit/{companies?}', CompanyEditScreen::class)
     ->breadcrumbs(function (Trail $trail, $company = null) {
         return $trail
             ->parent('platform.companies')
-            ->push(__('Edit'), route('platform.companies.edit', $company));
+            ->push(__('Bearbeiten'), route('platform.companies.edit', $company));
     });
 
 // Platform > Companies > Company
@@ -86,7 +90,7 @@ Route::screen('company', CompanyListScreen::class)
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
-            ->push(__('Companies'), route('platform.companies'));
+            ->push(__('Firmen'), route('platform.companies'));
     });
 
 // Platform > Cameras
@@ -95,7 +99,7 @@ Route::screen('camera/createOrEdit/{cameras?}', CameraEditScreen::class)
     ->breadcrumbs(function (Trail $trail, $camera = null) {
         return $trail
             ->parent('platform.cameras')
-            ->push(__('Edit'), route('platform.cameras.edit', $camera));
+            ->push(__('Bearbeiten'), route('platform.cameras.edit', $camera));
     });
 
 // Platform > Cameras > Camera
@@ -104,25 +108,25 @@ Route::screen('camera', CameraListScreen::class)
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
-            ->push(__('Cameras'), route('platform.cameras'));
+            ->push(__('Kameras'), route('platform.cameras'));
     });
 
-// Platform > Systems
-Route::screen('system/createOrEdit/{systems?}', SystemEditScreen::class)
-    ->name('platform.systems.edit')
-    ->breadcrumbs(function (Trail $trail, $system = null) {
+// Platform > SupplyUnits
+Route::screen('supplyunit/createOrEdit/{supplyunits?}', SupplyUnitEditScreen::class)
+    ->name('platform.supplyunits.edit')
+    ->breadcrumbs(function (Trail $trail, $supplyunit = null) {
         return $trail
-            ->parent('platform.systems')
-            ->push(__('Edit'), route('platform.systems.edit', $system));
+            ->parent('platform.supplyunits')
+            ->push(__('Bearbeiten'), route('platform.supplyunits.edit', $supplyunit));
     });
 
-// Platform > Systems > System
-Route::screen('system', SystemListScreen::class)
-    ->name('platform.systems')
+// Platform > SupplyUnits > SupplyUnit
+Route::screen('supplyunit', SupplyUnitListScreen::class)
+    ->name('platform.supplyunits')
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
-            ->push(__('System'), route('platform.systems'));
+            ->push(__('Versorgungseinheiten'), route('platform.supplyunits'));
     });
 
 // Platform > Routers
@@ -131,7 +135,7 @@ Route::screen('router/createOrEdit/{routers?}', RouterEditScreen::class)
     ->breadcrumbs(function (Trail $trail, $router = null) {
         return $trail
             ->parent('platform.routers')
-            ->push(__('Edit'), route('platform.routers.edit', $router));
+            ->push(__('Bearbeiten'), route('platform.routers.edit', $router));
     });
 
 // Platform > Routers > Router
@@ -140,7 +144,7 @@ Route::screen('router', RouterListScreen::class)
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
-            ->push(__('Routers'), route('platform.routers'));
+            ->push(__('Router'), route('platform.routers'));
     });
 
 // Platform > Fixtures
@@ -149,7 +153,7 @@ Route::screen('fixture/createOrEdit/{fixtures?}', FixtureEditScreen::class)
     ->breadcrumbs(function (Trail $trail, $fixture = null) {
         return $trail
             ->parent('platform.fixtures')
-            ->push(__('Edit'), route('platform.fixtures.edit', $fixture));
+            ->push(__('Bearbeiten'), route('platform.fixtures.edit', $fixture));
     });
 
 // Platform > Fixtures > Fixture
@@ -158,7 +162,7 @@ Route::screen('fixture', FixtureListScreen::class)
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
-            ->push(__('Fixtures'), route('platform.fixtures'));
+            ->push(__('Gehäuse'), route('platform.fixtures'));
     });
 
 // Platform > SimCards
@@ -167,7 +171,7 @@ Route::screen('simcard/createOrEdit/{simcards?}', SimCardEditScreen::class)
     ->breadcrumbs(function (Trail $trail, $simcard = null) {
         return $trail
             ->parent('platform.simcards')
-            ->push(__('Edit'), route('platform.simcards.edit', $simcard));
+            ->push(__('Bearbeiten'), route('platform.simcards.edit', $simcard));
     });
 
 // Platform > SimCards > SimCard
@@ -176,7 +180,7 @@ Route::screen('simcard', SimCardListScreen::class)
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
-            ->push(__('Sim-Card'), route('platform.simcards'));
+            ->push(__('Sim-Karten'), route('platform.simcards'));
     });
 
 // Platform > Ups
@@ -185,7 +189,7 @@ Route::screen('ups/createOrEdit/{ups?}', UpsEditScreen::class)
     ->breadcrumbs(function (Trail $trail, $ups = null) {
         return $trail
             ->parent('platform.ups')
-            ->push(__('Edit'), route('platform.ups.edit', $ups));
+            ->push(__('Bearbeiten'), route('platform.ups.edit', $ups));
     });
 
 // Platform > Ups > Ups
@@ -194,25 +198,7 @@ Route::screen('ups', UpsListScreen::class)
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
-            ->push(__('Ups'), route('platform.ups'));
-    });
-
-// Platform > Heatings
-Route::screen('heating/createOrEdit/{heatings?}', HeatingEditScreen::class)
-    ->name('platform.heatings.edit')
-    ->breadcrumbs(function (Trail $trail, $heating = null) {
-        return $trail
-            ->parent('platform.heatings')
-            ->push(__('Edit'), route('platform.heatings.edit', $heating));
-    });
-
-// Platform > Heatings > Heating
-Route::screen('heating', HeatingListScreen::class)
-    ->name('platform.heatings')
-    ->breadcrumbs(function (Trail $trail) {
-        return $trail
-            ->parent('platform.index')
-            ->push(__('Heating'), route('platform.heatings'));
+            ->push(__('USVs'), route('platform.ups'));
     });
 
 // Platform > Photovoltaics
@@ -221,7 +207,7 @@ Route::screen('photovoltaic/createOrEdit/{photovoltaics?}', PhotovoltaicEditScre
     ->breadcrumbs(function (Trail $trail, $photovoltaic = null) {
         return $trail
             ->parent('platform.photovoltaics')
-            ->push(__('Edit'), route('platform.photovoltaics.edit', $photovoltaic));
+            ->push(__('Bearbeiten'), route('platform.photovoltaics.edit', $photovoltaic));
     });
 
 // Platform > Photovoltaics > Photovoltaic
@@ -230,7 +216,7 @@ Route::screen('photovoltaic', PhotovoltaicListScreen::class)
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
-            ->push(__('Photovoltaic'), route('platform.photovoltaics'));
+            ->push(__('Photovoltaik'), route('platform.photovoltaics'));
     });
 
 // Platform > Projects
@@ -239,7 +225,7 @@ Route::screen('project/createOrEdit/{projects?}', ProjectEditScreen::class)
     ->breadcrumbs(function (Trail $trail, $project = null) {
         return $trail
             ->parent('platform.projects')
-            ->push(__('Edit'), route('platform.projects.edit', $project));
+            ->push(__('Bearbeiten'), route('platform.projects.edit', $project));
     });
 
 // Platform > Projects > Project
@@ -248,5 +234,5 @@ Route::screen('project', ProjectListScreen::class)
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
-            ->push(__('Project'), route('platform.projects'));
+            ->push(__('Projekte'), route('platform.projects'));
     });

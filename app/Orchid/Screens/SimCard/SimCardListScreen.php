@@ -56,7 +56,7 @@ class SimCardListScreen extends Screen
     public function commandBar(): array
     {
         return [
-            Link::make(__('Create new'))
+            Link::make(__('Erstellen'))
                 ->icon('pencil')
                 ->route('platform.simcards.edit')
         ];
@@ -70,7 +70,7 @@ class SimCardListScreen extends Screen
     public function layout(): array
     {
         return [
-            new ReusableComponentListLayout('simcards', 'Sim-Karte'),
+            new ReusableComponentListLayout('simcards', 'Sim-Karte', true),
         ];
     }
 
@@ -78,25 +78,29 @@ class SimCardListScreen extends Screen
     {
         $simCard = SimCard::findOrFail($request->get('id'));
 
+        if ($simCard->router()->exists()) {
+            Toast::error(__('Status kann nicht geändert werden! Sim-Karte ist Teil einer Versorgungseinheit!'));
+        }
+
         $simCard->broken = !$simCard->broken;
         $simCard->save();
 
-        Toast::success(__('Sim-Card status has been changed!'));
+        Toast::success(__('Sim-Kartenstatus wurde geändert!'));
     }
 
     public function remove(Request $request)
     {
         $simCard = SimCard::findOrFail($request->get('id'));
 
-        if ($simCard->system()->get()->first() != null)
+        if ($simCard->router()->get()->first() != null)
         {
-            Alert::error(__('Unable to delete sim-card assigned to a system!'));
+            Alert::error(__('Diese Sim-Karte ist einem Router zugewiesen und kann nicht gelöscht werden!'));
         }
         else
         {
             $simCard->delete();
 
-            Toast::success(__('Sim-Card has been deleted!'));
+            Toast::success(__('Sim-Karte wurde gelöscht!'));
         }
     }
 }

@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Support\Facades\Log;
 use Orchid\Filters\Filterable;
 use Orchid\Screen\AsSource;
 
@@ -19,13 +22,13 @@ class Project extends Model
     protected $fillable = [
         'id',
         'name',
-        'cid',
-        'sid',
-        'vpn_ip',
-        'longitude',
-        'latitude',
+        'url',
         'start_date',
-        'end_date',
+        'rec_end_date',
+        'video_editor_send_date',
+        'video_editor',
+        'pub_date',
+        'patch_notes',
         'inactive',
         'inactivity_date',
     ];
@@ -46,7 +49,9 @@ class Project extends Model
         'inactive' => 'bool',
         'inactivity_date' => 'datetime',
         'start_date' => 'datetime',
-        'end_date' => 'datetime',
+        'rec_end_date' => 'datetime',
+        'video_editor_send_date' => 'datetime',
+        'pub_date' => 'datetime',
     ];
 
     /**
@@ -58,7 +63,9 @@ class Project extends Model
         'id',
         'name',
         'start_date',
-        'end_date',
+        'rec_end_date',
+        'video_editor_send_date',
+        'pub_date',
     ];
 
     /**
@@ -69,32 +76,52 @@ class Project extends Model
     protected $allowedSorts = [
         'id',
         'name',
-        'vpn_ip',
         'start_date',
-        'end_date',
+        'rec_end_date',
+        'video_editor_send_date',
+        'pub_date',
         'inactive',
         'inactivity_date',
         'updated_at',
     ];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function system()
+    public function supplyUnits()
     {
-        return $this->belongsTo(System::class, 'sid');
+        return $this->projectSystems()->join('supply_units as s', 's.id', '=', 'project_systems.supply_unit_id')->select('s.id');
+    }
+
+    public function projectSystems()
+    {
+        return $this->hasMany(ProjectSystem::class);
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return array
      */
-    public function camera()
+    public function cameras()
     {
-        return $this->belongsTo(Camera::class, 'cid');
+        $ids = $this->supplyUnits()->get();
+        $cameras = [];
+        Log::debug($ids);
+        foreach ($ids as $id) {
+            $cams = SupplyUnit::query()->where('id', '=', $id->id)->get()->first()->cameras()->get();
+
+            foreach ($cams as $cam) {
+                $cameras[] = $cam;
+            }
+        }
+
+        return $cameras;
     }
 
+    /**
+     * @return HasManyThrough
+     */
     public function users()
     {
-        return $this->hasManyThrough(User::class, Feature::class, 'pid', 'id', 'id', 'uid');
+        return $this->hasManyThrough(User::class, Feature::class, 'user_id', 'id', 'id', 'user_id');
     }
 }

@@ -17,10 +17,23 @@ class CreateRoutersTable extends Migration
             $table->id();
             $table->string('serial_nr');
             $table->string('model');
+            $table->string('name');
+            $table->string('ssid')
+                ->nullable();
+            $table->string('psk');
             $table->date('purchase_date');
+            $table->integer('times_used')
+                ->default(0);
             $table->boolean('broken')
               ->default(false);
+            $table->unsignedBigInteger('sim_card_id')
+                ->unique()
+                ->nullable();
             $table->timestamps();
+
+            $table->foreign('sim_card_id')
+                ->references('id')
+                ->on('sim_cards');
         });
     }
 

@@ -74,21 +74,21 @@ class PhotovoltaicEditScreen extends Screen
     public function commandBar(): array
     {
         return [
-            Button::make(__('Create photovoltaic'))
+            Button::make(__('Photovoltaik erstellen'))
                 ->icon('pencil')
                 ->method('createOrUpdate')
                 ->canSee(!$this->exists),
 
-            Button::make(__('Update'))
+            Button::make(__('Änderungen speichern'))
                 ->icon('note')
                 ->method('createOrUpdate')
                 ->canSee($this->exists),
 
-            Button::make(__('Remove'))
+            Button::make(__('Löschen'))
                 ->icon('trash')
                 ->method('remove')
                 ->canSee($this->exists)
-                ->confirm(__('Are you sure you want to delete the photovoltaic?')),
+                ->confirm(__('Möchten Sie diese Photovoltaikanlage wirklich löschen?')),
         ];
     }
 
@@ -117,7 +117,7 @@ class PhotovoltaicEditScreen extends Screen
 
         $photovoltaic->save();
 
-        Toast::info(__('Photovoltaic was saved.'));
+        Toast::info(__('Photovoltaikanlage wurde gespeichert.'));
 
         return redirect()->route('platform.photovoltaics');
     }
@@ -126,15 +126,15 @@ class PhotovoltaicEditScreen extends Screen
     {
         $photovoltaic = Photovoltaic::findOrFail($request->get('id'));
 
-        if ($photovoltaic->system()->get()->first() != null)
+        if ($photovoltaic->supplyUnit()->get()->first() != null)
         {
-            Alert::error(__('Unable to delete photovoltaic assigned to a system!'));
+            Alert::error(__('Diese Photovoltaikanlage ist einer Versorgungseinheit zugewiesen und kann nicht gelöscht werden!'));
         }
         else
         {
             $photovoltaic->delete();
 
-            Toast::success(__('Photovoltaic has been deleted!'));
+            Toast::success(__('Photovoltaikanlage wurde gelöscht!'));
 
             return redirect()->route('platform.photovoltaics');
 

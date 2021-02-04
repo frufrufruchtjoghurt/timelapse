@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use App\Orchid\Presenters\CameraPresenter;
+use DateTime;
+use DateTimeZone;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Facades\Log;
 use Orchid\Filters\Filterable;
 use Orchid\Screen\AsSource;
@@ -22,8 +25,10 @@ class Camera extends Model
     protected $fillable = [
         'serial_nr',
         'model',
+        'name',
         'purchase_date',
         'broken',
+        'supply_unit_id',
     ];
 
     /**
@@ -51,6 +56,8 @@ class Camera extends Model
     protected $allowedFilters = [
         'serial_nr',
         'model',
+        'name',
+        'times_used',
     ];
 
     /**
@@ -61,6 +68,7 @@ class Camera extends Model
     protected $allowedSorts = [
         'serial_nr',
         'model',
+        'name',
         'purchase_date',
         'broken',
         'updated_at',
@@ -74,24 +82,32 @@ class Camera extends Model
         return new CameraPresenter($this);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
+    public function supplyUnit()
+    {
+        return $this->belongsTo(SupplyUnit::class);
+    }
+
     public function projects()
     {
-        return $this->hasMany(Project::class, 'cid');
+        if ($this->supplyUnit()->exists())
+            return $this->supplyUnit()->get()->first()->projects();
+        return null;
+    }
+
+    public function age()
+    {
+        $tz = new DateTimeZone('Europe/Vienna');
+        return round(now($tz)->diffInMonths(new DateTime($this->purchase_date)) / 12, 1);
     }
 
     public function getFullAttribute(): string
     {
-        return $this->model . ", " . $this->serial_nr;
+        return $this->model . ": " . $this->name . ", " . $this->serial_nr . " | Verwendungen: " . $this->times_used
+            . ' | Alter: ' . $this->age();
     }
 
-    public function scopeAvailable(Builder $query)
+    public function scopeUnit(Builder $query)
     {
-        Log::debug($query->leftJoin('projects as p', 'p.cid', '=', 'cameras.id')
-            ->whereDate('p.end_date', '<=', date('Y-m-d'))
-            ->orWhereNull('p.project_nr')->toSql());
-        return $query->joinSub(Project::where('projects.end_date', '=', null), 'projects', 'cameras.id', '=', 'projects.cid', 'outer');
+        return $query->where('broken', false)->whereDoesntHave('supplyUnit');
     }
 }

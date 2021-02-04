@@ -24,7 +24,7 @@ class UsersSeeder extends Seeder
                 'company_id' => Company::where('name', 'timelapse Systems')->pluck('id')->first(),
                 'email' => 'judith.poelzl@timelapsesystems.at',
                 'password' => bcrypt('JP1234-timelapse'),
-                'phone_nr' => '+43/699/81930597',
+                'phone_nr' => '43/69981930597',
                 'permissions' => json_encode([
                     "platform.index" => true,
                     "manager" => true,
@@ -37,7 +37,7 @@ class UsersSeeder extends Seeder
                 'company_id' => Company::where('name', 'bahamasoft')->pluck('id')->first(),
                 'email' => 'markus@fruhmann.dev',
                 'password' => bcrypt('MF1234-timelapse'),
-                'phone_nr' => '+43/676/6769120',
+                'phone_nr' => '43/6766769120',
                 'permissions' => json_encode([
                     "platform.index" => true,
                     'admin' => true,
@@ -50,7 +50,7 @@ class UsersSeeder extends Seeder
                 'company_id' => Company::where('name', 'bahamasoft')->pluck('id')->first(),
                 'email' => 'bahamas@gestalter.at',
                 'password' => bcrypt('bananas'),
-                'phone_nr' => '+43/676/4715753',
+                'phone_nr' => '43/6764715753',
                 'permissions' => json_encode([
                     "platform.index" => true,
                     'admin' => true,
@@ -73,7 +73,7 @@ class UsersSeeder extends Seeder
                         'company_id' => random_int(3, 52),
                         'email' => $faker->companyEmail,
                         'password' => bcrypt('TEST1234-timelapse'),
-                        'phone_nr' => $faker->phoneNumber,
+                        'phone_nr' => '518/98747894512',
                         'permissions' => json_encode(["platform.index" => true]),
                     ]);
                 } else {
@@ -85,7 +85,7 @@ class UsersSeeder extends Seeder
                         'company_id' => random_int(3, 52),
                         'email' => $faker->companyEmail,
                         'password' => bcrypt('TEST1234-timelapse'),
-                        'phone_nr' => $faker->phoneNumber,
+                        'phone_nr' => '44/4567895461',
                         'permissions' => json_encode(["platform.index" => true]),
                     ]);
                 }

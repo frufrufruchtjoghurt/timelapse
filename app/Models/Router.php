@@ -3,9 +3,14 @@
 namespace App\Models;
 
 use App\Orchid\Presenters\RouterPresenter;
+use DateTime;
+use DateTimeZone;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Orchid\Filters\Filterable;
 use Orchid\Screen\AsSource;
 
@@ -21,8 +26,12 @@ class Router extends Model
     protected $fillable = [
         'serial_nr',
         'model',
+        'name',
+        'psk',
+        'ssid',
         'purchase_date',
         'broken',
+        'sim_card_id',
     ];
 
     /**
@@ -50,6 +59,8 @@ class Router extends Model
     protected $allowedFilters = [
         'serial_nr',
         'model',
+        'ssid',
+        'name',
     ];
 
     /**
@@ -61,6 +72,7 @@ class Router extends Model
         'serial_nr',
         'model',
         'purchase_date',
+        'times_used',
         'broken',
         'updated_at',
     ];
@@ -74,19 +86,35 @@ class Router extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return HasOne
      */
-    public function system()
+    public function supplyUnit()
     {
-        return $this->hasOne(System::class);
+        return $this->hasOne(SupplyUnit::class);
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     * @return BelongsTo
+     */
+    public function simCard()
+    {
+        return $this->belongsTo(SimCard::class);
+    }
+
+    /**
+     * @return HasManyThrough
      */
     public function projects()
     {
-        return $this->hasManyThrough(Project::class, System::class, 'router_id', 'sid');
+        if ($this->supplyUnit()->exists())
+            return $this->supplyUnit()->get()->first()->projects();
+        return null;
+    }
+
+    public function age()
+    {
+        $tz = new DateTimeZone('Europe/Vienna');
+        return round(now($tz)->diffInMonths(new DateTime($this->purchase_date)) / 12, 1);
     }
 
     /**
@@ -94,7 +122,8 @@ class Router extends Model
      */
     public function getFullAttribute(): string
     {
-        return $this->model . ', ' . $this->purchase_date->toDateString() . ', ' . $this->serial_nr;
+        return $this->model . ": " . $this->name . ", " . $this->serial_nr . " | Verwendungen: " . $this->times_used
+            . ' | Alter: ' . $this->age();
     }
 
     /**
@@ -104,6 +133,6 @@ class Router extends Model
      */
     public function scopeAvailable(Builder $query)
     {
-        return $query->where('broken', false)->whereDoesntHave('system');
+        return $query->where('broken', false)->whereDoesntHave('supplyUnit');
     }
 }

@@ -4,6 +4,7 @@ namespace App\Orchid\Screens\Project;
 
 use App\Models\Feature;
 use App\Models\Project;
+use App\Models\ProjectSystem;
 use App\Orchid\Layouts\Project\ProjectListLayout;
 use Illuminate\Http\Request;
 use Orchid\Screen\Actions\Link;
@@ -60,7 +61,7 @@ class ProjectListScreen extends Screen
     public function commandBar(): array
     {
         return [
-            Link::make(__('Create new'))
+            Link::make(__('Erstellen'))
                 ->icon('pencil')
                 ->route('platform.projects.edit')
         ];
@@ -131,15 +132,16 @@ class ProjectListScreen extends Screen
 
         if (!$project->inactive)
         {
-            Alert::error(__('Unable to delete active project!'));
+            Alert::error(__('Ein aktives Projekt kann nicht gelöscht werden!'));
         }
         else
         {
-            Feature::where('pid', $project->id)->delete();
+            Feature::query()->where('project_id', $project->id)->delete();
+            ProjectSystem::query()->where('project_id', $project->id)->delete();
 
             $project->delete();
 
-            Toast::success(__('Project has been deleted!'));
+            Toast::success(__('Projekt wurde gelöscht!'));
         }
     }
 }

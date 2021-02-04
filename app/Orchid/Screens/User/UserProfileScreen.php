@@ -51,6 +51,16 @@ class UserProfileScreen extends Screen
     {
         $this->user = $request->user();
 
+        if ($this->user->phone_nr) {
+            $phone_nr = explode('/', $this->user->phone_nr);
+
+            return [
+                'user' => $this->user,
+                'phone_country_code' => $phone_nr[0],
+                'phone_nr' => $phone_nr[1],
+            ];
+        }
+
         return [
             'user' => $this->user,
         ];
@@ -64,18 +74,14 @@ class UserProfileScreen extends Screen
     public function commandBar(): array
     {
         return [
-            DropDown::make(__('Settings'))
+            DropDown::make(__('Einstellungen'))
                 ->icon('open')
                 ->list([
-                    ModalToggle::make(__('Change Password'))
+                    ModalToggle::make(__('Passwort ändern'))
                         ->icon('lock-open')
                         ->method('changePassword')
                         ->modal('password'),
                 ]),
-
-            Button::make(__('Save'))
-                ->icon('check')
-                ->method('save'),
         ];
     }
 
@@ -85,7 +91,7 @@ class UserProfileScreen extends Screen
     public function layout(): array
     {
         return [
-            UserEditLayout::class,
+            new UserEditLayout(true, false),
 
             Layout::modal('password', Layout::rows([
                 Password::make('old_password')
@@ -105,29 +111,9 @@ class UserProfileScreen extends Screen
                     ->title(__('Neues Passwort bestätigen'))
                     ->help('Ein gutes Passwort hat mindestens 8 Zeichen und besteht aus mindestens einer Zahl und einem Kleinbuchstaben.'),
             ]))
-                ->title(__('Change Password'))
+                ->title(__('Passwort ändern'))
                 ->applyButton(__('Passwort ändern')),
         ];
-    }
-
-    /**
-     * @param Request $request
-     */
-    public function save(Request $request)
-    {
-        $request->validate([
-            'user.name'  => 'required|string',
-            'user.email' => [
-                'required',
-                Rule::unique(User::class, 'email')->ignore($request->user()),
-            ],
-        ]);
-
-        $request->user()
-            ->fill($request->get('user'))
-            ->save();
-
-        Toast::info(__('Profile updated.'));
     }
 
     /**

@@ -30,7 +30,7 @@ class FixturePresenter extends Presenter implements Searchable, Personable
      */
     public function subTitle(): string
     {
-        return $this->entity->serial_nr;
+        return '';
     }
 
     /**

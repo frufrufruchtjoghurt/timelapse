@@ -39,7 +39,7 @@ class CompaniesSeeder extends Seeder
                 DB::table('companies')->insert([
                     'name' => $faker->company,
                     'address_id' => random_int(3, 52),
-                    'phone_nr' => "43/664/7945132",
+                    'phone_nr' => "43/6647945132",
                     'email' => $faker->companyEmail,
                 ]);
             }

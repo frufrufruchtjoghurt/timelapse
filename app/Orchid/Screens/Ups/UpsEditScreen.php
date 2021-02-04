@@ -74,21 +74,15 @@ class UpsEditScreen extends Screen
     public function commandBar(): array
     {
         return [
-            Button::make(__('Create ups'))
+            Button::make(__('USV erstellen'))
                 ->icon('pencil')
                 ->method('createOrUpdate')
                 ->canSee(!$this->exists),
 
-            Button::make(__('Update'))
+            Button::make(__('Änderungen speichern'))
                 ->icon('note')
                 ->method('createOrUpdate')
                 ->canSee($this->exists),
-
-            Button::make(__('Remove'))
-                ->icon('trash')
-                ->method('remove')
-                ->canSee($this->exists)
-                ->confirm(__('Are you sure you want to delete the ups?')),
         ];
     }
 
@@ -113,31 +107,15 @@ class UpsEditScreen extends Screen
         ]);
 
         $ups->fill($request->get('ups'));
+        if ($ups->supplyUnit()->exists()) {
+            Toast::error(__('Status kann nicht geändert werden! USV ist Teil einer Versorgungseinheit!'));
+        }
         $ups->broken = $this->exists ? $request->get('ups.broken') : $this->broken;
 
         $ups->save();
 
-        Toast::info(__('Ups was saved.'));
+        Toast::info(__('USV gespeichert.'));
 
         return redirect()->route('platform.ups');
-    }
-
-    public function remove(Request $request)
-    {
-        $ups = Ups::findOrFail($request->get('id'));
-
-        if ($ups->system()->get()->first() != null)
-        {
-            Alert::error(__('Unable to delete ups assigned to a system!'));
-        }
-        else
-        {
-            $ups->delete();
-
-            Toast::success(__('Ups has been deleted!'));
-
-            return redirect()->route('platform.ups');
-
-        }
     }
 }

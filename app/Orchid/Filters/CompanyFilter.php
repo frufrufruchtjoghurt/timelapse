@@ -3,17 +3,18 @@
 namespace App\Orchid\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
 use Orchid\Filters\Filter;
 use Orchid\Screen\Field;
 use Orchid\Screen\Fields\Input;
 
-class UserFilter extends Filter
+class CompanyFilter extends Filter
 {
     /**
      * @var array
      */
     public $parameters = [
-        'name',
+        'company',
     ];
 
     /**
@@ -21,7 +22,7 @@ class UserFilter extends Filter
      */
     public function name(): string
     {
-        return __('Kunde');
+        return __('Firma');
     }
 
     /**
@@ -31,8 +32,9 @@ class UserFilter extends Filter
      */
     public function run(Builder $builder): Builder
     {
-        return $builder->where('first_name', 'LIKE', '%'.$this->request->get('name').'%')
-            ->orWhere('last_name', 'LIKE', '%'.$this->request->get('name').'%');
+        Log::debug($builder);
+        return $builder->join('companies', 'users.company_id', '=', 'companies.id')
+            ->where('name', 'LIKE', '%'.$this->request->get('name').'%');
     }
 
     /**
@@ -41,9 +43,9 @@ class UserFilter extends Filter
     public function display(): array
     {
         return [
-            Input::make('name')
-                ->title(__('Name suchen'))
-                ->help(__('Vor- oder Nachname eingeben')),
+            Input::make('company')
+                ->title(__('Firma suchen'))
+                ->help(__('Firmenname eingeben')),
         ];
     }
 }

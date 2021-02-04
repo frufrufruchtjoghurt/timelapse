@@ -36,7 +36,7 @@ class ProjectCompaniesListener extends Listener
      */
     protected function layouts(): array
     {
-        if (!$this->query->has('companyUsers'))
+        if ($this->query == null || !$this->query->has('companyUsers'))
         {
             return [];
         }

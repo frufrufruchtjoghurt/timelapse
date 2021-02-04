@@ -56,7 +56,7 @@ class PhotovoltaicListScreen extends Screen
     public function commandBar(): array
     {
         return [
-            Link::make(__('Create new'))
+            Link::make(__('Erstellen'))
                 ->icon('pencil')
                 ->route('platform.photovoltaics.edit')
         ];
@@ -78,25 +78,29 @@ class PhotovoltaicListScreen extends Screen
     {
         $photovoltaic = Photovoltaic::findOrFail($request->get('id'));
 
+        if ($photovoltaic->supplyUnit()->exists()) {
+            Toast::error(__('Status kann nicht geändert werden! Photovoltaikanlage ist Teil einer Versorgungseinheit!'));
+        }
+
         $photovoltaic->broken = !$photovoltaic->broken;
         $photovoltaic->save();
 
-        Toast::success(__('Photovoltaic status has been changed!'));
+        Toast::success(__('Status wurde geändert!'));
     }
 
     public function remove(Request $request)
     {
         $photovoltaic = Photovoltaic::findOrFail($request->get('id'));
 
-        if ($photovoltaic->system()->get()->first() != null)
+        if ($photovoltaic->supplyUnit()->get()->first() != null)
         {
-            Alert::error(__('Unable to delete photovoltaic assigned to a system!'));
+            Alert::error(__('Diese Photovoltaikanlage ist einer Versorgungseinheit zugewiesen und kann nicht gelöscht werden!'));
         }
         else
         {
             $photovoltaic->delete();
 
-            Toast::success(__('Photovoltaic has been deleted!'));
+            Toast::success(__('Photovoltaikanlage wurde gelöscht!'));
         }
     }
 }

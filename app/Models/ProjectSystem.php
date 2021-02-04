@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Orchid\Filters\Filterable;
 use Orchid\Screen\AsSource;
 
-class Feature extends Model
+class ProjectSystem extends Model
 {
     use HasFactory, AsSource, Filterable;
 
@@ -17,11 +17,8 @@ class Feature extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id',
+        'supply_unit_id',
         'project_id',
-        'archive',
-        'deeplink',
-        'storage_medium',
     ];
 
     /**
@@ -36,11 +33,7 @@ class Feature extends Model
      *
      * @var array
      */
-    protected $casts = [
-        'archive' => 'bool',
-        'deeplink' => 'bool',
-        'storage_medium' => 'bool',
-    ];
+    protected $casts = [];
 
     /**
      * The attributes for which you can use filters in url.
@@ -55,14 +48,4 @@ class Feature extends Model
      * @var array
      */
     protected $allowedSorts = [];
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function project()
-    {
-        return $this->belongsTo(Project::class);
-    }
 }

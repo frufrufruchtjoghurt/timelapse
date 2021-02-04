@@ -56,7 +56,7 @@ class UpsListScreen extends Screen
     public function commandBar(): array
     {
         return [
-            Link::make(__('Create new'))
+            Link::make(__('Erstellen'))
                 ->icon('pencil')
                 ->route('platform.ups.edit')
         ];
@@ -78,25 +78,29 @@ class UpsListScreen extends Screen
     {
         $ups = Ups::findOrFail($request->get('id'));
 
+        if ($ups->supplyUnit()->exists()) {
+            Toast::error(__('Status kann nicht geändert werden! USV ist Teil einer Versorgungseinheit!'));
+        }
+
         $ups->broken = !$ups->broken;
         $ups->save();
 
-        Toast::success(__('Ups status has been changed!'));
+        Toast::success(__('USV-Status wurde geändert!'));
     }
 
     public function remove(Request $request)
     {
         $ups = Ups::findOrFail($request->get('id'));
 
-        if ($ups->system()->get()->first() != null)
+        if ($ups->supplyUnit()->get()->first() != null)
         {
-            Alert::error(__('Unable to delete ups assigned to a system!'));
+            Alert::error(__('Diese USV ist einer Versorgungseinheit zugewiesen und kann nicht gelöscht werden!'));
         }
         else
         {
             $ups->delete();
 
-            Toast::success(__('Ups has been deleted!'));
+            Toast::success(__('USV wurde gelöscht!'));
         }
     }
 }

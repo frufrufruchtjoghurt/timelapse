@@ -56,7 +56,7 @@ class FixtureListScreen extends Screen
     public function commandBar(): array
     {
         return [
-            Link::make(__('Create new'))
+            Link::make(__('Erstellen'))
                 ->icon('pencil')
                 ->route('platform.fixtures.edit')
         ];
@@ -78,25 +78,29 @@ class FixtureListScreen extends Screen
     {
         $fixture = Fixture::findOrFail($request->get('id'));
 
+        if ($fixture->supplyUnit()->exists()) {
+            Toast::error(__('Status kann nicht geändert werden! Gehäuse ist Teil einer Versorgungseinheit!'));
+        }
+
         $fixture->broken = !$fixture->broken;
         $fixture->save();
 
-        Toast::success(__('Fixture status has been changed!'));
+        Toast::success(__('Status wurde geändert!'));
     }
 
     public function remove(Request $request)
     {
         $fixture = Fixture::findOrFail($request->get('id'));
 
-        if ($fixture->system()->get()->first() != null)
+        if ($fixture->supplyUnit()->get()->first() != null)
         {
-            Alert::error(__('Unable to delete fixture assigned to a system!'));
+            Alert::error(__('Dieses Gehäuse ist einer Versorgungseinheit zugewiesen und kann nicht gelöscht werden!'));
         }
         else
         {
             $fixture->delete();
 
-            Toast::success(__('Fixture has been deleted!'));
+            Toast::success(__('Gehäuse wurde gelöscht!'));
         }
     }
 }

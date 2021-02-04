@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Log;
 use Orchid\Filters\Filterable;
 use Orchid\Platform\Models\User as Authenticatable;
@@ -61,8 +63,6 @@ class User extends Authenticatable
         'id',
         'first_name',
         'last_name',
-        'email',
-        'phone_nr',
         'permissions',
     ];
 
@@ -76,22 +76,29 @@ class User extends Authenticatable
         'first_name',
         'last_name',
         'inactive',
-        'email',
         'updated_at',
         'created_at',
     ];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function company()
     {
         return $this->belongsTo(Company::class);
     }
 
+    /**
+     * @return HasMany
+     */
     public function features()
     {
         return $this->hasMany(Feature::class);
+    }
+
+    public function projects()
+    {
+        return $this->hasManyThrough(Project::class, Feature::class);
     }
 
     /**

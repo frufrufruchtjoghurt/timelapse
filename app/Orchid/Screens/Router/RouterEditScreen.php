@@ -5,6 +5,7 @@ namespace App\Orchid\Screens\Router;
 use App\Models\Router;
 use App\Orchid\Layouts\ReusableComponentEditLayout;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Alert;
@@ -74,21 +75,15 @@ class RouterEditScreen extends Screen
     public function commandBar(): array
     {
         return [
-            Button::make(__('Create router'))
+            Button::make(__('Router erstellen'))
                 ->icon('pencil')
                 ->method('createOrUpdate')
                 ->canSee(!$this->exists),
 
-            Button::make(__('Update'))
+            Button::make(__('Änderungen speichern'))
                 ->icon('note')
                 ->method('createOrUpdate')
                 ->canSee($this->exists),
-
-            Button::make(__('Remove'))
-                ->icon('trash')
-                ->method('remove')
-                ->canSee($this->exists)
-                ->confirm(__('Are you sure you want to delete the router?')),
         ];
     }
 
@@ -100,7 +95,7 @@ class RouterEditScreen extends Screen
     public function layout(): array
     {
         return [
-            new ReusableComponentEditLayout('router', $this->broken, $this->exists)
+            new ReusableComponentEditLayout('router', $this->broken, $this->exists, true, true)
         ];
     }
 
@@ -113,31 +108,26 @@ class RouterEditScreen extends Screen
         ]);
 
         $router->fill($request->get('router'));
+        if ($router->supplyUnit()->exists()) {
+            Toast::error(__('Status kann nicht geändert werden! Router ist Teil einer Versorgungseinheit!'));
+        }
         $router->broken = $this->exists ? $request->get('router.broken') : $this->broken;
+
+        if (!$this->exists) {
+            $ruts = Router::all();
+            $highest_id = 1;
+            if ($ruts) {
+                foreach ($ruts as $rut) {
+                    $highest_id = $highest_id < explode('t', $rut->name)[1] + 1 ? explode('t', $rut->name)[1] + 1 : $highest_id;
+                }
+            }
+            $router->name = 'rut' . sprintf("%03d", $highest_id);
+        }
 
         $router->save();
 
-        Toast::info(__('Router was saved.'));
+        Toast::info(__('Router wurde gespeichert.'));
 
         return redirect()->route('platform.routers');
-    }
-
-    public function remove(Request $request)
-    {
-        $router = Router::findOrFail($request->get('id'));
-
-        if ($router->system()->get()->first() != null)
-        {
-            Alert::error(__('Unable to delete router assigned to a system!'));
-        }
-        else
-        {
-            $router->delete();
-
-            Toast::success(__('Router has been deleted!'));
-
-            return redirect()->route('platform.routers');
-
-        }
     }
 }

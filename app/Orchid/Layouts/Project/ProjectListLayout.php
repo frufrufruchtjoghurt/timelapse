@@ -3,6 +3,8 @@
 namespace App\Orchid\Layouts\Project;
 
 use App\Models\Project;
+use App\Models\SupplyUnit;
+use Illuminate\Support\Facades\Log;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\DropDown;
 use Orchid\Screen\Actions\Link;
@@ -31,36 +33,39 @@ class ProjectListLayout extends Table
     protected function columns(): array
     {
         return [
-            TD::set('id', __('Projektnummer'))
+            TD::make('id', __('Projektnummer'))
                 ->cantHide()
                 ->filter(TD::FILTER_TEXT)
                 ->sort(),
 
-            TD::set('name', __('Projektname'))
+            TD::make('name', __('Projektname'))
                 ->cantHide()
                 ->filter(TD::FILTER_TEXT)
                 ->sort(),
 
-            TD::set('cid', __('Kamera'))
+            TD::make('cid', __('Kamera'))
                 ->render(function (Project $project) {
-                    return new Persona($project->camera()->get()->first()->presenter());
+                    $text = '';
+                    foreach ($project->cameras() as $camera) {
+                        $text .= $camera->model . ' (' . $camera->name . '), ';
+                    }
+                    return $text;
                 }),
 
-            TD::set('sid', __('System'))
+            TD::make('sid', __('Versorgungseinheit'))
                 ->render(function (Project $project) {
-                    return new Persona($project->system()->get()->first()->presenter());
+                    $ids = $project->supplyUnits()->get();
+                    $text = '';
+                    foreach ($ids as $id) {
+                        $text .= SupplyUnit::query()->where('id', '=', $id->id)->get()->first()->getFullAttribute();
+                    }
+                    return $text;
                 }),
 
-            TD::set('vpn_ip', __('VPN-IP-Adresse'))
+            TD::make('url', __('URL'))
                 ->sort(),
 
-            TD::set('longitude', __('Längengrad'))
-                ->defaultHidden(),
-
-            TD::set('latitude', __('Breitengrad'))
-                ->defaultHidden(),
-
-            TD::set('start_date', __('Startdatum'))
+            TD::make('start_date', __('Startdatum'))
                 ->cantHide()
                 ->sort()
                 ->filter(TD::FILTER_DATE)
@@ -70,23 +75,21 @@ class ProjectListLayout extends Table
                     return $project->start_date->toDateString();
                 }),
 
-            TD::set('end_date', __('Enddatum'))
+            TD::make('rec_end_date', __('Film-Enddatum'))
                 ->cantHide()
                 ->sort()
                 ->filter(TD::FILTER_DATE)
                 ->render(function (Project $project) {
-                    if ($project->end_date == null)
-                        return __('Nie');
-                    return $project->end_date->toDateString();
+                    return $project->rec_end_date->toDateString();
                 }),
 
-            TD::set('inactive', __('Status'))
+            TD::make('inactive', __('Status'))
                 ->sort()
                 ->render(function (Project $project) {
                     return $project->inactive ? __('Inaktiv') : __('Aktiv');
                 }),
 
-            TD::set('inactivity_date', __('Inaktivitätsdatum'))
+            TD::make('inactivity_date', __('Inaktivitätsdatum'))
                 ->sort()
                 ->defaultHidden()
                 ->render(function (Project $project) {
@@ -95,7 +98,7 @@ class ProjectListLayout extends Table
                     return $project->inactivity_date->toDateString();
                 }),
 
-            TD::set('updated_at', __('Zuletzt geändert'))
+            TD::make('updated_at', __('Zuletzt geändert'))
                 ->sort()
                 ->defaultHidden()
                 ->render(function (Project $project) {
@@ -104,7 +107,7 @@ class ProjectListLayout extends Table
                     return $project->updated_at->toDateTimeString();
                 }),
 
-            TD::set(__('Actions'))
+            TD::make(__('Actions'))
                 ->align(TD::ALIGN_CENTER)
                 ->width('100px')
                 ->render(function (Project $project) {
@@ -112,11 +115,11 @@ class ProjectListLayout extends Table
                         ->icon('options-vertical')
                         ->list([
 
-                            Link::make(__('Edit'))
+                            Link::make(__('Bearbeiten'))
                                 ->route('platform.projects.edit', $project->id)
                                 ->icon('pencil'),
 
-                            Button::make(__('Delete'))
+                            Button::make(__('Löschen'))
                                 ->method('remove')
                                 ->confirm(__('Möchten Sie das Project wirklich löschen?'))
                                 ->parameters([

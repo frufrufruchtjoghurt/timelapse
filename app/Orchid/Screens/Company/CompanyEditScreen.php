@@ -59,14 +59,15 @@ class CompanyEditScreen extends Screen
 
         if ($this->exists) {
             $this->name = __('Firma bearbeiten');
-            $phone_nr = explode('/', $company->phone_nr);
+            if ($company->phone_nr) {
+                $phone_nr = explode('/', $company->phone_nr);
 
-            return [
-                'company' => $company,
-                'phone_country_code' => $phone_nr[0],
-                'phone_code' => $phone_nr[1],
-                'phone_nr' => $phone_nr[2],
-            ];
+                return [
+                    'company' => $company,
+                    'phone_country_code' => $phone_nr[0],
+                    'phone_nr' => $phone_nr[1],
+                ];
+            }
         }
 
         return [
@@ -134,24 +135,12 @@ class CompanyEditScreen extends Screen
                     ->placeholder(__('company@example.com')),
 
                 Group::make([
-                    Input::make('+')
-                        ->type('text')
-                        ->disabled()
-                        ->value('+')
-                        ->title('+'),
-
                     Input::make('phone_country_code')
-                        ->type('text')
-                        ->title(__('Ländervorwahl'))
-                        ->placeholder(__('43')),
-
-                    Input::make('phone_code')
-                        ->type('text')
-                        ->title(__('Vorwahl'))
-                        ->placeholder(__('664')),
+                        ->type('number')
+                        ->title(__('Ländervorwahl')),
 
                     Input::make('phone_nr')
-                        ->type('text')
+                        ->type('number')
                         ->title(__('Nummer')),
                 ])
             ]),
@@ -245,8 +234,16 @@ class CompanyEditScreen extends Screen
     {
         $request->validate([
             'company.name' => 'required',
-            'company.aid' => 'required',
+            'company.address_id' => 'required',
         ]);
+
+        if ($request->get('phone_country_code') || $request->get('phone_nr')) {
+            $request->validate([
+                'phone_country_code' => 'required',
+                'phone_nr' => 'required',
+            ]);
+            $company->phone_nr = $request->get('phone_country_code') . '/' . $request->get('phone_nr');
+        }
 
         if ($company->exists)
         {

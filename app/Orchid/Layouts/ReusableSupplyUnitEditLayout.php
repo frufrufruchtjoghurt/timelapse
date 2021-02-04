@@ -13,7 +13,7 @@ use Orchid\Screen\Layouts\Modal;
 use Orchid\Screen\Layouts\Rows;
 use Orchid\Support\Facades\Layout;
 
-class ReusableSystemEditLayout extends Rows
+class ReusableSupplyUnitEditLayout extends Rows
 {
     /**
      * Used to create the title of a group of form elements.
@@ -58,24 +58,12 @@ class ReusableSystemEditLayout extends Rows
     protected function fields(): array
     {
         return [
-            Group::make([
-                Relation::make('system.' . $this->prefix . '_id')
-                    ->fromModel($this->modelName, 'id')
-                    ->title(__($this->name))
-                    ->applyScope('available')
-                    ->displayAppend('full')
-                    ->required($this->required),
-
-                ModalToggle::make(__($this->name . ' erstellen'))
-                    ->modal('addNew' . $this->name)
-                    ->icon('module')
-                    ->method('saveComponent')
-                    ->parameters([
-                        $this->modelName,
-                        $this->prefix,
-                        $this->name,
-                    ]),
-            ])->fullWidth(),
+            Relation::make('supplyunit.' . $this->prefix . '_id')
+                ->fromModel($this->modelName, 'id')
+                ->title(__($this->name))
+                ->applyScope('available')
+                ->displayAppend('full')
+                ->required($this->required),
         ];
     }
 }

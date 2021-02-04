@@ -3,9 +3,13 @@
 namespace App\Models;
 
 use App\Orchid\Presenters\PhotovoltaicPresenter;
+use DateTime;
+use DateTimeZone;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Orchid\Filters\Filterable;
 use Orchid\Screen\AsSource;
 
@@ -60,6 +64,7 @@ class Photovoltaic extends Model
     protected $allowedSorts = [
         'serial_nr',
         'model',
+        'times_used',
         'purchase_date',
         'broken',
         'updated_at',
@@ -74,19 +79,27 @@ class Photovoltaic extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return HasOne
      */
-    public function system()
+    public function supplyUnit()
     {
-        return $this->hasOne(System::class);
+        return $this->hasOne(SupplyUnit::class);
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     * @return HasManyThrough
      */
     public function projects()
     {
-        return $this->hasManyThrough(Project::class, System::class, 'photovoltaic_id', 'sid');
+        if ($this->supplyUnit()->exists())
+            return $this->supplyUnit()->get()->first()->projects();
+        return null;
+    }
+
+    public function age()
+    {
+        $tz = new DateTimeZone('Europe/Vienna');
+        return round(now($tz)->diffInMonths(new DateTime($this->purchase_date)) / 12, 1);
     }
 
     /**
@@ -94,7 +107,8 @@ class Photovoltaic extends Model
      */
     public function getFullAttribute(): string
     {
-        return $this->model . ', ' . $this->purchase_date->toDateString() . ', ' . $this->serial_nr;
+        return $this->model . ": " . $this->name . ", " . $this->serial_nr . " | Verwendungen: " . $this->times_used
+            . ' | ' . $this->age();
     }
 
     /**
@@ -104,6 +118,6 @@ class Photovoltaic extends Model
      */
     public function scopeAvailable(Builder $query)
     {
-        return $query->where('broken', false)->whereDoesntHave('system');
+        return $query->where('broken', false)->whereDoesntHave('supplyUnit');
     }
 }

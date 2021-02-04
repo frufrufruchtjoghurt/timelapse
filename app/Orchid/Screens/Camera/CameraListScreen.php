@@ -56,7 +56,7 @@ class CameraListScreen extends Screen
     public function commandBar(): array
     {
         return [
-            Link::make(__('Create new'))
+            Link::make(__('Erstellen'))
                 ->icon('pencil')
                 ->route('platform.cameras.edit')
         ];
@@ -78,25 +78,29 @@ class CameraListScreen extends Screen
     {
         $camera = Camera::findOrFail($request->get('id'));
 
+        if ($camera->supplyUnit()->exists()) {
+            Toast::error(__('Kamerastatus kann nicht geändert werden! Kamera ist Teil eines Systems!'));
+        }
+
         $camera->broken = !$camera->broken;
         $camera->save();
 
-        Toast::success(__('Camera status has been changed!'));
+        Toast::success(__('Status wurde geändert!!'));
     }
 
     public function remove(Request $request)
     {
         $camera = Camera::findOrFail($request->get('id'));
 
-        if ($camera->projects()->where(['end_date' => null])->get()->first() != null)
+        if ($camera->projects() && $camera->projects()->where(['rec_end_date' => null])->get()->first() != null)
         {
-            Alert::error(__('Unable to delete camera assigned to active project!'));
+            Alert::error(__('Diese Kamera ist einem Projekt zugewiesen und kann nicht gelöscht werden!!'));
         }
         else
         {
             $camera->delete();
 
-            Toast::success(__('Camera has been deleted!'));
+            Toast::success(__('Kamera wurde gelöscht!'));
         }
     }
 }

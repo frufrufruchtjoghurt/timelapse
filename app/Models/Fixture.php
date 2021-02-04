@@ -3,9 +3,13 @@
 namespace App\Models;
 
 use App\Orchid\Presenters\FixturePresenter;
+use DateTime;
+use DateTimeZone;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Log;
 use Orchid\Filters\Filterable;
 use Orchid\Screen\AsSource;
@@ -20,7 +24,6 @@ class Fixture extends Model
      * @var array
      */
     protected $fillable = [
-        'serial_nr',
         'model',
         'purchase_date',
         'broken',
@@ -49,7 +52,6 @@ class Fixture extends Model
      * @var array
      */
     protected $allowedFilters = [
-        'serial_nr',
         'model',
     ];
 
@@ -59,9 +61,9 @@ class Fixture extends Model
      * @var array
      */
     protected $allowedSorts = [
-        'serial_nr',
         'model',
         'purchase_date',
+        'times_used',
         'broken',
         'updated_at',
     ];
@@ -75,19 +77,27 @@ class Fixture extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return HasOne
      */
-    public function system()
+    public function supplyUnit()
     {
-        return $this->hasOne(System::class);
+        return $this->hasOne(SupplyUnit::class);
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     * @return HasManyThrough
      */
     public function projects()
     {
-        return $this->hasManyThrough(Project::class, System::class, 'fixture_id', 'sid');
+        if ($this->supplyUnit()->exists())
+            return $this->supplyUnit()->get()->first()->projects();
+        return null;
+    }
+
+    public function age()
+    {
+        $tz = new DateTimeZone('Europe/Vienna');
+        return round(now($tz)->diffInMonths(new DateTime($this->purchase_date)) / 12, 1);
     }
 
     /**
@@ -95,7 +105,8 @@ class Fixture extends Model
      */
     public function getFullAttribute(): string
     {
-        return $this->model . ', ' . $this->purchase_date->toDateString() . ', ' . $this->serial_nr;
+        return $this->model . " | Verwendungen: " . $this->times_used
+            . ' | Alter: ' . $this->age();
     }
 
     /**
@@ -105,6 +116,6 @@ class Fixture extends Model
      */
     public function scopeAvailable(Builder $query)
     {
-        return $query->where('broken', false)->whereDoesntHave('system');
+        return $query->where('broken', false)->whereDoesntHave('supplyUnit');
     }
 }

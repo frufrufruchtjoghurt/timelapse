@@ -7,6 +7,8 @@ namespace App\Orchid\Screens\User;
 use App\Orchid\Layouts\User\UserEditLayout;
 use App\Orchid\Layouts\User\UserPermissionLayout;
 use App\Models\User;
+use Exception;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -15,8 +17,10 @@ use Orchid\Access\UserSwitch;
 //use Orchid\Platform\Models\User;
 use Orchid\Screen\Action;
 use Orchid\Screen\Actions\Button;
+use Orchid\Screen\Layout;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Toast;
+use phpDocumentor\Reflection\Types\This;
 
 class UserEditScreen extends Screen
 {
@@ -25,7 +29,7 @@ class UserEditScreen extends Screen
      *
      * @var string
      */
-    public $name = 'Benutzer erstellen';
+    public $name = 'Kunde erstellen';
 
     /**
      * Display header description.
@@ -57,10 +61,12 @@ class UserEditScreen extends Screen
     public function query(User $user): array
     {
         $this->exists = $user->exists;
+        $phone_nr = ['', '', ''];
 
         if ($this->exists)
         {
-            $this->name = 'Benutzer bearbeiten';
+            $this->name = 'Kunde bearbeiten';
+            $phone_nr = explode("/", $user->phone_nr);
         }
 
         $user->load(['roles']);
@@ -68,6 +74,8 @@ class UserEditScreen extends Screen
         return [
             'user'       => $user,
             'permission' => $user->getStatusPermission(),
+            'phone_country_code' => $phone_nr[0],
+            'phone_nr' => $phone_nr[1],
         ];
     }
 
@@ -79,35 +87,43 @@ class UserEditScreen extends Screen
     public function commandBar(): array
     {
         return [
-            Button::make(__('Login as user'))
+            Button::make(__('Als dieser Kunde anmelden'))
                 ->icon('login')
-                ->method('loginAs'),
+                ->method('loginAs')
+                ->canSee($this->exists),
 
-            Button::make(__('Save'))
+            Button::make(__('Änderungen speichern'))
                 ->icon('check')
-                ->method('save'),
+                ->method('save')
+                ->canSee($this->exists),
 
-            Button::make(__('Remove'))
+            Button::make(__('Kunde erstellen'))
+                ->icon('pencil')
+                ->method('save')
+                ->canSee(!$this->exists),
+
+            Button::make(__('Löschen'))
                 ->icon('trash')
-                ->confirm('Are you sure you want to delete the user?')
-                ->method('remove'),
+                ->confirm('Möchten Sie diesen Kunden wirklich löschen?')
+                ->method('remove')
+                ->canSee($this->exists),
         ];
     }
 
     /**
-     * @return \Orchid\Screen\Layout[]
+     * @return Layout[]
      */
     public function layout(): array
     {
         if (Auth::user()->hasAccess('admin'))
         {
             return [
-                UserEditLayout::class,
+                new UserEditLayout(false, true, $this->exists),
                 UserPermissionLayout::class,
             ];
         }
         return [
-            UserEditLayout::class,
+            new UserEditLayout(false, true),
         ];
     }
 
@@ -115,7 +131,7 @@ class UserEditScreen extends Screen
      * @param User    $user
      * @param Request $request
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function save(User $user, Request $request)
     {
@@ -142,6 +158,14 @@ class UserEditScreen extends Screen
             $user->password = Hash::make($password);
         }
 
+        if ($request->get('phone_country_code') || $request->get('phone_nr')) {
+            $request->validate([
+                'phone_country_code' => 'required',
+                'phone_nr' => 'required',
+            ]);
+            $user->phone_nr = $request->get('phone_country_code') . '/' . $request->get('phone_nr');
+        }
+
         $user->fill($request->get('user'))
             ->replaceRoles($request->input('user.roles'))
             ->fill([
@@ -157,9 +181,9 @@ class UserEditScreen extends Screen
     /**
      * @param User $user
      *
-     * @throws \Exception
+     * @throws Exception
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function remove(User $user)
     {
@@ -173,7 +197,7 @@ class UserEditScreen extends Screen
     /**
      * @param User $user
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function loginAs(User $user)
     {

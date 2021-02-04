@@ -78,21 +78,15 @@ class SimCardEditScreen extends Screen
     public function commandBar(): array
     {
         return [
-            Button::make(__('Create sim-card'))
+            Button::make(__('Sim-Karte erstellen'))
                 ->icon('pencil')
                 ->method('createOrUpdate')
                 ->canSee(!$this->exists),
 
-            Button::make(__('Update'))
+            Button::make(__('Änderungen speichern'))
                 ->icon('note')
                 ->method('createOrUpdate')
                 ->canSee($this->exists),
-
-            Button::make(__('Remove'))
-                ->icon('trash')
-                ->method('remove')
-                ->canSee($this->exists)
-                ->confirm(__('Are you sure you want to delete the sim-card?')),
         ];
     }
 
@@ -140,31 +134,15 @@ class SimCardEditScreen extends Screen
         ]);
 
         $simCard->fill($request->get('simcard'));
+        if ($this->exists && $simCard->router()->exists() && $this->broken) {
+            Toast::error(__('Status kann nicht geändert werden! Sim-Karte ist Teil eines Systems!'));
+        }
         $simCard->broken = $this->exists ? $request->get('simcard.broken') : $this->broken;
 
         $simCard->save();
 
-        Toast::info(__('Router was saved.'));
+        Toast::info(__('Sim-Karte wurde gespeichert.'));
 
         return redirect()->route('platform.simcards');
-    }
-
-    public function remove(Request $request)
-    {
-        $simCard = SimCard::findOrFail($request->get('id'));
-
-        if ($simCard->system()->get()->first() != null)
-        {
-            Alert::error(__('Unable to delete sim-card assigned to a system!'));
-        }
-        else
-        {
-            $simCard->delete();
-
-            Toast::success(__('Sim-card has been deleted!'));
-
-            return redirect()->route('platform.simcards');
-
-        }
     }
 }

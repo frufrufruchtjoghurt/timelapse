@@ -56,7 +56,7 @@ class RouterListScreen extends Screen
     public function commandBar(): array
     {
         return [
-            Link::make(__('Create new'))
+            Link::make(__('Erstellen'))
                 ->icon('pencil')
                 ->route('platform.routers.edit')
         ];
@@ -70,13 +70,17 @@ class RouterListScreen extends Screen
     public function layout(): array
     {
         return [
-            new ReusableComponentListLayout('routers', 'Router'),
+            new ReusableComponentListLayout('routers', 'Router', false, true),
         ];
     }
 
     public function changeBrokenStatus(Request $request)
     {
         $router = Router::findOrFail($request->get('id'));
+
+        if ($router->supplyUnit()->exists()) {
+            Toast::error(__('Routerstatus kann nicht geändert werden! Router ist Teil einer Versorgungseinheit!'));
+        }
 
         $router->broken = !$router->broken;
         $router->save();
@@ -88,7 +92,7 @@ class RouterListScreen extends Screen
     {
         $router = Router::findOrFail($request->get('id'));
 
-        if ($router->system()->get()->first() != null)
+        if ($router->supplyUnit()->get()->first() != null)
         {
             Alert::error(__('Unable to delete router assigned to a system!'));
         }

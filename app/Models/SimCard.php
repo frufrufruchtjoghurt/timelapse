@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Orchid\Presenters\SimCardPresenter;
+use DateTime;
+use DateTimeZone;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -74,20 +76,15 @@ class SimCard extends Model
         return new SimCardPresenter($this);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function system()
+    public function router()
     {
-        return $this->hasOne(System::class);
+        return $this->hasOne(Router::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
-     */
-    public function projects()
+    public function age()
     {
-        return $this->hasManyThrough(Project::class, System::class, 'sim_card_id', 'sid');
+        $tz = new DateTimeZone('Europe/Vienna');
+        return round(now($tz)->diffInMonths(new DateTime($this->purchase_date)) / 12, 1);
     }
 
     /**
@@ -95,7 +92,7 @@ class SimCard extends Model
      */
     public function getFullAttribute(): string
     {
-        return $this->contract . ', ' . $this->purchase_date->toDateString() . ', ' . $this->telephone_nr;
+        return $this->contract . ": " . $this->telephone_nr . ' | Alter: ' . $this->age();
     }
 
     /**
@@ -105,6 +102,6 @@ class SimCard extends Model
      */
     public function scopeAvailable(Builder $query)
     {
-        return $query->where('broken', false)->whereDoesntHave('system');
+        return $query->where('broken', false)->whereDoesntHave('router');
     }
 }

@@ -43,7 +43,7 @@ class PlatformProvider extends OrchidServiceProvider
     public function registerMainMenu(): array
     {
         return [
-            ItemMenu::label(__('Benutzer'))
+            ItemMenu::label(__('Kunden'))
                 ->title('Verwaltung')
                 ->icon('user')
                 ->route('platform.users')
@@ -59,27 +59,27 @@ class PlatformProvider extends OrchidServiceProvider
                 ->route('platform.cameras')
                 ->canSee(Auth::user()->hasAccess('admin') || Auth::user()->hasAccess('manager')),
 
-            ItemMenu::label(__('Systeme'))
-                ->icon('layers')
-                ->route('platform.systems')
+            ItemMenu::label(__('Versorgungseinheiten'))
+                ->icon('modules')
+                ->route('platform.supplyunits')
                 ->canSee(Auth::user()->hasAccess('admin') || Auth::user()->hasAccess('manager')),
 
             ItemMenu::label(__('Komponenten'))
-                ->icon('modules')
+                ->icon('drawer')
                 ->slug('components')
-                ->childs()
-                ->canSee(Auth::user()->hasAccess('admin') || Auth::user()->hasAccess('manager')),
-
-            ItemMenu::label(__('Router'))
-                ->icon('module')
-                ->place('components')
-                ->route('platform.routers')
+                ->withChildren()
                 ->canSee(Auth::user()->hasAccess('admin') || Auth::user()->hasAccess('manager')),
 
             ItemMenu::label(__('Sim-Karten'))
                 ->icon('module')
                 ->place('components')
                 ->route('platform.simcards')
+                ->canSee(Auth::user()->hasAccess('admin') || Auth::user()->hasAccess('manager')),
+
+            ItemMenu::label(__('Router'))
+                ->icon('module')
+                ->place('components')
+                ->route('platform.routers')
                 ->canSee(Auth::user()->hasAccess('admin') || Auth::user()->hasAccess('manager')),
 
             ItemMenu::label(__('Gehäuse'))
@@ -92,12 +92,6 @@ class PlatformProvider extends OrchidServiceProvider
                 ->icon('module')
                 ->place('components')
                 ->route('platform.ups')
-                ->canSee(Auth::user()->hasAccess('admin') || Auth::user()->hasAccess('manager')),
-
-            ItemMenu::label(__('Heizungen'))
-                ->icon('module')
-                ->place('components')
-                ->route('platform.heatings')
                 ->canSee(Auth::user()->hasAccess('admin') || Auth::user()->hasAccess('manager')),
 
             ItemMenu::label(__('Photovoltaik'))
@@ -120,7 +114,7 @@ class PlatformProvider extends OrchidServiceProvider
     public function registerProfileMenu(): array
     {
         return [
-            ItemMenu::label('Profile')
+            ItemMenu::label('Profil')
                 ->route('platform.profile')
                 ->icon('user'),
         ];

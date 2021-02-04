@@ -7,7 +7,7 @@ use Orchid\Screen\Contracts\Personable;
 use Orchid\Screen\Contracts\Searchable;
 use Orchid\Support\Presenter;
 
-class SystemPresenter extends Presenter  implements Searchable, Personable
+class SupplyUnitPresenter extends Presenter  implements Searchable, Personable
 {
     /**
      * @return string
@@ -22,7 +22,7 @@ class SystemPresenter extends Presenter  implements Searchable, Personable
      */
     public function title(): string
     {
-        return __('System ') . $this->entity->id;
+        return __('SupplyUnit ') . $this->entity->id;
     }
 
     /**
@@ -32,12 +32,11 @@ class SystemPresenter extends Presenter  implements Searchable, Personable
     {
         $subtitle = $this->entity->fixture()->get()->first()->model . "\n" .
             $this->entity->router()->get()->first()->model . "\n" .
-            $this->entity->sim_card()->get()->first()->model . "\n" .
-            $this->entity->ups()->get()->first()->model;
+            $this->entity->sim_card()->get()->first()->model;
 
-        if ($this->entity->heating()->exists())
+        if ($this->entity->ups()->exists())
         {
-            $subtitle .= "\n" . $this->entity->heating()->get()->first()->model;
+            $subtitle .= "\n" . $this->entity->ups()->get()->first()->model;
         }
 
         if ($this->entity->photovoltaic()->exists())
@@ -53,7 +52,7 @@ class SystemPresenter extends Presenter  implements Searchable, Personable
      */
     public function url(): string
     {
-        return route('platform.systems.edit', $this->entity);
+        return route('platform.supplyunits.edit', $this->entity);
     }
 
     /**

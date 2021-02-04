@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Orchid\Screens\User;
 
 use App\Models\User;
@@ -22,14 +20,14 @@ class UserListScreen extends Screen
      *
      * @var string
      */
-    public $name = 'Benutzer';
+    public $name = 'Kunden';
 
     /**
      * Display header description.
      *
      * @var string
      */
-    public $description = 'Alle registrierten Benutzer';
+    public $description = 'Alle registrierten Kunden';
 
     /**
      * @var array
@@ -62,7 +60,7 @@ class UserListScreen extends Screen
     public function commandBar(): array
     {
         return [
-            Link::make(__('Create new'))
+            Link::make(__('Erstellen'))
                 ->icon('pencil')
                 ->route('platform.users.edit')
         ];
@@ -91,8 +89,12 @@ class UserListScreen extends Screen
      */
     public function asyncGetUser(User $user): array
     {
+        $phone_nr = explode('/', $user->phone_nr);
+
         return [
             'user' => $user,
+            'phone_country_code' => $phone_nr[0],
+            'phone_nr' => $phone_nr[1],
         ];
     }
 
@@ -111,6 +113,9 @@ class UserListScreen extends Screen
         $user->fill($request->input('user'))
             ->replaceRoles($request->input('user.roles'))
             ->save();
+
+        $user->phone_nr = $request->get('phone_country_code') . $request->get('phone_code')
+            . $request->get('phone_nr');
 
         Toast::info(__('User was saved.'));
     }

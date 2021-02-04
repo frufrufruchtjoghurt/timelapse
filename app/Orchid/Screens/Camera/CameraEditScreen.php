@@ -3,9 +3,13 @@
 namespace App\Orchid\Screens\Camera;
 
 use App\Models\Camera;
+use App\Models\SupplyUnit;
 use App\Orchid\Layouts\ReusableComponentEditLayout;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Orchid\Screen\Actions\Button;
+use Orchid\Screen\Fields\Relation;
+use Orchid\Screen\Fields\TextArea;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Alert;
 use Orchid\Support\Facades\Layout;
@@ -18,7 +22,7 @@ class CameraEditScreen extends Screen
      *
      * @var string
      */
-    public $name = 'Create Camera';
+    public $name = 'Kamera erstellen';
 
     /**
      * Display header description.
@@ -57,7 +61,7 @@ class CameraEditScreen extends Screen
         $this->exists = $camera->exists;
 
         if ($this->exists) {
-            $this->name = __('Edit Camera');
+            $this->name = __('Kamera bearbeiten');
             $this->broken = $camera->broken;
         }
 
@@ -74,21 +78,15 @@ class CameraEditScreen extends Screen
     public function commandBar(): array
     {
         return [
-            Button::make(__('Create camera'))
+            Button::make(__('Kamera erstellen'))
                 ->icon('pencil')
                 ->method('createOrUpdate')
                 ->canSee(!$this->exists),
 
-            Button::make(__('Update'))
+            Button::make(__('Änderungen speichern'))
                 ->icon('note')
                 ->method('createOrUpdate')
                 ->canSee($this->exists),
-
-            Button::make(__('Remove'))
-                ->icon('trash')
-                ->method('remove')
-                ->canSee($this->exists)
-                ->confirm(__('Are you sure you want to delete the camera?')),
         ];
     }
 
@@ -100,7 +98,14 @@ class CameraEditScreen extends Screen
     public function layout(): array
     {
         return [
-            new ReusableComponentEditLayout('camera', $this->broken, $this->exists)
+            new ReusableComponentEditLayout('camera', $this->broken, $this->exists, true),
+
+            /*Layout::rows([
+                Relation::make('supply_unit')
+                    ->title('Versorgungseinheit')
+                    ->displayAppend('full')
+                    ->fromModel(SupplyUnit::class, 'serial_nr'),
+            ])->title('System'),*/
         ];
     }
 
@@ -113,31 +118,27 @@ class CameraEditScreen extends Screen
         ]);
 
         $camera->fill($request->get('camera'));
+        if ($this->exists && $camera->supplyUnit()->exists() && $this->broken) {
+            Toast::error(__('Kamerastatus kann nicht geändert werden! Kamera ist Teil eines Systems!'));
+        }
         $camera->broken = $this->exists ? $request->get('camera.broken') : $this->broken;
+
+        if (!$this->exists) {
+            $cams = Camera::all();
+            Log::debug($cams);
+            $highest_id = 1;
+            if ($cams) {
+                foreach ($cams as $cam) {
+                    $highest_id = $highest_id < explode('m', $cam->name)[1] + 1 ? explode('m', $cam->name)[1] + 1 : $highest_id;
+                }
+            }
+            $camera->name = 'cam' . sprintf("%03d", $highest_id);
+        }
 
         $camera->save();
 
-        Toast::info(__('Camera was saved.'));
+        Toast::info(__('Kamera wurde gespeichert.'));
 
         return redirect()->route('platform.cameras');
-    }
-
-    public function remove(Request $request)
-    {
-        $camera = Camera::findOrFail($request->get('id'));
-
-        if ($camera->projects()->where(['end_date' => null])->get()->first() != null)
-        {
-            Alert::error(__('Unable to delete camera assigned to active project!'));
-        }
-        else
-        {
-            $camera->delete();
-
-            Toast::success(__('Camera has been deleted!'));
-
-            return redirect()->route('platform.cameras');
-
-        }
     }
 }

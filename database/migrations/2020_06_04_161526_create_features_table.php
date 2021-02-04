@@ -14,8 +14,9 @@ class CreateFeaturesTable extends Migration
     public function up()
     {
         Schema::create('features', function (Blueprint $table) {
-            $table->unsignedBigInteger('uid');
-            $table->unsignedBigInteger('pid');
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('project_id');
             $table->boolean('archive')
               ->default(false);
             $table->boolean('deeplink')
@@ -24,16 +25,17 @@ class CreateFeaturesTable extends Migration
               ->default(false);
             $table->timestamps();
 
-            $table->foreign('uid')
+            $table->foreign('user_id')
               ->references('id')
               ->on('users')
               ->cascadeOnDelete()
               ->onUpdate('cascade');
-            $table->foreign('pid')
+            $table->foreign('project_id')
               ->references('id')
               ->on('projects')
               ->cascadeOnDelete()
               ->onUpdate('cascade');
+            $table->unique(['user_id', 'project_id']);
         });
     }
 

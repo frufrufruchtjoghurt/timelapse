@@ -16,16 +16,17 @@ class CreateProjectsTable extends Migration
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->unsignedBigInteger('cid');
-            $table->unsignedBigInteger('sid');
-            $table->string('vpn_ip')
-              ->nullable();
-            $table->string('longitude')
-              ->nullable();
-            $table->string('latitude')
+            $table->string('url')
               ->nullable();
             $table->date('start_date');
-            $table->date('end_date')
+            $table->date('rec_end_date');
+            $table->date('video_editor_send_date')
+                ->nullable();
+            $table->string('video_editor')
+                ->nullable();
+            $table->date('pub_date')
+                ->nullable();
+            $table->text('patch_notes')
                 ->nullable();
             $table->boolean('inactive')
               ->default(false);

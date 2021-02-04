@@ -18,6 +18,8 @@ class CreatePhotovoltaicsTable extends Migration
             $table->string('serial_nr');
             $table->string('model');
             $table->date('purchase_date');
+            $table->integer('times_used')
+                ->default(0);
             $table->boolean('broken')
               ->default(false);
             $table->timestamps();
