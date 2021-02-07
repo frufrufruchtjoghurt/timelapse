@@ -63,6 +63,31 @@ class UserListLayout extends Table
                     return $user->updated_at->toDateTimeString();
                 }),
 
+            TD::make(__('Passwort'))
+                ->align(TD::ALIGN_CENTER)
+                ->render(function (User $user) {
+                    if ($user->email_verified_at == null) {
+                        return Button::make(__('Passwort aussenden'))
+                            ->method('verifyPasswordRequest')
+                            ->confirm('Möchten Sie das Passwort für ' . $user->last_name . ' ' . $user->first_name
+                                . ' wirklich an ' . $user->email . ' senden?')
+                            ->parameters([
+                                'id' => $user->id,
+                            ])
+                            ->disabled(!(Auth::user()->hasAccess('admin') || (!$user->hasAccess('manager') && !$user->hasAccess('admin'))))
+                            ->icon('envelope');
+                    }
+                    return Button::make(__('Erneut senden'))
+                        ->method('verifyPasswordRequest')
+                        ->confirm('Möchten Sie das Passwort für ' . $user->last_name . ' ' . $user->first_name
+                            . ' an ' . $user->email . ' wirklich erneut senden?')
+                        ->parameters([
+                            'id' => $user->id,
+                        ])
+                        ->disabled(!(Auth::user()->hasAccess('admin') || (!$user->hasAccess('manager') && !$user->hasAccess('admin'))))
+                        ->icon('envelope-letter');
+                }),
+
             TD::make(__('Aktionen'))
                 ->align(TD::ALIGN_CENTER)
                 ->width('100px')

@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\PasswordController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +19,26 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return redirect()->route('platform.main');
 });
+
+Route::get('reset/{token}{email}', function (Request $request) {
+        $token = explode('?', explode('/', $request->getRequestUri())[2])[0];
+        return view('auth.reset', [
+            'resetToken' => $token,
+            'email' => $request->email,
+        ]);
+    })
+    ->name('password.set')
+    ->middleware('check.token');
+
+Route::get('invalidToken', function () {
+        return view('auth.invalid');
+    })
+    ->name('password.token');
+
+Route::get('noUser', function () {
+    return view('auth.nouser');
+})
+    ->name('password.nouser');
+
+Route::post('reset', [PasswordController::class, 'storePassword'])
+    ->name('password.store');

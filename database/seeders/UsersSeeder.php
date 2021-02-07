@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use DateTimeZone;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Models\Company;
@@ -16,6 +17,8 @@ class UsersSeeder extends Seeder
      */
     public function run()
     {
+        $tz = new DateTimeZone('Europe/Vienna');
+
         DB::table('users')->insert([
             ['title' => 'Mag.',
                 'gender' => 'Frau',
@@ -23,6 +26,7 @@ class UsersSeeder extends Seeder
                 'last_name' => 'Pölzl',
                 'company_id' => Company::where('name', 'timelapse Systems')->pluck('id')->first(),
                 'email' => 'judith.poelzl@timelapsesystems.at',
+                'email_verified_at' => now($tz),
                 'password' => bcrypt('JP1234-timelapse'),
                 'phone_nr' => '43/69981930597',
                 'permissions' => json_encode([
@@ -36,6 +40,7 @@ class UsersSeeder extends Seeder
                 'last_name' => 'Fruhmann',
                 'company_id' => Company::where('name', 'bahamasoft')->pluck('id')->first(),
                 'email' => 'markus@fruhmann.dev',
+                'email_verified_at' => now($tz),
                 'password' => bcrypt('MF1234-timelapse'),
                 'phone_nr' => '43/6766769120',
                 'permissions' => json_encode([
@@ -49,6 +54,7 @@ class UsersSeeder extends Seeder
                 'last_name' => 'Urban',
                 'company_id' => Company::where('name', 'bahamasoft')->pluck('id')->first(),
                 'email' => 'bahamas@gestalter.at',
+                'email_verified_at' => now($tz),
                 'password' => bcrypt('bananas'),
                 'phone_nr' => '43/6764715753',
                 'permissions' => json_encode([

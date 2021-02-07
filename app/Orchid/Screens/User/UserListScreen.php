@@ -2,12 +2,22 @@
 
 namespace App\Orchid\Screens\User;
 
+use App\Mail\PasswordNew;
+use App\Models\PasswordResets;
 use App\Models\User;
 use App\Orchid\Layouts\User\UserEditLayout;
 use App\Orchid\Layouts\User\UserFiltersLayout;
 use App\Orchid\Layouts\User\UserListLayout;
+use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 //use Orchid\Platform\Models\User;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
@@ -128,6 +138,43 @@ class UserListScreen extends Screen
         User::findOrFail($request->get('id'))
             ->delete();
 
-        Toast::info(__('User was removed'));
+        Toast::info(__('Benutzer wurde gelöscht!'));
+    }
+
+    /**
+     * @param Request $request
+     */
+    public function verifyPasswordRequest(Request $request) {
+        $user = User::query()->where('id', '=', $request->get('id'))->firstOrFail();
+
+        PasswordResets::query()->where('email', '=', $user->email)->delete();
+
+        DB::table('password_resets')->insert([
+            'email' => $user->email,
+            'token' => Str::random(50),
+            'created_at' => Carbon::now()
+        ]);
+
+        $tokenData = DB::table('password_resets')->where('email', '=', $user->email)->latest()->get()->first();
+
+        if ($this->sendResetEmail($user, $tokenData->token)) {
+            Toast::info(__('Link zum Zurücksetzen des Passworts von ' . $user->last_name . ' ' . $user->first_name
+                . ' wurde an ' . $user->email . ' versandt!'));
+        } else {
+            Toast::error('Ein Netzwerkfehler ist aufgetreten!');
+        }
+    }
+
+    private function sendResetEmail(User $user, string $token): bool
+    {
+        $link = URL::to('/') . '/reset/' . $token . "?email=" . urlencode($user->email);
+
+        try {
+            Mail::to($user->email)->send(new PasswordNew($link));
+            return true;
+        } catch (Exception $e) {
+            Log::error($e);
+            return false;
+        }
     }
 }
