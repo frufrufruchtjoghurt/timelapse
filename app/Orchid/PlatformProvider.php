@@ -10,6 +10,7 @@ use Orchid\Platform\ItemMenu;
 use Orchid\Platform\ItemPermission;
 use Orchid\Platform\Menu;
 use Orchid\Platform\OrchidServiceProvider;
+use Orchid\Screen\Actions\Button;
 
 class PlatformProvider extends OrchidServiceProvider
 {
@@ -105,6 +106,10 @@ class PlatformProvider extends OrchidServiceProvider
                 ->route('platform.projects')
                 ->canSee(Auth::user()->hasAccess('admin') || Auth::user()->hasAccess('manager')),
 
+            ItemMenu::label(__('AGBs'))
+                ->title(__('AGB'))
+                ->icon('docs')
+                ->route('agb.download'),
         ];
     }
 

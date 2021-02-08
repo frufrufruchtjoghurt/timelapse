@@ -4,6 +4,7 @@ use App\Http\Controllers\PasswordController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,3 +43,7 @@ Route::get('noUser', function () {
 
 Route::post('reset', [PasswordController::class, 'storePassword'])
     ->name('password.store');
+
+Route::get('Timelapse-Systems_AGB.pdf', function () {
+    return Storage::download('AGBs.pdf', 'Timelapse-Systems_AGB.pdf');
+})->name('agb.download');
