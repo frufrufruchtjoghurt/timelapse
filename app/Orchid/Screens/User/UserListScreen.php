@@ -3,6 +3,7 @@
 namespace App\Orchid\Screens\User;
 
 use App\Mail\PasswordNew;
+use App\Mail\PasswordReset;
 use App\Models\PasswordResets;
 use App\Models\User;
 use App\Orchid\Layouts\User\UserEditLayout;
@@ -170,7 +171,11 @@ class UserListScreen extends Screen
         $link = URL::to('/') . '/reset/' . $token . "?email=" . urlencode($user->email);
 
         try {
-            Mail::to($user->email)->send(new PasswordNew($link));
+            if ($user->email_verified_at == null) {
+                Mail::to($user->email)->send(new PasswordNew($link));
+            } else {
+                Mail::to($user->email)->send(new PasswordReset($link));
+            }
             return true;
         } catch (Exception $e) {
             Log::error($e);

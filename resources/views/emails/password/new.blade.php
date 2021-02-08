@@ -14,6 +14,7 @@ Passwort erstellen
 Diese Zugangsdaten sind vertraulich und nur für den Adressaten bestimmt. Sollten Sie diese Daten fälschliche Weise erhalten haben, bitten wir Sie mit uns Kontakt aufzunehmen.
 
 Herzliche Grüße
+
 Ihr Timelapse Systems Team
 
 *Bitte beachten Sie, dass jeder Aktivierungslink nur 18 Stunden ab Aussendung gültig ist.*
