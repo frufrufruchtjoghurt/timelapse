@@ -122,8 +122,8 @@ class Router extends Model
      */
     public function getFullAttribute(): string
     {
-        return $this->model . ": " . $this->name . ", " . $this->serial_nr . " | Verwendungen: " . $this->times_used
-            . ' | Alter: ' . $this->age();
+        return $this->model . ": " . $this->name . ", " . $this->serial_nr . " | " . $this->simCard()->get()->first()->contract
+            . " | Verwendungen: " . $this->times_used . ' | Alter: ' . $this->age();
     }
 
     /**

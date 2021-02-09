@@ -107,7 +107,7 @@ class Ups extends Model
      */
     public function getFullAttribute(): string
     {
-        return $this->model . ": " . $this->name . ", " . $this->serial_nr . " | Verwendungen: " . $this->times_used
+        return $this->model . ": " . $this->serial_nr . " | Verwendungen: " . $this->times_used
             . ' | ' . $this->purchase_date->toDateString();
     }
 
