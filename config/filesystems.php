@@ -55,6 +55,16 @@ return [
             'visibility' => 'public',
         ],
 
+        'systems' => [
+            'driver' => 'local',
+            'root' => base_path('../../systems'),
+        ],
+
+        'movies' => [
+            'driver' => 'local',
+            'root' => base_path('../../movies'),
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
