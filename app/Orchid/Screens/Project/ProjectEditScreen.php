@@ -352,11 +352,6 @@ class ProjectEditScreen extends Screen
             foreach ($cameras as $camera) {
                 $projPath = sprintf('P%04d_%s/%s', $project->id, $project->name, $camera->name);
                 Storage::disk('systems')->makeDirectory($projPath);
-                if ($activeSystems->contains('id', '=', $system))
-                    continue;
-                Storage::disk('systems')->move($camera->name, $camera->name . '.orig');
-                $symPath = $systemsPath . $camera->name;
-                system(sprintf('ln -s %s $s', $systemsPath . $projPath, $symPath));
             }
         }
 
