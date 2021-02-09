@@ -5,6 +5,7 @@ namespace App\Orchid\Screens\Camera;
 use App\Models\Camera;
 use App\Orchid\Layouts\ReusableComponentListLayout;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Alert;
@@ -98,6 +99,8 @@ class CameraListScreen extends Screen
         }
         else
         {
+            Storage::disk('systems')->delete($camera->name);
+
             $camera->delete();
 
             Toast::success(__('Kamera wurde gelöscht!'));
