@@ -149,7 +149,7 @@ class ProjectListScreen extends Screen
                 }
             }
 
-            Storage::disk('systems')->deleteDirectory(sprintf('P%04d_%s', $project->id, $project->name));
+            Storage::disk('systems')->deleteDirectory(sprintf('P%04d-%s', $project->id, $project->name));
 
             Feature::query()->where('project_id', $project->id)->delete();
             ProjectSystem::query()->where('project_id', $project->id)->delete();

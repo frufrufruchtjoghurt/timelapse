@@ -328,7 +328,7 @@ class ProjectEditScreen extends Screen
         $users = $request->get('users');
         $systems = $request->get('systems');
 
-        Storage::disk('systems')->makeDirectory(sprintf('P%04d_%s', $project->id, $project->name));
+        Storage::disk('systems')->makeDirectory(sprintf('P%04d-%s', $project->id, $project->name));
 
         $project->save();
 
@@ -350,7 +350,7 @@ class ProjectEditScreen extends Screen
             $cameras = $supplyUnit->cameras()->get();
 
             foreach ($cameras as $camera) {
-                $projPath = sprintf('P%04d_%s/%s', $project->id, $project->name, $camera->name);
+                $projPath = sprintf('P%04d-%s/%s', $project->id, $project->name, $camera->name);
                 Storage::disk('systems')->makeDirectory($projPath);
             }
         }
