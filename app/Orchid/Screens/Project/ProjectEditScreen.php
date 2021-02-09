@@ -15,9 +15,11 @@ use App\Models\Ups;
 use App\Orchid\Layouts\Project\ProjectCompaniesListener;
 use App\Orchid\Layouts\Project\ProjectSystemsListener;
 use App\Rules\alphaNumString;
+use Carbon\Carbon;
 use DateTimeZone;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Orchid\Support\Facades\Alert;
 use \Orchid\Support\Facades\Toast;
 use Orchid\Screen\Actions\Button;
@@ -145,8 +147,6 @@ class ProjectEditScreen extends Screen
         $tmpArray = $this->getAvailableSystems($storedSystems, $activeSystems, $datesQuery);
 
         foreach ($tmpArray as $key => $item) {
-            Log::debug($key);
-            Log::debug($item);
             $selectedSystems[$key] = $item;
         }
 
@@ -317,6 +317,7 @@ class ProjectEditScreen extends Screen
     public function createOrUpdate(Project $project, Request $request)
     {
         $request->validate([
+            'project.id' => 'unique:App\Models\Project,id',
             'project.name' => ['required', new alphaNumString()],
             'project.start_date' => 'required|date_format:Y-m-d',
             'project.rec_end_date' => 'required|date_format:Y-m-d',
@@ -327,13 +328,36 @@ class ProjectEditScreen extends Screen
         $users = $request->get('users');
         $systems = $request->get('systems');
 
+        Storage::disk('systems')->makeDirectory(sprintf('P%04d_%s', $project->id, $project->name));
+
         $project->save();
+
+        $systemsPath = base_path('../../systems/');
+        $activeSystems = SupplyUnit::query()
+            ->leftJoin('project_systems as s', 's.supply_unit_id', '=', 'supply_units.id')
+            ->leftJoin('projects as p', 'p.id', '=', 's.project_id')
+            ->join('cameras as c', 'c.supply_unit_id', '=' , 'supply_units.id')
+            ->whereBetween('p.rec_end_date', [Carbon::now(), $project->start_date])
+            ->select('supply_units.*', 'c.model', 'c.name')->get();
 
         foreach ($systems as $system) {
             $projectSystem = new ProjectSystem();
             $projectSystem->supply_unit_id = $system;
             $projectSystem->project_id = $project->id;
             $projectSystem->save();
+
+            $supplyUnit = SupplyUnit::query()->firstWhere('id', '=', $system);
+            $cameras = $supplyUnit->cameras()->get();
+
+            foreach ($cameras as $camera) {
+                $projPath = sprintf('P%04d_%s/%s', $project->id, $project->name, $camera->name);
+                Storage::disk('systems')->makeDirectory($projPath);
+                if ($activeSystems->contains('id', '=', $system))
+                    continue;
+                Storage::disk('systems')->move($camera->name, $camera->name . '.orig');
+                $symPath = $systemsPath . $camera->name;
+                system(sprintf('ln -s %s $s', $systemsPath . $projPath, $symPath));
+            }
         }
 
         foreach ($users as $user)
