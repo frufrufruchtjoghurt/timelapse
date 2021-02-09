@@ -7,6 +7,7 @@ use App\Models\SupplyUnit;
 use App\Orchid\Layouts\ReusableComponentEditLayout;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\Relation;
 use Orchid\Screen\Fields\TextArea;
@@ -133,6 +134,7 @@ class CameraEditScreen extends Screen
                 }
             }
             $camera->name = 'cam' . sprintf("%03d", $highest_id);
+            Storage::disk('systems')->makeDirectory($camera->name);
         }
 
         $camera->save();
