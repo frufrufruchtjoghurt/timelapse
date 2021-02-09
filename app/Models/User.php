@@ -98,7 +98,11 @@ class User extends Authenticatable
 
     public function projects()
     {
-        return $this->hasManyThrough(Project::class, Feature::class);
+        return $this->hasManyThrough(Project::class, Feature::class, 'user_id', 'id', 'id', 'project_id');
+    }
+
+    public function symlinks() {
+        return $this->hasMany(Symlink::class);
     }
 
     /**
