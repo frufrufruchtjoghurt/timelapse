@@ -45,6 +45,9 @@ class PlatformScreen extends Screen
             foreach ($projects as $project) {
                 $folders = Storage::disk('systems')->directories(sprintf('P%04d-%s', $project->id, $project->name));
                 foreach ($folders as $folder) {
+                    if (str_contains($folder, '.php'))
+                        continue;
+
                     $path = Storage::disk('systems')->path($folder);
                     $hash = Str::random(50);
                     $symlink = new Symlink();
@@ -64,8 +67,17 @@ class PlatformScreen extends Screen
 
         foreach ($userSymlinks as $userSymlink) {
             $symlink = $userSymlink->symlink;
-            $latestDir = 'img/' . $symlink . '/' . scandir(public_path('img/') . $symlink, SCANDIR_SORT_DESCENDING)[0];
-            $latestPicture = $latestDir . '/' . scandir(public_path($latestDir), SCANDIR_SORT_DESCENDING)[0];
+            $dirs = scandir(public_path('img/') . $symlink, SCANDIR_SORT_DESCENDING);
+            $latestDir = 'img/' . $symlink . '/' . $dirs[0];
+
+            if (str_contains($dirs[0], '.php'))
+                $latestDir = 'img/' . $symlink . '/' . $dirs[1];
+
+            $pictures = scandir(public_path($latestDir), SCANDIR_SORT_DESCENDING);
+            $latestPicture = $latestDir . '/' . $pictures[0];
+
+            if (str_contains($pictures[0], '.php'))
+                $latestPicture = 'img/' . $symlink . '/' . $pictures[1];
 
             $picturePaths[$userSymlink->project_id][] = $latestPicture;
         }
@@ -76,7 +88,7 @@ class PlatformScreen extends Screen
             $movies = scandir(public_path('img/') . $movieSymlink->symlink, SCANDIR_SORT_ASCENDING);
 
             foreach ($movies as $movie) {
-                if (!strcmp($movie, '.') || !strcmp($movie, '..'))
+                if (!strcmp($movie, '.') || !strcmp($movie, '..') || str_contains($movie, '.php'))
                     continue;
 
                 $moviePaths[$movieSymlink->project_id] = 'img/' . $movieSymlink->symlink . '/' . $movie;
