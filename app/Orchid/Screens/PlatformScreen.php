@@ -45,6 +45,9 @@ class PlatformScreen extends Screen
             foreach ($projects as $project) {
                 $folders = Storage::disk('systems')->directories(sprintf('P%04d-%s', $project->id, $project->name));
                 foreach ($folders as $folder) {
+                    if (str_contains($folder, '.php'))
+                        continue;
+
                     $path = Storage::disk('systems')->path($folder);
                     $hash = Str::random(50);
                     $symlink = new Symlink();
