@@ -41,7 +41,6 @@ class PlatformScreen extends Screen
     {
         if (Auth::user()->symlinks()->get()->isEmpty()) {
             $projects = Auth::user()->projects()->get();
-
             foreach ($projects as $project) {
                 $folders = Storage::disk('systems')->directories(sprintf('P%04d-%s', $project->id, $project->name));
                 foreach ($folders as $folder) {
@@ -51,13 +50,41 @@ class PlatformScreen extends Screen
                         str_replace('/', Str::random(1), bcrypt($path))));
                     $symlink = new Symlink();
                     $symlink->user_id = Auth::user()->id;
+                    $symlink->project_id = $project->id;
                     $symlink->symlink = $hash;
+                    $symlink->is_movies = str_contains($folder, '/movies');
                     $symlink->save();
                     symlink($path, public_path('view/') . $hash);
                 }
             }
         }
-        return [];
+
+        $userSymlinks = Auth::user()->symlinks()->where('is_movies', '=', false)->get();
+        $picturePaths = array();
+        $moviePaths = array();
+
+        foreach ($userSymlinks as $userSymlink) {
+            $symlink = $userSymlink->symlink;
+            $latestDir = 'view/' . $symlink . '/' . scandir(public_path('view/') . $symlink, SCANDIR_SORT_DESCENDING)[0];
+            $latestPicture = $latestDir . '/' . scandir(public_path($latestDir), SCANDIR_SORT_DESCENDING)[0];
+
+            $picturePaths[] = $latestPicture;
+        }
+
+        $movieSymlink = Auth::user()->symlinks()->where('is_movies', '=', true)->get()->first();
+
+        foreach (scandir(public_path('view/') . $movieSymlink->symlink,
+            SCANDIR_SORT_ASCENDING) as $movie) {
+            if (!strcmp($movie, '.') || !strcmp($movie, '..'))
+                continue;
+
+            $moviePaths[] = 'view/' . $movieSymlink->symlink . '/' . $movie;
+        }
+
+        return [
+            'picturePaths' => $picturePaths,
+            'moviePaths' => $moviePaths,
+        ];
     }
 
     /**
