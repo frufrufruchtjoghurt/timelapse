@@ -39,22 +39,21 @@ class PlatformScreen extends Screen
      */
     public function query(): array
     {
+        $projects = Auth::user()->projects()->get();
+
         if (Auth::user()->symlinks()->get()->isEmpty()) {
-            $projects = Auth::user()->projects()->get();
             foreach ($projects as $project) {
                 $folders = Storage::disk('systems')->directories(sprintf('P%04d-%s', $project->id, $project->name));
                 foreach ($folders as $folder) {
                     $path = Storage::disk('systems')->path($folder);
-                    $hash = str_replace('.', Str::random(1),
-                        str_replace('$', Str::random(1),
-                        str_replace('/', Str::random(1), bcrypt($path))));
+                    $hash = Str::random(50);
                     $symlink = new Symlink();
                     $symlink->user_id = Auth::user()->id;
                     $symlink->project_id = $project->id;
                     $symlink->symlink = $hash;
                     $symlink->is_movies = str_contains($folder, '/movies');
                     $symlink->save();
-                    symlink($path, public_path('view/') . $hash);
+                    symlink($path, public_path('img/') . $hash);
                 }
             }
         }
@@ -65,23 +64,27 @@ class PlatformScreen extends Screen
 
         foreach ($userSymlinks as $userSymlink) {
             $symlink = $userSymlink->symlink;
-            $latestDir = 'view/' . $symlink . '/' . scandir(public_path('view/') . $symlink, SCANDIR_SORT_DESCENDING)[0];
+            $latestDir = 'img/' . $symlink . '/' . scandir(public_path('img/') . $symlink, SCANDIR_SORT_DESCENDING)[0];
             $latestPicture = $latestDir . '/' . scandir(public_path($latestDir), SCANDIR_SORT_DESCENDING)[0];
 
-            $picturePaths[] = $latestPicture;
+            $picturePaths[$userSymlink->project_id][] = $latestPicture;
         }
 
-        $movieSymlink = Auth::user()->symlinks()->where('is_movies', '=', true)->get()->first();
+        $movieSymlinks = Auth::user()->symlinks()->where('is_movies', '=', true)->get();
 
-        foreach (scandir(public_path('view/') . $movieSymlink->symlink,
-            SCANDIR_SORT_ASCENDING) as $movie) {
-            if (!strcmp($movie, '.') || !strcmp($movie, '..'))
-                continue;
+        foreach ($movieSymlinks as $movieSymlink) {
+            $movies = scandir(public_path('img/') . $movieSymlink->symlink, SCANDIR_SORT_ASCENDING);
 
-            $moviePaths[] = 'view/' . $movieSymlink->symlink . '/' . $movie;
+            foreach ($movies as $movie) {
+                if (!strcmp($movie, '.') || !strcmp($movie, '..'))
+                    continue;
+
+                $moviePaths[$movieSymlink->project_id] = 'img/' . $movieSymlink->symlink . '/' . $movie;
+            }
         }
 
         return [
+            'projects' => $projects,
             'picturePaths' => $picturePaths,
             'moviePaths' => $moviePaths,
         ];
@@ -104,6 +107,8 @@ class PlatformScreen extends Screen
      */
     public function layout(): array
     {
-        return [];
+        return [
+            Layout::view('project.dashboard'),
+        ];
     }
 }
