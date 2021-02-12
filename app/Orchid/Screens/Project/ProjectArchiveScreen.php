@@ -5,6 +5,7 @@ namespace App\Orchid\Screens\Project;
 use App\Models\Project;
 use Illuminate\Support\Facades\Auth;
 use Orchid\Screen\Screen;
+use Orchid\Support\Facades\Layout;
 
 class ProjectArchiveScreen extends Screen
 {
@@ -39,8 +40,31 @@ class ProjectArchiveScreen extends Screen
         $userSymlinks = Auth::user()->symlinks()
             ->where('project_id', '=', $project->id)
             ->where('is_movies', '=', false)->get();
+        $picturePaths = array();
+        $symlinks = array();
 
-        return [];
+        foreach ($userSymlinks as $userSymlink) {
+            $symlink = $userSymlink->symlink;
+            $dirs = scandir(public_path('img/') . $symlink, SCANDIR_SORT_DESCENDING);
+            $latestDir = 'img/' . $symlink . '/' . $dirs[0];
+
+            if (str_contains($dirs[0], '.php'))
+                $latestDir = 'img/' . $symlink . '/' . $dirs[1];
+
+            $pictures = scandir(public_path($latestDir), SCANDIR_SORT_DESCENDING);
+            $latestPicture = $latestDir . '/' . $pictures[0];
+
+            if (str_contains($pictures[0], '.php'))
+                $latestPicture = 'img/' . $symlink . '/' . $pictures[1];
+
+            $symlinks[] = 'img/' . $symlink;
+            $picturePaths[$symlink] = $latestPicture;
+        }
+
+        return [
+            'picturePaths' => $picturePaths,
+            'symlinks' => $symlinks,
+        ];
     }
 
     /**
@@ -60,6 +84,8 @@ class ProjectArchiveScreen extends Screen
      */
     public function layout(): array
     {
-        return [];
+        return [
+            Layout::view('project.archive'),
+        ];
     }
 }
