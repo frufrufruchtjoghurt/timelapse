@@ -20,7 +20,9 @@
 
                             <div class="col-auto ml-auto text-right">
                                 <div class="btn-group command-bar">
-                                    <a href="{{ url('/view/' . $project->id) }}" class="btn btn-xs btn-info pull-right">Details</a>
+                                    <a href="{{ url('/view/' . $project->id) }}" class="btn btn-xs btn-info pull-right">
+                                        <x-orchid-icon path="info"/> &#8287; Details
+                                    </a>
                                 </div>
                             </div>
                         </div>
