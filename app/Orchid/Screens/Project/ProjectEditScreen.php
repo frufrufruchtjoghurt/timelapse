@@ -308,7 +308,7 @@ class ProjectEditScreen extends Screen
                     ->fromModel(Company::class, 'name')
                     ->multiple()
                     ->required(),
-            ])->title('Kundenfirmen'),
+            ])->title('Auftraggeber'),
 
             ProjectCompaniesListener::class,
         ];

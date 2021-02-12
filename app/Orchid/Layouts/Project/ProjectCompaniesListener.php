@@ -46,13 +46,13 @@ class ProjectCompaniesListener extends Listener
             return [
                 Layout::rows([
                     Select::make('users.')
-                        ->title(__('Projektkunden'))
+                        ->title(__('Zugriffsberechtigte'))
                         ->multiple()
                         ->required()
                         ->options($this->query->get('companyUsers'))
                         ->canSee($this->query->has('companyUsers')),
 
-                ])->title(__('Projektkunden')),
+                ])->title(__('Zugriffsberechtigte')),
 
                 $this->query->getContent('features'),
             ];
@@ -61,12 +61,12 @@ class ProjectCompaniesListener extends Listener
         return [
             Layout::rows([
                 Select::make('users.')
-                    ->title(__('Projektkunden'))
+                    ->title(__('Zugriffsberechtigte'))
                     ->multiple()
                     ->required()
                     ->options($this->query->get('companyUsers'))
                     ->canSee($this->query->has('companyUsers')),
-            ])->title(__('Projektkunden')),
+            ])->title(__('Zugriffsberechtigte')),
         ];
     }
 }
