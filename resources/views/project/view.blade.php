@@ -15,7 +15,9 @@
                 <source src="{{ url($moviePath) }}" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
-            <br>
+            @if($moviePath != last($moviePaths))
+                <br>
+            @endif
         @endforeach
     @else
         <div class="text-center py-5 w-100">
@@ -26,7 +28,7 @@
     @endif
 </div>
 
-
+<br>
 <div class="col p-0 px-3">
     <legend class="text-black">
         @if (count($picturePaths) > 1)
@@ -41,7 +43,9 @@
     @if(!empty($picturePaths))
         @foreach($picturePaths as $picturePath)
             <img src="{{ url($picturePath) }}" alt="Aktuelles Bild von {{ $project->name }}">
-            <br>
+            @if($picturePath != last($picturePaths))
+                <br>
+            @endif
         @endforeach
     @else
         <div class="text-center py-5 w-100">
