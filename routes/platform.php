@@ -16,6 +16,7 @@ use App\Orchid\Screens\Photovoltaic\PhotovoltaicListScreen;
 use App\Orchid\Screens\PlatformScreen;
 use App\Orchid\Screens\Project\ProjectEditScreen;
 use App\Orchid\Screens\Project\ProjectListScreen;
+use App\Orchid\Screens\Project\ProjectViewScreen;
 use App\Orchid\Screens\Router\RouterEditScreen;
 use App\Orchid\Screens\Router\RouterListScreen;
 use App\Orchid\Screens\SimCard\SimCardEditScreen;
@@ -30,6 +31,7 @@ use App\Orchid\Screens\User\UserEditScreen;
 use App\Orchid\Screens\User\UserListScreen;
 use App\Orchid\Screens\User\UserProfileScreen;
 use App\Orchid\Screens\Company\CompanyEditScreen;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
@@ -44,9 +46,20 @@ use Tabuna\Breadcrumbs\Trail;
 |
 */
 
-// Main
-Route::screen('/dashboard', PlatformScreen::class)
-    ->name('platform.main');
+Route::middleware(['symlinks'])->group(function () {
+    // Main
+    Route::screen('/dashboard', PlatformScreen::class)
+        ->name('platform.main');
+
+    Route::screen('view/{id}', ProjectViewScreen::class)
+        ->name('platform.view')
+        ->breadcrumbs(function (Trail $trail, $id = null) {
+            return $trail
+                ->parent('platform.index')
+                ->push(__('Details'), route('platform.view', $id));
+        })
+        ->middleware('project.access');
+});
 
 // Platform > Profile
 Route::screen('profile', UserProfileScreen::class)

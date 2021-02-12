@@ -4,8 +4,10 @@ namespace App\Http;
 
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\CheckResetToken;
+use App\Http\Middleware\CreateSymlinks;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\HasPrivileges;
+use App\Http\Middleware\HasProjectAccess;
 use App\Http\Middleware\HttpsProtocolRedirect;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\RedirectIfAuthenticated;
@@ -86,7 +88,9 @@ class Kernel extends HttpKernel
         'guest' => RedirectIfAuthenticated::class,
         'password.confirm' => RequirePassword::class,
         'privileged' => HasPrivileges::class,
+        'project.access' => HasProjectAccess::class,
         'signed' => ValidateSignature::class,
+        'symlinks' => CreateSymlinks::class,
         'throttle' => ThrottleRequests::class,
         'verified' => EnsureEmailIsVerified::class,
     ];

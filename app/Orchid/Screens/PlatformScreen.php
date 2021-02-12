@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Orchid\Screen\Actions\Link;
+use Orchid\Screen\Contracts\Cardable;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
 
@@ -41,29 +42,11 @@ class PlatformScreen extends Screen
     {
         $projects = Auth::user()->projects()->get();
 
-        if (Auth::user()->symlinks()->get()->isEmpty()) {
-            foreach ($projects as $project) {
-                $folders = Storage::disk('systems')->directories(sprintf('P%04d-%s', $project->id, $project->name));
-                foreach ($folders as $folder) {
-                    if (str_contains($folder, '.php'))
-                        continue;
-
-                    $path = Storage::disk('systems')->path($folder);
-                    $hash = Str::random(50);
-                    $symlink = new Symlink();
-                    $symlink->user_id = Auth::user()->id;
-                    $symlink->project_id = $project->id;
-                    $symlink->symlink = $hash;
-                    $symlink->is_movies = str_contains($folder, '/movies');
-                    $symlink->save();
-                    symlink($path, public_path('img/') . $hash);
-                }
-            }
-        }
+        if (Auth::user()->hasAccess('manager') || Auth::user()->hasAccess('admin'))
+            $projects = Project::all();
 
         $userSymlinks = Auth::user()->symlinks()->where('is_movies', '=', false)->get();
         $picturePaths = array();
-        $moviePaths = array();
 
         foreach ($userSymlinks as $userSymlink) {
             $symlink = $userSymlink->symlink;
@@ -83,6 +66,7 @@ class PlatformScreen extends Screen
         }
 
         $movieSymlinks = Auth::user()->symlinks()->where('is_movies', '=', true)->get();
+        $moviePaths = array();
 
         foreach ($movieSymlinks as $movieSymlink) {
             $movies = scandir(public_path('img/') . $movieSymlink->symlink, SCANDIR_SORT_ASCENDING);
