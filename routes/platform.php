@@ -14,6 +14,8 @@ use App\Orchid\Screens\Heating\HeatingListScreen;
 use App\Orchid\Screens\Photovoltaic\PhotovoltaicEditScreen;
 use App\Orchid\Screens\Photovoltaic\PhotovoltaicListScreen;
 use App\Orchid\Screens\PlatformScreen;
+use App\Orchid\Screens\Project\ProjectArchiveScreen;
+use App\Orchid\Screens\Project\ProjectDeeplinksScreen;
 use App\Orchid\Screens\Project\ProjectEditScreen;
 use App\Orchid\Screens\Project\ProjectListScreen;
 use App\Orchid\Screens\Project\ProjectViewScreen;
@@ -51,14 +53,31 @@ Route::middleware(['symlinks'])->group(function () {
     Route::screen('/dashboard', PlatformScreen::class)
         ->name('platform.main');
 
-    Route::screen('view/{id}', ProjectViewScreen::class)
-        ->name('platform.view')
-        ->breadcrumbs(function (Trail $trail, $id = null) {
-            return $trail
-                ->parent('platform.index')
-                ->push(__('Details'), route('platform.view', $id));
-        })
-        ->middleware('project.access');
+    Route::middleware(['project.access'])->group(function () {
+        Route::screen('view/{id}', ProjectViewScreen::class)
+            ->name('platform.view')
+            ->breadcrumbs(function (Trail $trail, $id = null) {
+                return $trail
+                    ->parent('platform.index')
+                    ->push(__('Details'), route('platform.view', $id));
+            });
+
+        Route::screen('archive/{id}', ProjectArchiveScreen::class)
+            ->name('platform.archive')
+            ->breadcrumbs(function (Trail $trail, $id = null) {
+                return $trail
+                    ->parent('platform.index')
+                    ->push(__('Archiv'), route('platform.archive', $id));
+            });
+
+        Route::screen('deeplink/{id}', ProjectDeeplinksScreen::class)
+            ->name('platform.deeplink')
+            ->breadcrumbs(function (Trail $trail, $id = null) {
+                return $trail
+                    ->parent('platform.index')
+                    ->push(__('Details'), route('platform.deeplink', $id));
+            });
+    });
 });
 
 // Platform > Profile
