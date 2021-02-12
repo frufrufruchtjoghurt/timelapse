@@ -135,7 +135,7 @@ class ReusableComponentListLayout extends Table
                     ->list([
 
                         Link::make(__('Bearbeiten'))
-                            ->route('platform.cameras.edit', $component->id)
+                            ->route('platform.' . $this->target . '.edit', $component->id)
                             ->icon('pencil'),
 
                         Button::make(__('Löschen'))
