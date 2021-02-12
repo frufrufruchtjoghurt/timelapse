@@ -11,7 +11,7 @@
 <div class="bg-white rounded shadow-sm p-4 py-4 d-flex flex-column">
     @if(!empty($moviePaths))
         @foreach($moviePaths as $moviePath)
-            <video {{--width="320" height="240"--}} controls autoplay loop>
+            <video {{--width="320" height="240"--}} controls>
                 <source src="{{ $moviePath }}" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
