@@ -34,6 +34,27 @@ class HasProjectAccess
             Alert::error(__('Sie haben nicht genügend Berechtigungen für diese Aktion!'));
             return redirect()->route('platform.main');
         }
+
+        $userFeatures = array();
+
+        $projFeat = Auth::user()->features()->where('project_id', '=', $request->id)->get()->first();
+        if (!empty($projFeat)) {
+            $userFeatures = ['archive' => $projFeat->archive, 'deeplink' => $projFeat->deeplink];
+        }
+
+        if (Auth::user()->hasAccess('manager') || Auth::user()->hasAccess('admin'))
+            $userFeatures = ['archive' => true, 'deeplink' => true];
+
+        if (str_contains($request->url(), 'archive') && (empty($userFeatures) || !$userFeatures['archive'])) {
+            Alert::error(__('Sie haben nicht genügend Berechtigungen für diese Aktion!'));
+            return redirect()->route('platform.main');
+        }
+
+        if (str_contains($request->url(), 'deeplink') && (empty($userFeatures) || !$userFeatures['deeplink'])) {
+            Alert::error(__('Sie haben nicht genügend Berechtigungen für diese Aktion!'));
+            return redirect()->route('platform.main');
+        }
+
         return $next($request);
     }
 }
