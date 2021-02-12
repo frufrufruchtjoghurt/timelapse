@@ -20,16 +20,16 @@
 
                             <div class="col-auto ml-auto text-right">
                                 <div class="btn-group command-bar">
-                                    <a href="{{ url('/view/' . $project->id) }}" class="btn btn-xs btn-info pull-right">
+                                    <a href="{{ url('/view/' . $project->id) }}" class="btn btn-xs btn-success pull-right">
                                         <x-orchid-icon path="info"/> &#8287; Details
                                     </a>
                                     @if($features[$project->id]['archive'])
-                                        <a href="{{ url('/archive/' . $project->id) }}" class="btn btn-xs btn-info pull-right">
+                                        <a href="{{ url('/archive/' . $project->id) }}" class="btn btn-xs btn-success pull-right">
                                             <x-orchid-icon path="folder-alt"/> &#8287; Archiv
                                         </a>
                                     @endif
                                     @if($features[$project->id]['deeplink'])
-                                        <a href="{{ url('/deeplink/' . $project->id) }}" class="btn btn-xs btn-info pull-right">
+                                        <a href="{{ url('/deeplink/' . $project->id) }}" class="btn btn-xs btn-success pull-right">
                                             <x-orchid-icon path="link"/> &#8287; Deeplink
                                         </a>
                                     @endif
