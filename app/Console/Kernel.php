@@ -35,7 +35,7 @@ class Kernel extends ConsoleKernel
                 if ($sessionUsers->contains('user_id', '=', $symlink->user_id))
                     continue;
 
-                unlink(public_path('view/') . $symlink->symlink);
+                unlink(public_path('img/') . $symlink->symlink);
                 $symlink->delete();
             }
         })->everyFiveMinutes();
