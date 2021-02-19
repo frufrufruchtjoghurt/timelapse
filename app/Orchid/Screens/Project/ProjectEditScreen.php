@@ -251,10 +251,6 @@ class ProjectEditScreen extends Screen
                         CheckBox::make($user . '.deeplink')
                             ->title(__('DeepLink'))
                             ->sendTrueOrFalse(),
-
-                        CheckBox::make($user . '.storage_medium')
-                            ->title(__('Speichermedium'))
-                            ->sendTrueOrFalse(),
                     ]),
                 ])->title($companyUsers[$user]);
             }
