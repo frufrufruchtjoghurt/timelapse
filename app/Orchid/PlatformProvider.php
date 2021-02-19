@@ -44,25 +44,20 @@ class PlatformProvider extends OrchidServiceProvider
     public function registerMainMenu(): array
     {
         return [
-            ItemMenu::label(__('Kunden'))
-                ->title('Verwaltung')
-                ->icon('user')
-                ->route('platform.users')
-                ->canSee(Auth::user()->hasAccess('admin') || Auth::user()->hasAccess('manager')),
-
             ItemMenu::label(__('Firmen'))
                 ->icon('building')
                 ->route('platform.companies')
                 ->canSee(Auth::user()->hasAccess('admin') || Auth::user()->hasAccess('manager')),
 
+            ItemMenu::label(__('Zugriffsberechtigte'))
+                ->title('Verwaltung')
+                ->icon('user')
+                ->route('platform.users')
+                ->canSee(Auth::user()->hasAccess('admin') || Auth::user()->hasAccess('manager')),
+
             ItemMenu::label(__('Kameras'))
                 ->icon('camrecorder')
                 ->route('platform.cameras')
-                ->canSee(Auth::user()->hasAccess('admin') || Auth::user()->hasAccess('manager')),
-
-            ItemMenu::label(__('Versorgungseinheiten'))
-                ->icon('modules')
-                ->route('platform.supplyunits')
                 ->canSee(Auth::user()->hasAccess('admin') || Auth::user()->hasAccess('manager')),
 
             ItemMenu::label(__('Komponenten'))
@@ -99,6 +94,11 @@ class PlatformProvider extends OrchidServiceProvider
                 ->icon('module')
                 ->place('components')
                 ->route('platform.photovoltaics')
+                ->canSee(Auth::user()->hasAccess('admin') || Auth::user()->hasAccess('manager')),
+
+            ItemMenu::label(__('Versorgungseinheiten'))
+                ->icon('modules')
+                ->route('platform.supplyunits')
                 ->canSee(Auth::user()->hasAccess('admin') || Auth::user()->hasAccess('manager')),
 
             ItemMenu::label(__('Projekte'))
