@@ -82,8 +82,10 @@ class PlatformScreen extends Screen
         $features = array();
 
         foreach ($projects as $project) {
-            if (Auth::user()->hasAccess('manager') || Auth::user()->hasAccess('admin'))
+            if (Auth::user()->hasAccess('manager') || Auth::user()->hasAccess('admin')) {
                 $features[$project->id] = ['archive' => true, 'deeplink' => true];
+                continue;
+            }
 
             $projFeat = Auth::user()->features()->where('project_id', '=', $project->id)->get()->first();
             $features[$project->id] = ['archive' => $projFeat->archive, 'deeplink' => $projFeat->deeplink];
