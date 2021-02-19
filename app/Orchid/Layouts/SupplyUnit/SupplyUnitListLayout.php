@@ -84,7 +84,7 @@ class SupplyUnitListLayout extends Table
 
             TD::make('project_nr', __('Projekt'))
                 ->render(function (SupplyUnit $supplyunit) {
-                    $project = $supplyunit->projects()->where('rec_end_date')->get()->first();
+                    $project = $supplyunit->projects()->where('video_editor_send_date')->get()->first();
                     return empty($project) ? __('Im Lager') : $project->id;
                 }),
 

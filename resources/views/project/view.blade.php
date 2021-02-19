@@ -2,9 +2,9 @@
     <legend class="text-black">
         @if (count($moviePaths) > 1)
             {{ $project->name . ' - aktuelle Filme' }}
-            @else
+        @else
             {{ $project->name . ' - aktueller Film' }}
-            @endif
+        @endif
     </legend>
 </div>
 
