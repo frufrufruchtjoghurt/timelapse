@@ -21,6 +21,10 @@ Route::get('/', function () {
     return redirect()->route('platform.main');
 });
 
+Route::get('home', function () {
+    return redirect()->route('platform.main');
+});
+
 Route::get('reset/{token}{email}', function (Request $request) {
         $token = explode('?', explode('/', $request->getRequestUri())[2])[0];
         return view('auth.reset', [
