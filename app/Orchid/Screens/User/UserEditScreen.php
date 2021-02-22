@@ -149,7 +149,11 @@ class UserEditScreen extends Screen
             ->collapse()
             ->toArray();
 
-        array_push($permissions, ['platform.index' => true]);
+        $tmp_perm = json_decode($permissions, true);
+        $std_perm['platform.index'] = true;
+
+        array_push($tmp_perm, $std_perm);
+        $permissions = json_encode($tmp_perm);
 
         if (!$this->exists)
         {
