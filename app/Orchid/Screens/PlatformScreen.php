@@ -34,6 +34,13 @@ class PlatformScreen extends Screen
     public $description = 'Willkommen im Timelapse-Kundenportal!';
 
     /**
+     * @var array
+     */
+    public $permission = [
+        'platform.index',
+    ];
+
+    /**
      * Query data.
      *
      * @return array
