@@ -45,7 +45,7 @@ class PlatformScreen extends Screen
         if (Auth::user()->hasAccess('manager') || Auth::user()->hasAccess('admin'))
             $projects = Project::all();
 
-        $userSymlinks = Auth::user()->symlinks()->where('is_movies', '=', false)->get();
+        $userSymlinks = Auth::user()->symlinks()->where('is_latest', '=', false)->get();
         $picturePaths = array();
 
         foreach ($userSymlinks as $userSymlink) {
@@ -65,7 +65,7 @@ class PlatformScreen extends Screen
             $picturePaths[$userSymlink->project_id][] = $latestPicture;
         }
 
-        $movieSymlinks = Auth::user()->symlinks()->where('is_movies', '=', true)->get();
+        $movieSymlinks = Auth::user()->symlinks()->where('is_latest', '=', true)->get();
         $moviePaths = array();
 
         foreach ($movieSymlinks as $movieSymlink) {

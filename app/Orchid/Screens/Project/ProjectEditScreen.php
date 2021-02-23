@@ -325,7 +325,7 @@ class ProjectEditScreen extends Screen
         $systems = $request->get('systems');
 
         Storage::disk('systems')->makeDirectory(sprintf('P%04d-%s', $project->id, $project->name));
-        Storage::disk('systems')->makeDirectory(sprintf('P%04d-%s/movies', $project->id, $project->name));
+        Storage::disk('systems')->makeDirectory(sprintf('P%04d-%s/latest', $project->id, $project->name));
 
         $project->save();
 

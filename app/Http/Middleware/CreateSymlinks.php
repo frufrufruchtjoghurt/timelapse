@@ -39,7 +39,7 @@ class CreateSymlinks
                     $symlink->user_id = Auth::user()->id;
                     $symlink->project_id = $project->id;
                     $symlink->symlink = $hash;
-                    $symlink->is_movies = str_contains($folder, '/movies');
+                    $symlink->is_latest = str_contains($folder, '/latest');
                     $symlink->save();
                     symlink($path, public_path('img/') . $hash);
                 }

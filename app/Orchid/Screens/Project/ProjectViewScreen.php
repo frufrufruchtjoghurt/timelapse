@@ -43,7 +43,7 @@ class ProjectViewScreen extends Screen
 
         $userSymlinks = Auth::user()->symlinks()
             ->where('project_id', '=', $project->id)
-            ->where('is_movies', '=', false)->get();
+            ->where('is_latest', '=', false)->get();
         $picturePaths = array();
 
         foreach ($userSymlinks as $userSymlink) {
@@ -65,7 +65,7 @@ class ProjectViewScreen extends Screen
 
         $movieSymlinks = Auth::user()->symlinks()
             ->where('project_id', '=', $project->id)
-            ->where('is_movies', '=', true)->get();
+            ->where('is_latest', '=', true)->get();
         $moviePaths = array();
 
         foreach ($movieSymlinks as $movieSymlink) {
