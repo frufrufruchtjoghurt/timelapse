@@ -43,16 +43,16 @@ class Kernel extends ConsoleKernel
             }
         })->everyFiveMinutes();
 
-        $schedule->call(function () {
-            $projects = Project::all();
-
-            foreach ($projects as $project) {
-                $latest_content = Storage::disk('systems')->files(sprintf('P%04d-%s/latest', $project->id, $project->name));
-
+//        $schedule->call(function () {
+//            $projects = Project::all();
+//
+//            foreach ($projects as $project) {
+//                $latest_content = Storage::disk('systems')->files(sprintf('P%04d-%s/latest', $project->id, $project->name));
+//
 //                if (in_array(preg_match('/^pic[0-9][0-9][0-9]$/', $latest_content), $latest_content) && $project->is_dismantled)
 //                    continue;
-
-                Log::debug(count(Storage::disk('systems')->files('.')));
+//
+//                Log::debug(count($latest_content));
 //                foreach (Storage::disk('systems')->allFiles(sprintf('P%04d-%s', $project->id, $project->name))
 //                    as $dir) {
 //                    Log::debug($dir);
@@ -72,8 +72,8 @@ class Kernel extends ConsoleKernel
 //
 //                    Log::debug($latest_day);
 //                }
-            }
-        })->everyMinute();
+//            }
+//        })->everyMinute();
     }
 
     /**
