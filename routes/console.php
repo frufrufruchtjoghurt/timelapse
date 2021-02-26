@@ -25,7 +25,7 @@ Artisan::command('logs:clear', function() {
         if (!preg_match('/^.*\.log$/', $file))
             continue;
 
-        exec('truncate -s 0 ' . storage_path('logs/' . $file));
+        exec('rm ' . storage_path('logs/' . $file));
     }
     $this->comment('Logs have been cleared!');
 })->describe('Clear log files');
