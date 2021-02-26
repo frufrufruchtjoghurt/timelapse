@@ -47,20 +47,31 @@ class Kernel extends ConsoleKernel
             $projects = Project::all();
 
             foreach ($projects as $project) {
-                $latest_content = Storage::disk('systems')->allFiles(sprintf('P%04d-%s/latest', $project->id, $project->name));
+                $latest_content = Storage::disk('systems')->files(sprintf('P%04d-%s/latest', $project->id, $project->name));
 
-                if (in_array(preg_match('/^pic[0-9][0-9][0-9]$/', $latest_content), $latest_content) && $project->is_dismantled)
-                    continue;
+//                if (in_array(preg_match('/^pic[0-9][0-9][0-9]$/', $latest_content), $latest_content) && $project->is_dismantled)
+//                    continue;
 
-                foreach (Storage::disk('systems')->allFiles(sprintf('P%04d-%s', $project->id, $project->name))
-                    as $dir) {
-                    if (!preg_match('/^cam[0-9][0-9][0-9]$/', $dir))
-                        continue;
-
-                    $cam_path = Storage::disk('systems')->url(sprintf('P%04d-%s/%s',
-                        $project->id, $project->name, $dir));
-                    $camera = Camera::query()->where('name', '=', $dir)->get()->first();
-                }
+                Log::debug(count(Storage::disk('systems')->files('.')));
+//                foreach (Storage::disk('systems')->allFiles(sprintf('P%04d-%s', $project->id, $project->name))
+//                    as $dir) {
+//                    Log::debug($dir);
+//                    if (!preg_match('/^cam[0-9][0-9][0-9]$/', $dir))
+//                        continue;
+//
+//                    $cam_path = Storage::disk('systems')->url(sprintf('P%04d-%s/%s',
+//                        $project->id, $project->name, $dir));
+//                    $camera = Camera::query()->where('name', '=', $dir)->get()->first();
+//
+//                    $days = scandir($cam_path, SCANDIR_SORT_DESCENDING);
+//                    $pos = 0;
+//                    while (!preg_match('/^2[0-1][0-9][0-9]-((1[0-2])|(0[1-9]))-(([0-2][0-9])|(3[0-1]))$/', $days[$pos]))
+//                        $pos++;
+//
+//                    $latest_day = $cam_path . '/' . $days[$pos];
+//
+//                    Log::debug($latest_day);
+//                }
             }
         })->everyMinute();
     }
