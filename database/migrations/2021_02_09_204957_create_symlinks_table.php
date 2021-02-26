@@ -18,7 +18,7 @@ class CreateSymlinksTable extends Migration
             $table->foreignId('user_id')->index();
             $table->foreignId('project_id')->index();
             $table->string('symlink');
-            $table->boolean('is_movies');
+            $table->boolean('is_latest');
             $table->timestamps();
         });
     }
