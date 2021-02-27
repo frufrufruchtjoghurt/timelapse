@@ -14,7 +14,7 @@ class AddFilemtimeToCamerasTable extends Migration
     public function up()
     {
         Schema::table('cameras', function (Blueprint $table) {
-            $table->dateTime('filemtime')
+            $table->timestamp('filemtime')
                 ->nullable();
         });
     }
