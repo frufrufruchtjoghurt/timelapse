@@ -12,7 +12,7 @@
     @if(!empty($moviePaths))
         @foreach($moviePaths as $moviePath)
             <video controls controlsList="nodownload" muted loop>
-                <source src="{{ url($moviePath) }}" type="video/mp4">
+                <img src="{{ url($moviePath) }}" alt="Aktuelles Video von {{ $project->name }}">
                 Your browser does not support the video tag.
             </video>
             @if($moviePath != last($moviePaths))
