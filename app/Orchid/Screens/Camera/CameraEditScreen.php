@@ -61,6 +61,9 @@ class CameraEditScreen extends Screen
     {
         $this->exists = !empty($camera);
 
+        if ($this->exists == null)
+            $this->exists = false;
+
         if ($this->exists) {
             $this->name = __('Kamera bearbeiten');
             $this->broken = $camera->broken;
