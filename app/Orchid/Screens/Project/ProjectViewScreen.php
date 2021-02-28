@@ -51,9 +51,9 @@ class ProjectViewScreen extends Screen
 
         foreach ($files as $file) {
             if (preg_match('/^pic[0-9][0-9][0-9].jpg$/', $file)) {
-                $picturePaths[] = sprintf('%s/%s/%s', public_path('img'), $symlink->symlink, $file);
+                $picturePaths[] = sprintf('img/%s/%s', $symlink->symlink, $file);
             } else if (preg_match('/^mov[0-9][0-9][0-9]\..*$/', $file)) {
-                $moviePaths[] = sprintf('%s/%s/%s', public_path('img'), $symlink->symlink, $file);
+                $moviePaths[] = sprintf('img/%s/%s', $symlink->symlink, $file);
             }
         }
 
