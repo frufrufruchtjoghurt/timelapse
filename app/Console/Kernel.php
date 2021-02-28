@@ -62,6 +62,7 @@ class Kernel extends ConsoleKernel
                     as $dir) {
                     $cam_path = sprintf('%s/%s', $project_path, $dir);
                     $camera = Camera::query()->where('name', '=', $dir)->get()->first();
+                    Log::debug($dir);
                     Log::debug($camera);
 
                     $days = scandir($cam_path, SCANDIR_SORT_DESCENDING);
