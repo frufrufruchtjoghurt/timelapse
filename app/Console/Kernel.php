@@ -62,14 +62,16 @@ class Kernel extends ConsoleKernel
                     as $dir) {
                     $cam_path = sprintf('%s/%s', $project_path, $dir);
                     $camera = Camera::query()->where('name', '=', $dir)->get()->first();
-                    Log::debug($dir);
-                    Log::debug($camera);
 
                     $days = scandir($cam_path, SCANDIR_SORT_DESCENDING);
                     $pos = 0;
-                    while (!preg_match('/^2[0-1]-((1[0-2])|(0[1-9]))-(([0-2][0-9])|(3[0-1]))$/', $days[$pos])) {
+                    while ($pos < count($days) &&
+                            !preg_match('/^2[0-1]-((1[0-2])|(0[1-9]))-(([0-2][0-9])|(3[0-1]))$/', $days[$pos])) {
                         $pos++;
                     }
+
+                    if ($pos == count($days))
+                        continue;
 
                     $latest_day = sprintf('%s/%s', $cam_path, $days[$pos]);
 
