@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Monolog\Formatter\LogstashFormatter;
 
 class Kernel extends ConsoleKernel
 {
@@ -61,6 +62,7 @@ class Kernel extends ConsoleKernel
                     as $dir) {
                     $cam_path = sprintf('%s/%s', $project_path, $dir);
                     $camera = Camera::query()->where('name', '=', $dir)->get()->first();
+                    Log::debug($camera);
 
                     $days = scandir($cam_path, SCANDIR_SORT_DESCENDING);
                     $pos = 0;
