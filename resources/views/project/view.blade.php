@@ -11,10 +11,7 @@
 <div class="bg-white rounded shadow-sm p-4 py-4 d-flex flex-column">
     @if(!empty($moviePaths))
         @foreach($moviePaths as $moviePath)
-            <video controls controlsList="nodownload" muted loop>
-                <img src="{{ url($moviePath) }}" alt="Aktuelles Video von {{ $project->name }}">
-                Your browser does not support the video tag.
-            </video>
+            <img src="{{ url($moviePath) }}" alt="Aktuelles Video von {{ $project->name }}">
             @if($moviePath != last($moviePaths))
                 <br>
             @endif
