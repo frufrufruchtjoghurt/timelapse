@@ -45,37 +45,17 @@ class PlatformScreen extends Screen
         if (Auth::user()->hasAccess('manager') || Auth::user()->hasAccess('admin'))
             $projects = Project::all();
 
-        $userSymlinks = Auth::user()->symlinks()->where('is_latest', '=', false)->get();
-        $picturePaths = array();
+        $latestSymlinks = Auth::user()->symlinks()->where('is_latest', '=', true)->get();
+        $latestPaths = array();
 
-        foreach ($userSymlinks as $userSymlink) {
-            $symlink = $userSymlink->symlink;
-            $dirs = scandir(public_path('img/') . $symlink, SCANDIR_SORT_DESCENDING);
-            $latestDir = 'img/' . $symlink . '/' . $dirs[0];
+        foreach ($latestSymlinks as $latestSymlink) {
+            $latestFiles = scandir(public_path('img/') . $latestSymlink->symlink, SCANDIR_SORT_ASCENDING);
 
-            if (str_contains($dirs[0], '.php'))
-                $latestDir = 'img/' . $symlink . '/' . $dirs[1];
-
-            $pictures = scandir(public_path($latestDir), SCANDIR_SORT_DESCENDING);
-            $latestPicture = $latestDir . '/' . $pictures[0];
-
-            if (str_contains($pictures[0], '.php'))
-                $latestPicture = 'img/' . $symlink . '/' . $pictures[1];
-
-            $picturePaths[$userSymlink->project_id][] = $latestPicture;
-        }
-
-        $movieSymlinks = Auth::user()->symlinks()->where('is_latest', '=', true)->get();
-        $moviePaths = array();
-
-        foreach ($movieSymlinks as $movieSymlink) {
-            $movies = scandir(public_path('img/') . $movieSymlink->symlink, SCANDIR_SORT_ASCENDING);
-
-            foreach ($movies as $movie) {
-                if (!strcmp($movie, '.') || !strcmp($movie, '..') || str_contains($movie, '.php'))
-                    continue;
-
-                $moviePaths[$movieSymlink->project_id] = 'img/' . $movieSymlink->symlink . '/' . $movie;
+            foreach ($latestFiles as $latestFile) {
+                if (preg_match('/^pic[0-9][0-9][0-9].jpg$/', $latestFile)) {
+                    $latestPaths[$latestSymlink->project_id] = 'img/' . $latestSymlink->symlink . '/' . $latestFile;
+                    break;
+                }
             }
         }
 
@@ -94,8 +74,7 @@ class PlatformScreen extends Screen
         return [
             'projects' => $projects,
             'features' => $features,
-            'picturePaths' => $picturePaths,
-            'moviePaths' => $moviePaths,
+            'picturePaths' => $latestPaths,
         ];
     }
 

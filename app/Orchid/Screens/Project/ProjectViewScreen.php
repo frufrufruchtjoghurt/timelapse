@@ -41,41 +41,19 @@ class ProjectViewScreen extends Screen
 
         $this->name = $project->name;
 
-        $userSymlinks = Auth::user()->symlinks()
+        $symlink = Auth::user()->symlinks()
             ->where('project_id', '=', $project->id)
-            ->where('is_latest', '=', false)->get();
+            ->where('is_latest', '=', true)->get()->first();
         $picturePaths = array();
-
-        foreach ($userSymlinks as $userSymlink) {
-            $symlink = $userSymlink->symlink;
-            $dirs = scandir(public_path('img/') . $symlink, SCANDIR_SORT_DESCENDING);
-            $latestDir = 'img/' . $symlink . '/' . $dirs[0];
-
-            if (str_contains($dirs[0], '.php'))
-                $latestDir = 'img/' . $symlink . '/' . $dirs[1];
-
-            $pictures = scandir(public_path($latestDir), SCANDIR_SORT_DESCENDING);
-            $latestPicture = $latestDir . '/' . $pictures[0];
-
-            if (str_contains($pictures[0], '.php'))
-                $latestPicture = 'img/' . $symlink . '/' . $pictures[1];
-
-            $picturePaths[] = $latestPicture;
-        }
-
-        $movieSymlinks = Auth::user()->symlinks()
-            ->where('project_id', '=', $project->id)
-            ->where('is_latest', '=', true)->get();
         $moviePaths = array();
 
-        foreach ($movieSymlinks as $movieSymlink) {
-            $movies = scandir(public_path('img/') . $movieSymlink->symlink, SCANDIR_SORT_ASCENDING);
+        $files = scandir(public_path('img/') . $symlink->symlink, SCANDIR_SORT_DESCENDING);
 
-            foreach ($movies as $movie) {
-                if (!strcmp($movie, '.') || !strcmp($movie, '..') || str_contains($movie, '.php'))
-                    continue;
-
-                $moviePaths[] = 'img/' . $movieSymlink->symlink . '/' . $movie;
+        foreach ($files as $file) {
+            if (preg_match('/^pic[0-9][0-9][0-9].jpg$/', $file)) {
+                $picturePaths[] = sprintf('%s/%s/%s', public_path('img'), $symlink->symlink, $file);
+            } else if (preg_match('/^mov[0-9][0-9][0-9]\..*$/', $file)) {
+                $moviePaths[] = sprintf('%s/%s/%s', public_path('img'), $symlink->symlink, $file);
             }
         }
 

@@ -5,7 +5,7 @@
             <div class="row no-gutters">
                 <div class="col-md-4">
                     <div class="h-100" style="display: contents">
-                        <img src="{{ url($picturePaths[$project->id][0]) }}" class="img-fluid img-card">
+                        <img src="{{ url($picturePaths[$project->id]) }}" class="img-fluid img-card">
                     </div>
                 </div>
 
