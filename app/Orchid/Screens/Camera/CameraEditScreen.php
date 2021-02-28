@@ -59,7 +59,7 @@ class CameraEditScreen extends Screen
      */
     public function query(Camera $camera): array
     {
-        $this->exists = $camera->exists;
+        $this->exists = !empty($camera);
 
         if ($this->exists) {
             $this->name = __('Kamera bearbeiten');
@@ -126,7 +126,6 @@ class CameraEditScreen extends Screen
 
         if (!$this->exists) {
             $cams = Camera::all();
-            Log::debug($cams);
             $highest_id = 1;
             if ($cams) {
                 foreach ($cams as $cam) {
