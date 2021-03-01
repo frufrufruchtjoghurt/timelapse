@@ -121,7 +121,7 @@ class CameraEditScreen extends Screen
             'camera.purchase_date' => 'required|date_format:Y-m-d|before_or_equal:today',
         ]);
 
-        $exists = Camera::query()->where('name', '=', $request->camera['name'])->exists();
+        $exists = Camera::query()->where('name', '=', $camera->name)->exists();
 
         $camera->fill($request->get('camera'));
         if ($this->exists && $camera->supplyUnit()->exists() && $this->broken) {
