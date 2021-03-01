@@ -39,23 +39,32 @@ class ProjectArchiveScreen extends Screen
 
         $userSymlinks = Auth::user()->symlinks()
             ->where('project_id', '=', $project->id)
-            ->where('is_movies', '=', false)->get();
+            ->where('is_latest', '=', false)->get();
         $picturePaths = array();
         $symlinks = array();
 
         foreach ($userSymlinks as $userSymlink) {
             $symlink = $userSymlink->symlink;
             $dirs = scandir(public_path('img/') . $symlink, SCANDIR_SORT_DESCENDING);
-            $latestDir = 'img/' . $symlink . '/' . $dirs[0];
+            $pos = 0;
+            while ($pos < count($dirs) &&
+                !preg_match('/^2[0-1]-((1[0-2])|(0[1-9]))-(([0-2][0-9])|(3[0-1]))$/', $dirs[$pos])) {
+                $pos++;
+            }
+            if ($pos == count($dirs))
+                continue;
 
-            if (str_contains($dirs[0], '.php'))
-                $latestDir = 'img/' . $symlink . '/' . $dirs[1];
-
+            $latestDir = 'img/' . $symlink . '/' . $dirs[$pos];
             $pictures = scandir(public_path($latestDir), SCANDIR_SORT_DESCENDING);
-            $latestPicture = $latestDir . '/' . $pictures[0];
+            $pos = 0;
+            while ($pos < count($pictures) &&
+                !preg_match('/^image.*\.jpg$/', $pictures[$pos])) {
+                $pos++;
+            }
+            if ($pos == count($pictures))
+                continue;
 
-            if (str_contains($pictures[0], '.php'))
-                $latestPicture = 'img/' . $symlink . '/' . $pictures[1];
+            $latestPicture = $latestDir . '/' . $pictures[$pos];
 
             $symlinks[] = 'img/' . $symlink;
             $picturePaths[$symlink] = $latestPicture;
