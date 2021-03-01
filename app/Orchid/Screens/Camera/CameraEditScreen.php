@@ -59,7 +59,7 @@ class CameraEditScreen extends Screen
      */
     public function query(Camera $camera): array
     {
-        $this->exists = !empty($camera);
+        $this->exists = $camera->exists;
 
         if ($this->exists == null)
             $this->exists = false;
@@ -121,13 +121,15 @@ class CameraEditScreen extends Screen
             'camera.purchase_date' => 'required|date_format:Y-m-d|before_or_equal:today',
         ]);
 
+        $exists = Camera::query()->where('name', '=', $request->camera['name'])->exists();
+
         $camera->fill($request->get('camera'));
         if ($this->exists && $camera->supplyUnit()->exists() && $this->broken) {
             Toast::error(__('Kamerastatus kann nicht geändert werden! Kamera ist Teil eines Systems!'));
         }
-        $camera->broken = $this->exists ? $request->get('camera.broken') : $this->broken;
+        $camera->broken = $exists ? $request->camera['broken'] : false;
 
-        if (!$this->exists) {
+        if (!$exists) {
             $cams = Camera::all();
             $highest_id = 1;
             if ($cams) {
