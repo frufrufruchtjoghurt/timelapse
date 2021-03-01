@@ -2,7 +2,9 @@
 
 namespace App\Console;
 
+use App\Models\Address;
 use App\Models\Camera;
+use App\Models\Company;
 use App\Models\Project;
 use App\Models\Symlink;
 use Carbon\Carbon;
@@ -44,7 +46,24 @@ class Kernel extends ConsoleKernel
                 unlink(public_path('img/') . $symlink->symlink);
                 $symlink->delete();
             }
+
+            $img_symlinks = scandir(public_path('img'));
+
+            foreach ($img_symlinks as $img_symlink) {
+                if (preg_match('/^.*\..*$/'))
+                    continue;
+
+                if (!Symlink::query()->where('symlink', '=', $img_symlink)->exists())
+                    unlink(public_path('img'). '/' . $img_symlink);
+            }
         })->everyFiveMinutes();
+
+        $schedule->call(function () {
+            foreach (Address::all() as $address) {
+                if (!Company::query()->where('address_id', '=', $address->id)->exists())
+                    $address->delete();
+            }
+        })->everyThirtyMinutes();
 
         $schedule->call(function () {
             $projects = Project::all();
