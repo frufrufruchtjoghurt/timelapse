@@ -119,6 +119,7 @@ class ReusableComponentEditLayout extends Rows
             CheckBox::make($this->prefix . '.broken')
                 ->placeholder(__('Defekt'))
                 ->value($this->broken)
+                ->sendTrueOrFalse()
                 ->canSee($this->visible),
         ];
     }
