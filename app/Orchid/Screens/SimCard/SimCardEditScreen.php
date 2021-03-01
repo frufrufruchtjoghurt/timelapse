@@ -133,11 +133,13 @@ class SimCardEditScreen extends Screen
             'simcard.purchase_date' => 'required|date_format:Y-m-d|before_or_equal:today',
         ]);
 
+        $exists = SimCard::query()->where('id', '=', $simCard->id)->exists();
+
         $simCard->fill($request->get('simcard'));
         if ($this->exists && $simCard->router()->exists() && $this->broken) {
             Toast::error(__('Status kann nicht geändert werden! Sim-Karte ist Teil eines Systems!'));
         }
-        $simCard->broken = $this->exists ? $request->get('simcard.broken') : $this->broken;
+        $simCard->broken = $exists ? $request->simcard['broken'] : false;
 
         $simCard->save();
 

@@ -112,11 +112,13 @@ class FixtureEditScreen extends Screen
             'fixture.purchase_date' => 'required|date_format:Y-m-d|before_or_equal:today',
         ]);
 
+        $exists = Fixture::query()->where('id', '=', $fixture->id)->exists();
+
         $fixture->fill($request->get('fixture'));
         if ($fixture->supplyUnit()->exists()) {
             Toast::error(__('Status kann nicht geändert werden! Gehäuse ist Teil einer Versorgungseinheit!'));
         }
-        $fixture->broken = $this->exists ? $request->get('fixture.broken') : $this->broken;
+        $fixture->broken = $exists ? $request->fixture['broken'] : false;
 
         $fixture->save();
 

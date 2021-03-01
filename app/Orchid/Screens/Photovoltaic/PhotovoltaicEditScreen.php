@@ -83,12 +83,6 @@ class PhotovoltaicEditScreen extends Screen
                 ->icon('note')
                 ->method('createOrUpdate')
                 ->canSee($this->exists),
-
-            Button::make(__('Löschen'))
-                ->icon('trash')
-                ->method('remove')
-                ->canSee($this->exists)
-                ->confirm(__('Möchten Sie diese Photovoltaikanlage wirklich löschen?')),
         ];
     }
 
@@ -112,32 +106,16 @@ class PhotovoltaicEditScreen extends Screen
             'photovoltaic.purchase_date' => 'required|date_format:Y-m-d|before_or_equal:today',
         ]);
 
+        $exists = Photovoltaic::query()->where('id', '=', $photovoltaic->id)->exists();
+
+
         $photovoltaic->fill($request->get('photovoltaic'));
-        $photovoltaic->broken = $this->exists ? $request->get('photovoltaic.broken') : $this->broken;
+        $photovoltaic->broken = $exists ? $request->photovoltaic['broken'] : false;
 
         $photovoltaic->save();
 
         Toast::info(__('Photovoltaikanlage wurde gespeichert.'));
 
         return redirect()->route('platform.photovoltaics');
-    }
-
-    public function remove(Request $request)
-    {
-        $photovoltaic = Photovoltaic::findOrFail($request->get('id'));
-
-        if ($photovoltaic->supplyUnit()->get()->first() != null)
-        {
-            Alert::error(__('Diese Photovoltaikanlage ist einer Versorgungseinheit zugewiesen und kann nicht gelöscht werden!'));
-        }
-        else
-        {
-            $photovoltaic->delete();
-
-            Toast::success(__('Photovoltaikanlage wurde gelöscht!'));
-
-            return redirect()->route('platform.photovoltaics');
-
-        }
     }
 }
