@@ -3,11 +3,13 @@
     @empty(!$projects)
         @foreach($projects as $project)
             <div class="row no-gutters">
+                @if(array_key_exists($project->id, $picturePaths))
                 <div class="col-md-4">
                     <div class="h-100" style="display: contents">
                         <img src="{{ url($picturePaths[$project->id]) }}" class="img-fluid img-card">
                     </div>
                 </div>
+                @endif
 
                 <div class="col">
                     <div class="card-body h-full p-4">
