@@ -50,7 +50,7 @@ class Kernel extends ConsoleKernel
             $img_symlinks = scandir(public_path('img'));
 
             foreach ($img_symlinks as $img_symlink) {
-                if (preg_match('/^.*\..*$/'))
+                if (preg_match('/^.*\..*$/', $img_symlink))
                     continue;
 
                 if (!Symlink::query()->where('symlink', '=', $img_symlink)->exists())
