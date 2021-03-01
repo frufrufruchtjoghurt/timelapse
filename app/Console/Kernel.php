@@ -88,10 +88,7 @@ class Kernel extends ConsoleKernel
                             explode('m', $camera->name)[1]));
 
                         $camera->filemtime = filemtime($latest_pic);
-                    } else if ($camera->projects() != null &&
-                        $camera->projects()->where('video_editor_send_date', null)->get()->first()->id == $project->id &&
-                        Carbon::createFromTimestamp(filemtime(sprintf('%s/.', $latest_day)))
-                            ->isAfter(Carbon::createFromTimestamp( $camera->filemtime))) {
+                    } else {
                         unlink(sprintf('%s/latest/pic%03d.jpg', $project_path,
                             explode('m', $camera->name)[1]));
                         $pics = scandir($latest_day, SCANDIR_SORT_DESCENDING);
