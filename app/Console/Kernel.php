@@ -7,14 +7,9 @@ use App\Models\Camera;
 use App\Models\Company;
 use App\Models\Project;
 use App\Models\Symlink;
-use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
-use Monolog\Formatter\LogstashFormatter;
 
 class Kernel extends ConsoleKernel
 {
@@ -36,7 +31,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->call(function () {
-            $symlinks = Symlink::all();
+            $symlinks = Symlink::query()->where('is_persistent', '=', false)->get();
             $sessionUsers = DB::table('sessions')->select('user_id')->distinct()->get();
 
             foreach ($symlinks as $symlink) {
