@@ -17,6 +17,7 @@ class Symlink extends Model
     protected $casts = [
         'is_persistent' => 'bool',
         'is_latest' => 'bool',
+        'is_movie' => 'bool',
     ];
 
     public function user() {

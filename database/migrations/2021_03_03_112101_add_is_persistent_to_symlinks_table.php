@@ -16,6 +16,11 @@ class AddIsPersistentToSymlinksTable extends Migration
         Schema::table('symlinks', function (Blueprint $table) {
             $table->boolean('is_persistent')
                 ->default(false);
+            $table->boolean('is_movie')
+                ->default(false);
+            $table->foreignId('camera_id')
+                ->nullable()
+                ->default(null);
         });
     }
 
@@ -28,6 +33,8 @@ class AddIsPersistentToSymlinksTable extends Migration
     {
         Schema::table('symlinks', function (Blueprint $table) {
             $table->removeColumn('is_persistent');
+            $table->removeColumn('is_movie');
+            $table->removeColumn('camera_id');
         });
     }
 }
