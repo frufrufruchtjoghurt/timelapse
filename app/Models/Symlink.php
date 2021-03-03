@@ -23,4 +23,8 @@ class Symlink extends Model
     public function user() {
         $this->belongsTo(User::class);
     }
+
+    public function camera() {
+        $this->belongsTo(Camera::class);
+    }
 }

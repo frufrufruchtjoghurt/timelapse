@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Support\Facades\Log;
 use Orchid\Filters\Filterable;
 use Orchid\Screen\AsSource;
 
@@ -110,7 +109,6 @@ class Project extends Model
     {
         $ids = $this->supplyUnits()->get();
         $cameras = [];
-        Log::debug($ids);
         foreach ($ids as $id) {
             $cams = SupplyUnit::query()->where('id', '=', $id->id)->get()->first()->cameras()->get();
 
