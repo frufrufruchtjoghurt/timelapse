@@ -95,7 +95,8 @@ class ProjectDeeplinksScreen extends Screen
     public function generate($project_id, $cam_id, $is_movie)
     {
         $project = Project::query()->where('id', '=', $project_id)->get()->first();
-        $filename = sprintf('pic%03d.jpg', explode('m', Camera::query()->where('id', '=', $cam_id)->get()->first()->name)[1]);
+        $filename = sprintf(($is_movie ? 'mov' : 'pic') . '%03d.jpg', explode('m',
+            Camera::query()->where('id', '=', $cam_id)->get()->first()->name)[1]);
         $path = base_path(sprintf('../../systems/P%04d-%s/latest/%s', $project->id, $project->name,
             $filename));
 
