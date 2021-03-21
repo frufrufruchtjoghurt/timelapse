@@ -106,7 +106,7 @@ class ProjectDeeplinksScreen extends Screen
         $permalink->is_movie = $is_movie;
         $permalink->is_latest = false;
         $permalink->is_persistent = true;
-        $permalink->symlink = Str::random(50);
+        $permalink->symlink = Str::random(50) . ($is_movie ? '.gif' : '.jpg');
         $permalink->save();
 
         symlink($path, public_path(sprintf('img/%s', $permalink->symlink)));
