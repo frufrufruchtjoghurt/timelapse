@@ -87,8 +87,8 @@ class ProjectDeeplinksScreen extends Screen
     public function layout(): array
     {
         return [
-//            ProjectMovieDeeplinkLayout::class,
-            ProjectPictureDeeplinkLayout::class,
+            ProjectMovieDeeplinkLayout::class,
+//            ProjectPictureDeeplinkLayout::class,
         ];
     }
 
