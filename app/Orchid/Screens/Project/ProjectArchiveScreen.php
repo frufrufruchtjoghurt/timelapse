@@ -39,7 +39,8 @@ class ProjectArchiveScreen extends Screen
 
         $userSymlinks = Auth::user()->symlinks()
             ->where('project_id', '=', $project->id)
-            ->where('is_latest', '=', false)->get();
+            ->where('is_latest', '=', false)
+            ->where('is_persistent', '=', false)->get();
         $picturePaths = array();
         $symlinks = array();
 
