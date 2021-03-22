@@ -26,7 +26,7 @@ class CreateSymlinks
         if (Auth::user()->hasAccess('manager') || Auth::user()->hasAccess('admin'))
             $projects = Project::all();
 
-        if (Auth::user()->symlinks()->get()->isEmpty()) {
+        if (Auth::user()->symlinks()->where('is_persistent', '=', false)->get()->isEmpty()) {
             foreach ($projects as $project) {
                 $folders = Storage::disk('systems')->directories(sprintf('P%04d-%s', $project->id, $project->name));
                 foreach ($folders as $folder) {
