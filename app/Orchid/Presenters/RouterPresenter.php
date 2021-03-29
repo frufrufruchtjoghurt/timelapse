@@ -22,7 +22,7 @@ class RouterPresenter extends Presenter implements Searchable, Personable
      */
     public function title(): string
     {
-        return $this->entity->model;
+        return $this->entity->name;
     }
 
     /**
