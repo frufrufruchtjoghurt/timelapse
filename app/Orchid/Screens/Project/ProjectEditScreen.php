@@ -391,7 +391,7 @@ class ProjectEditScreen extends Screen
                 $this->collectSystemDesc($storedSystem, $availableSystems);
             }
 
-            $availableSystems[$storedSystem->id] .= ', ' . $storedSystem->model . ' (' . $storedSystem->name . ')';
+            $availableSystems[$storedSystem->id] .= ', Kamera: ' . $storedSystem->name;
         }
 
         foreach ($activeSystems as $activeSystem) {
@@ -405,7 +405,7 @@ class ProjectEditScreen extends Screen
                 $this->collectSystemDesc($activeSystem, $availableSystems);
             }
 
-            $availableSystems[$activeSystem->id] .= ', ' . $activeSystem->model . ' (' . $activeSystem->name . ')';
+            $availableSystems[$activeSystem->id] .= ', Kamera: ' . $activeSystem->name;
         }
 
         if (empty($availableSystems)) {
@@ -422,7 +422,7 @@ class ProjectEditScreen extends Screen
     private function collectSystemDesc($system, &$array) {
         $router = Router::query()->where('id', '=', $system->router_id)->get()->first();
         $array[$system->id] .= 'Gehäuse: ' . Fixture::query()->where('id', '=', $system->fixture_id)->get()->first()->model
-            . ', Router: ' . $router->model . ' (' . $router->simCard()->get()->first()->contract . ')';
+            . ', Router: ' . $router->name;
 
         if ($system->ups_id != null) {
             $array[$system->id] .= ", USV: " . Ups::query()->where('id', '=', $system->ups_id)->get()->first()->model;
