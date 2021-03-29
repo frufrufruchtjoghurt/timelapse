@@ -52,13 +52,13 @@ class SupplyUnitListLayout extends Table
                 ->cantHide()
                 ->render(function (SupplyUnit $supplyunit) {
                     $cameras = $supplyunit->cameras()->get();
-                    $text = '(' . $cameras->first()->name . ')';
+                    $text = $cameras->first()->name;
                     foreach ($cameras as $camera)
                     {
                         if (str_contains($text, $camera->name))
                             continue;
 
-                        $text .= ', (' . $camera->name . ')';
+                        $text .= ', ' . $camera->name;
                     }
                     return $text;
                 }),
