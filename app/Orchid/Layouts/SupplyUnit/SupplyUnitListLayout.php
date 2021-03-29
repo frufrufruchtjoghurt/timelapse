@@ -30,6 +30,9 @@ class SupplyUnitListLayout extends Table
     protected function columns(): array
     {
         return [
+            TD::make('serial_nr', __('Seriennummer'))
+                ->cantHide(),
+
             TD::make('model', __('Gehäuse'))
                 ->filter(TD::FILTER_TEXT)
                 ->cantHide()
