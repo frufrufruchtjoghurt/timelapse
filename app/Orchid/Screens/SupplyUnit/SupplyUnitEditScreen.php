@@ -172,6 +172,8 @@ class SupplyUnitEditScreen extends Screen
 
         $cameras = $request->get('cameras');
 
+        Camera::query()->where('supply_unit_id', '=', $supplyunit->id)->update(['supply_unit_id' => null]);
+
         if (!empty($cameras)) {
             foreach ($cameras as $id) {
                 $camera = Camera::findOrFail($id);
