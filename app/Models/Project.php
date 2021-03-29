@@ -30,6 +30,7 @@ class Project extends Model
         'patch_notes',
         'inactive',
         'inactivity_date',
+        'has_imagefilm',
     ];
 
     /**
@@ -126,5 +127,10 @@ class Project extends Model
     public function users()
     {
         return $this->hasManyThrough(User::class, Feature::class, 'user_id', 'id', 'id', 'user_id');
+    }
+
+    public function songs()
+    {
+        return $this->hasManyThrough(Song::class, ProjectSong::class, 'project_id', 'id', 'id', 'song_id');
     }
 }

@@ -17,7 +17,9 @@ use App\Orchid\Screens\PlatformScreen;
 use App\Orchid\Screens\Project\ProjectArchiveScreen;
 use App\Orchid\Screens\Project\ProjectDeeplinksScreen;
 use App\Orchid\Screens\Project\ProjectEditScreen;
+use App\Orchid\Screens\Project\ProjectImagefilmSongScreen;
 use App\Orchid\Screens\Project\ProjectListScreen;
+use App\Orchid\Screens\Project\ProjectTimelapseSongScreen;
 use App\Orchid\Screens\Project\ProjectViewScreen;
 use App\Orchid\Screens\Router\RouterEditScreen;
 use App\Orchid\Screens\Router\RouterListScreen;
@@ -75,7 +77,23 @@ Route::middleware(['symlinks'])->group(function () {
             ->breadcrumbs(function (Trail $trail, $id = null) {
                 return $trail
                     ->parent('platform.index')
-                    ->push(__('Details'), route('platform.deeplink', $id));
+                    ->push(__('Deeplinks'), route('platform.deeplink', $id));
+            });
+
+        Route::screen('timelapsesong/{id}', ProjectTimelapseSongScreen::class)
+            ->name('platform.timelapsesong')
+            ->breadcrumbs(function (Trail $trail, $id = null) {
+                return $trail
+                    ->parent('platform.view', $id)
+                    ->push(__('Musiktitel'), route('platform.timelapsesong', $id));
+            });
+
+        Route::screen('imagefilmsong/{id}', ProjectImagefilmSongScreen::class)
+            ->name('platform.imagefilmsong')
+            ->breadcrumbs(function (Trail $trail, $id = null) {
+                return $trail
+                    ->parent('platform.view', $id)
+                    ->push(__('Musiktitel'), route('platform.imagefilmsong', $id));
             });
     });
 });

@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             ProjectsSeeder::class,
             ProjectSystemsSeeder::class,
             FeaturesSeeder::class,
+            SongCsvSeeder::class,
         ]);
     }
 }

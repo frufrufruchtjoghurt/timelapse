@@ -61,6 +61,7 @@ class ProjectViewScreen extends Screen
             'project' => $project,
             'picturePaths' => $picturePaths,
             'moviePaths' => $moviePaths,
+            'songs' => $project->songs()->get(),
         ];
     }
 
