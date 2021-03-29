@@ -126,7 +126,7 @@ class Project extends Model
      */
     public function users()
     {
-        return $this->hasManyThrough(User::class, Feature::class, 'user_id', 'id', 'id', 'user_id');
+        return $this->hasManyThrough(User::class, Feature::class, 'project_id', 'id', 'id', 'user_id');
     }
 
     public function songs()

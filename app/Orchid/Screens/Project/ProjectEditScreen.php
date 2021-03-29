@@ -88,6 +88,8 @@ class ProjectEditScreen extends Screen
         $features = array();
         $companies = array();
 
+        Log::debug($rawusers);
+
         foreach ($rawusers as $rawuser)
         {
             $users[] = $rawuser->id;
@@ -313,7 +315,7 @@ class ProjectEditScreen extends Screen
     public function createOrUpdate(Project $project, Request $request)
     {
         $request->validate([
-            'project.id' => 'unique:App\Models\Project,id',
+            'project.id' => 'required',
             'project.name' => ['required', new alphaNumString()],
             'project.start_date' => 'required|date_format:Y-m-d',
             'project.rec_end_date' => 'required|date_format:Y-m-d',
@@ -337,6 +339,8 @@ class ProjectEditScreen extends Screen
             ->whereBetween('p.rec_end_date', [Carbon::now(), $project->start_date])
             ->select('supply_units.*', 'c.model', 'c.name')->get();
 
+        ProjectSystem::query()->where('project_id', '=', $project->id)->delete();
+
         foreach ($systems as $system) {
             $projectSystem = new ProjectSystem();
             $projectSystem->supply_unit_id = $system;
@@ -351,6 +355,8 @@ class ProjectEditScreen extends Screen
                 Storage::disk('systems')->makeDirectory($projPath);
             }
         }
+
+        Feature::query()->where('project_id', '=', $project->id)->delete();
 
         foreach ($users as $user)
         {
