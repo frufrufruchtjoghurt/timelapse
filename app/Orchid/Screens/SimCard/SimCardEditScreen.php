@@ -5,6 +5,7 @@ namespace App\Orchid\Screens\SimCard;
 use App\Models\SimCard;
 use App\Orchid\Layouts\ReusableComponentEditLayout;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\CheckBox;
 use Orchid\Screen\Fields\DateTimer;
@@ -120,6 +121,7 @@ class SimCardEditScreen extends Screen
                 CheckBox::make('simcard.broken')
                     ->placeholder(__('Defekt'))
                     ->value($this->broken)
+                    ->sendTrueOrFalse()
                     ->canSee($this->exists),
             ]),
         ];
