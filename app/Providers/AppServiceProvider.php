@@ -27,6 +27,10 @@ class AppServiceProvider extends ServiceProvider
 
             return $this;
         });
+
+        $this->app->bind('path.public', function() {
+		return base_path().'/../../portal';
+	});
     }
 
     /**
