@@ -110,7 +110,7 @@ class ReusableComponentEditLayout extends Rows
                     ->canSee($this->is_router),
 
                 Input::make($this->prefix . '.psk')
-                    ->title(__('PSK'))
+                    ->title(__('WiFi Passwort'))
                     ->type('text')
                     ->canSee($this->is_router)
                     ->required(),
