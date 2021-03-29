@@ -17,7 +17,6 @@ use App\Orchid\Layouts\Project\ProjectSystemsListener;
 use App\Rules\alphaNumString;
 use Carbon\Carbon;
 use DateTimeZone;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Orchid\Support\Facades\Alert;
@@ -87,8 +86,6 @@ class ProjectEditScreen extends Screen
         $companyUsers = array();
         $features = array();
         $companies = array();
-
-        Log::debug($rawusers);
 
         foreach ($rawusers as $rawuser)
         {
@@ -391,6 +388,9 @@ class ProjectEditScreen extends Screen
                 $this->collectSystemDesc($storedSystem, $availableSystems);
             }
 
+            if (str_contains($availableSystems[$storedSystem->id], $storedSystem->name))
+                continue;
+
             $availableSystems[$storedSystem->id] .= ', Kamera: ' . $storedSystem->name;
         }
 
@@ -404,6 +404,9 @@ class ProjectEditScreen extends Screen
                 $availableSystems[$activeSystem->id] = '[WARNUNG] System noch bis ' . $date . ' aktiv! | ';
                 $this->collectSystemDesc($activeSystem, $availableSystems);
             }
+
+            if (str_contains($availableSystems[$storedSystem->id], $activeSystem->name))
+                continue;
 
             $availableSystems[$activeSystem->id] .= ', Kamera: ' . $activeSystem->name;
         }
@@ -421,7 +424,7 @@ class ProjectEditScreen extends Screen
      */
     private function collectSystemDesc($system, &$array) {
         $router = Router::query()->where('id', '=', $system->router_id)->get()->first();
-        $array[$system->id] .= 'Gehäuse: ' . Fixture::query()->where('id', '=', $system->fixture_id)->get()->first()->model
+        $array[$system->id] .= '[' . $system->serial_nr . '] Gehäuse: ' . Fixture::query()->where('id', '=', $system->fixture_id)->get()->first()->model
             . ', Router: ' . $router->name;
 
         if ($system->ups_id != null) {
