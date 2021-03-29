@@ -47,6 +47,22 @@ class SupplyUnitListLayout extends Table
                     return new Persona($supplyunit->router()->get()->first()->presenter());
                 }),
 
+            TD::make('model', __('Kamera'))
+                ->filter(TD::FILTER_TEXT)
+                ->cantHide()
+                ->render(function (SupplyUnit $supplyunit) {
+                    $cameras = $supplyunit->cameras()->get();
+                    $text = '(' . $cameras->first()->name . ')';
+                    foreach ($cameras as $camera)
+                    {
+                        if (str_contains($text, $camera->name))
+                            continue;
+
+                        $text .= ', (' . $camera->name . ')';
+                    }
+                    return $text;
+                }),
+
             TD::make('model', __('USV'))
                 ->filter(TD::FILTER_TEXT)
                 ->cantHide()
@@ -75,7 +91,7 @@ class SupplyUnitListLayout extends Table
                     return 'Nein';
                 }),
 
-            TD::make('model', __('Photovoltaikanlagen'))
+            TD::make('model', __('PV-Anlage'))
                 ->filter(TD::FILTER_TEXT)
                 ->cantHide()
                 ->render(function (SupplyUnit $supplyunit) {
