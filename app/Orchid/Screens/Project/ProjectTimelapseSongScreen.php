@@ -30,16 +30,6 @@ class ProjectTimelapseSongScreen extends Screen
      */
     public $description = 'Musiktitelauswahl für den Zeitraffer-Film';
 
-    public $project_id;
-
-    /**
-     * @var array
-     */
-    public $permission = [
-        'admin',
-        'manager'
-    ];
-
     /**
      * Query data.
      *
@@ -53,8 +43,6 @@ class ProjectTimelapseSongScreen extends Screen
             $project = Project::query()->where('projects.id', '=', $id)->get()->first();
 
         $this->name = $project->name . $this->name;
-
-        $this->project_id = $project->id;
 
         return [
             'songs' => Song::query()->where('for_imagefilm', '=', false)

@@ -41,8 +41,6 @@ class ProjectImagefilmSongScreen extends Screen
 
         $this->name = $project->name . $this->name;
 
-        $this->project_id = $project->id;
-
         return [
             'songs' => Song::query()->where('for_imagefilm', '=', true)
                 ->filters()
