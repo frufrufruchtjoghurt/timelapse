@@ -192,11 +192,15 @@ class SongResource extends Resource
 
             TD::make('created_at', __('Erstelldatum'))
                 ->render(function ($model) {
+                    if ($model->created_at == null)
+                        return "Nie";
                     return $model->created_at->toDateTimeString();
                 }),
 
             TD::make('updated_at', __('Änderungsdatum'))
                 ->render(function ($model) {
+                    if ($model->created_at == null)
+                        return "Nie";
                     return $model->updated_at->toDateTimeString();
                 }),
         ];
