@@ -8,7 +8,7 @@
     </legend>
 </div>
 
-<div class="bg-white rounded shadow-sm p-4 py-4 d-flex flex-column">
+<div class="bg-white rounded shadow-sm p-4 py-4 d-flex flex-column align-self-start">
     @if(!empty($moviePaths))
       view  @foreach($moviePaths as $moviePath)
             <img src="{{ url($moviePath) }}" alt="Aktuelles Video von {{ $project->name }}">
@@ -36,7 +36,7 @@
     </legend>
 </div>
 
-<div class="bg-white rounded shadow-sm p-4 py-4 d-flex flex-column">
+<div class="bg-white rounded shadow-sm p-4 py-4 d-flex flex-column align-self-start">
     @if(!empty($picturePaths))
         @foreach($picturePaths as $picturePath)
             <img src="{{ url($picturePath) }}" alt="Aktuelles Bild von {{ $project->name }}">
