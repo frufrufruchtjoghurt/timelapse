@@ -1,5 +1,4 @@
 img {
     height: 100% !important;
-    align-self: start;
-    align-items: flex-start;
+    align-self: center;
 }
