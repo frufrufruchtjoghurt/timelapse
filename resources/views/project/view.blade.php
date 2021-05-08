@@ -5,6 +5,9 @@
         @else
             {{ $project->name . ' - aktueller Film' }}
         @endif
+        <div class="text-sm">
+            der letzten 14 Tage
+        </div>
     </legend>
 </div>
 
@@ -32,6 +35,11 @@
             {{ $project->name . ' - aktuelle Bilder' }}
         @else
             {{ $project->name . ' - aktuelles Bild' }}
+        @endif
+        @if ($project->id == 10)
+            <div class="text-sm">
+                8 Minuten Aufnahmeintervall
+            </div>
         @endif
     </legend>
 </div>
