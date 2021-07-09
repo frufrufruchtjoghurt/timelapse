@@ -286,7 +286,7 @@ class ProjectEditScreen extends Screen
                     ->required(),
 
                 DateTimer::make('project.rec_end_date')
-                    ->title(__('Aufnahmeenddatum'))
+                    ->title(__('Enddatum'))
                     ->format('Y-m-d')
                     ->required(),
             ])->title(__('Projektdaten')),
