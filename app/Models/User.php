@@ -30,6 +30,7 @@ class User extends Authenticatable
         'phone_nr',
         'password',
         'permissions',
+        'password_count'
     ];
 
     /**
@@ -41,6 +42,7 @@ class User extends Authenticatable
         'password',
         'remember_token',
         'permissions',
+        'password_count',
     ];
 
     /**
