@@ -1,0 +1,105 @@
+version: '3'
+
+networks:
+  tl-laravel:
+
+services:
+  site:
+    build:
+      context: docker/app
+      dockerfile: nginx.dockerfile
+    container_name: tl-nginx
+    ports:
+      - "8090:80"
+    volumes:
+      - .:/var/www/html:delegated
+    depends_on:
+      - php
+      - mysql
+    networks:
+      - tl-laravel
+
+  mysql:
+    image: mysql:5.7.29
+    container_name: tl-mysql
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3337:3306"
+    environment:
+      MYSQL_DATABASE: timelapse
+      MYSQL_USER: timelapse
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: secret
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks:
+      - tl-laravel
+    volumes:
+      - tl-dbdata:/var/lib/mysql
+
+  php:
+    build:
+      context: docker/app
+      dockerfile: php.dockerfile
+    container_name: tl-php
+    volumes:
+      - .:/var/www/html:delegated
+      - ./public:/var/portal
+      - ./docker/data/systems:/var/systems
+      - ./docker/data/movies:/var/movies
+    ports:
+      - "9090:9000"
+    networks:
+      - tl-laravel
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: tl-mailhog
+    restart: unless-stopped
+    ports:
+      - "1056:1025"
+      - "8056:8025"
+    networks:
+      - tl-laravel
+
+  composer:
+    build:
+      context: docker/app
+      dockerfile: composer.dockerfile
+    container_name: tl-composer
+    volumes:
+      - .:/var/www/html
+    working_dir: /var/www/html
+    depends_on:
+      - php
+    user: laravel
+    networks:
+      - tl-laravel
+    entrypoint: [ 'composer', '--ignore-platform-reqs' ]
+
+  npm:
+    image: node:13.7
+    container_name: tl-npm
+    volumes:
+      - .:/var/www/html
+    working_dir: /var/www/html
+    entrypoint: [ 'npm' ]
+
+  artisan:
+    build:
+      context: docker/app
+      dockerfile: php.dockerfile
+    container_name: tl-artisan
+    volumes:
+      - .:/var/www/html:delegated
+    depends_on:
+      - mysql
+    working_dir: /var/www/html
+    user: laravel
+    entrypoint: [ 'php', '/var/www/html/artisan' ]
+    networks:
+      - tl-laravel
+
+volumes:
+  tl-dbdata:
