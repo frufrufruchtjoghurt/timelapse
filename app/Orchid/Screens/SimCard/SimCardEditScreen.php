@@ -107,7 +107,7 @@ class SimCardEditScreen extends Screen
 
                 Group::make([
                     Input::make('simcard.contract')
-                        ->title(__('Vertrag'))
+                        ->title(__('Simkarten Nr.'))
                         ->type('text')
                         ->required(),
 
