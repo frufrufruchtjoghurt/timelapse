@@ -118,6 +118,10 @@ class PlatformProvider extends OrchidServiceProvider
             ItemMenu::label(__('AGBs'))
                 ->icon('docs')
                 ->route('agb.download'),
+
+            ItemMenu::label(__('Dokumentation und Hilfe'))
+                ->icon('help')
+                ->route(('help.download')),
         ];
     }
 
