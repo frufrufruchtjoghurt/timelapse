@@ -118,6 +118,7 @@ class ReusableComponentListLayout extends Table
                 });
         } else {
             $layout[] = TD::make('id', __('Projekt'))
+                ->defaultHidden()
                 ->render(function ($component) {
                     if ($component->projects() == null)
                         return __('Im Lager');

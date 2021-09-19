@@ -44,6 +44,10 @@ class PlatformProvider extends OrchidServiceProvider
     public function registerMainMenu(): array
     {
         return [
+            ItemMenu::label(__('Startseite'))
+                ->icon('home')
+                ->route('platform.main'),
+
             ItemMenu::label(__('Firmen'))
                 ->title('Verwaltung')
                 ->icon('building')
@@ -106,8 +110,12 @@ class PlatformProvider extends OrchidServiceProvider
                 ->route('platform.projects')
                 ->canSee(Auth::user()->hasAccess('admin') || Auth::user()->hasAccess('manager')),
 
+            ItemMenu::label(__('Timelapse Homepage'))
+                ->title(__('Links'))
+                ->icon('link')
+                ->url('https://timelapsesystems.at/'),
+
             ItemMenu::label(__('AGBs'))
-                ->title(__('AGB'))
                 ->icon('docs')
                 ->route('agb.download'),
         ];

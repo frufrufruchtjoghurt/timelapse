@@ -43,12 +43,13 @@ class UserListLayout extends Table
                 }),
 
             TD::make('phone_nr', __('Telefonnr.'))
-                ->cantHide()
+                ->defaultHidden()
                 ->render(function (User $user) {
                     return $user->phone_nr;
                 }),
 
             TD::make('name', __('Firma'))
+                ->defaultHidden()
                 ->render(function (User $user) {
                     return new Persona($user->company()->get()->first()->presenter());
                 }),
