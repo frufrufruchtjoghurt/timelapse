@@ -80,7 +80,7 @@ class Kernel extends ConsoleKernel
                     $days = scandir($cam_path, SCANDIR_SORT_DESCENDING);
                     $pos = 0;
                     while ($pos < count($days) &&
-                            !preg_match('/^2[0-1]-((1[0-2])|(0[1-9]))-(([0-2][0-9])|(3[0-1]))$/', $days[$pos])) {
+                            !preg_match('/^[2-9][0-9]-((1[0-2])|(0[1-9]))-(([0-2][0-9])|(3[0-1]))$/', $days[$pos])) {
                         $pos++;
                     }
 
