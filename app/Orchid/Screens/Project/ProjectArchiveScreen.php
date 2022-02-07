@@ -49,7 +49,7 @@ class ProjectArchiveScreen extends Screen
             $dirs = scandir(public_path('img/') . $symlink, SCANDIR_SORT_DESCENDING);
             $pos = 0;
             while ($pos < count($dirs) &&
-                !preg_match('/^2[0-1]-((1[0-2])|(0[1-9]))-(([0-2][0-9])|(3[0-1]))$/', $dirs[$pos])) {
+                !preg_match('/^2[0-9]-((1[0-2])|(0[1-9]))-(([0-2][0-9])|(3[0-1]))$/', $dirs[$pos])) {
                 $pos++;
             }
             if ($pos == count($dirs))
