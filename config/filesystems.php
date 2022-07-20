@@ -57,12 +57,7 @@ return [
 
         'systems' => [
             'driver' => 'local',
-            'root' => base_path('../../systems'),
-        ],
-
-        'movies' => [
-            'driver' => 'local',
-            'root' => base_path('../../movies'),
+            'root' => env('TS_PROJECT_PATH'),
         ],
 
         's3' => [

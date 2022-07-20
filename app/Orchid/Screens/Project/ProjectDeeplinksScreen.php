@@ -97,7 +97,7 @@ class ProjectDeeplinksScreen extends Screen
         $project = Project::query()->where('id', '=', $project_id)->get()->first();
         $filename = sprintf(($is_movie ? 'mov%03d.gif' : 'pic%03d.jpg'), explode('m',
             Camera::query()->where('id', '=', $cam_id)->get()->first()->name)[1]);
-        $path = base_path(sprintf('../../systems/P%04d-%s/latest/%s', $project->id, $project->name,
+        $path = base_path(sprintf('%s/P%04d-%s/latest/%s', config('app.project_path'), $project->id, $project->name,
             $filename));
 
         $permalink = new Symlink();

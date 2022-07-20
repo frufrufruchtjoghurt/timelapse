@@ -323,7 +323,6 @@ class ProjectEditScreen extends Screen
 
         $project->save();
 
-        $systemsPath = base_path('../../systems/');
         $activeSystems = SupplyUnit::query()
             ->leftJoin('project_systems as s', 's.supply_unit_id', '=', 'supply_units.id')
             ->leftJoin('projects as p', 'p.id', '=', 's.project_id')

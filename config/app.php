@@ -229,4 +229,15 @@ return [
 
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Timelapse Variables
+    |--------------------------------------------------------------------------
+    |
+    | Variables used for specific tasks like file system paths are set here.
+    |
+    */
+
+    'project_path' => env('TS_PROJECT_PATH', '/srv/systems')
+
 ];

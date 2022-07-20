@@ -62,7 +62,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->call(function () {
             $projects = Project::all();
-            $systems_path = base_path('../../systems');
+            $systems_path = config('app.project_path');
 
             foreach ($projects as $project) {
                 $project_path = $systems_path . sprintf('/P%04d-%s', $project->id, $project->name);
