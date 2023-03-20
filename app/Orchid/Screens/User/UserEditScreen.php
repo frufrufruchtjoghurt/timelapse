@@ -144,12 +144,12 @@ class UserEditScreen extends Screen
 
         $permissions = collect($request->get('permissions'))
             ->map(function ($value, $key) {
-                return [base64_decode($key) => $value];
+                return [base64_decode($key) => $value == true];
             })
             ->collapse()
             ->toArray();
 
-        array_push($permissions, ['platform.index' => true]);
+        $permissions['platform.index'] = true;
 
         if (!$this->exists)
         {

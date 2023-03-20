@@ -21,6 +21,10 @@ Route::get('/', function () {
     return redirect()->route('platform.main');
 });
 
+Route::get('home', function () {
+    return redirect()->route('platform.main');
+});
+
 Route::get('reset/{token}{email}', function (Request $request) {
         $token = explode('?', explode('/', $request->getRequestUri())[2])[0];
         return view('auth.reset', [
@@ -47,3 +51,7 @@ Route::post('reset', [PasswordController::class, 'storePassword'])
 Route::get('Timelapse-Systems_AGB.pdf', function () {
     return Storage::download('AGBs.pdf', 'Timelapse-Systems_AGB.pdf');
 })->name('agb.download');
+
+Route::get('Timelapse-Systems_Hilfe.pdf', function () {
+    return Storage::download('Dokumentation_Tools_und_Einstellungen.pdf', 'Timelapse-Systems_Hilfe.pdf');
+})->name('help.download');

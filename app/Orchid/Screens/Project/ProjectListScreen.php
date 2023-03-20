@@ -5,8 +5,11 @@ namespace App\Orchid\Screens\Project;
 use App\Models\Feature;
 use App\Models\Project;
 use App\Models\ProjectSystem;
+use App\Models\SupplyUnit;
 use App\Orchid\Layouts\Project\ProjectListLayout;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Fields\DateTimer;
 use Orchid\Screen\Layouts\Modal;
@@ -128,7 +131,7 @@ class ProjectListScreen extends Screen
 
     public function remove(Request $request)
     {
-        $project = Project::findOrFail($request->get('id'));
+        $project = Project::query()->where('id', '=', $request->get('id'))->firstOrFail();
 
         if (!$project->inactive)
         {
@@ -136,6 +139,18 @@ class ProjectListScreen extends Screen
         }
         else
         {
+            foreach ($project->supplyUnits() as $id) {
+                $supplyUnit = SupplyUnit::query()->firstWhere('id', '=', $id);
+                $cameras = $supplyUnit->cameras()->get();
+
+                foreach ($cameras as $camera) {
+                    Storage::disk('systems')->delete($camera->name);
+                    Storage::disk('systems')->move($camera->name . '.orig', $camera->name);
+                }
+            }
+
+            Storage::disk('systems')->deleteDirectory(sprintf('P%04d-%s', $project->id, $project->name));
+
             Feature::query()->where('project_id', $project->id)->delete();
             ProjectSystem::query()->where('project_id', $project->id)->delete();
 

@@ -43,12 +43,13 @@ class UserListLayout extends Table
                 }),
 
             TD::make('phone_nr', __('Telefonnr.'))
-                ->cantHide()
+                ->defaultHidden()
                 ->render(function (User $user) {
                     return $user->phone_nr;
                 }),
 
             TD::make('name', __('Firma'))
+                ->defaultHidden()
                 ->render(function (User $user) {
                     return new Persona($user->company()->get()->first()->presenter());
                 }),
@@ -77,7 +78,7 @@ class UserListLayout extends Table
                             ->disabled(!(Auth::user()->hasAccess('admin') || (!$user->hasAccess('manager') && !$user->hasAccess('admin'))))
                             ->icon('envelope');
                     }
-                    return Button::make(__('Erneut senden'))
+                    return Button::make(__('Erneut senden (Bereits ' . $user->password_count . '-mal gesendet)'))
                         ->method('verifyPasswordRequest')
                         ->confirm('Möchten Sie das Passwort für ' . $user->last_name . ' ' . $user->first_name
                             . ' an ' . $user->email . ' wirklich erneut senden?')

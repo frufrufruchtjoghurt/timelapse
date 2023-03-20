@@ -5,6 +5,7 @@ namespace App\Orchid\Screens\SimCard;
 use App\Models\SimCard;
 use App\Orchid\Layouts\ReusableComponentEditLayout;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\CheckBox;
 use Orchid\Screen\Fields\DateTimer;
@@ -106,7 +107,7 @@ class SimCardEditScreen extends Screen
 
                 Group::make([
                     Input::make('simcard.contract')
-                        ->title(__('Vertrag'))
+                        ->title(__('Simkarten Nr.'))
                         ->type('text')
                         ->required(),
 
@@ -120,6 +121,7 @@ class SimCardEditScreen extends Screen
                 CheckBox::make('simcard.broken')
                     ->placeholder(__('Defekt'))
                     ->value($this->broken)
+                    ->sendTrueOrFalse()
                     ->canSee($this->exists),
             ]),
         ];
@@ -133,11 +135,13 @@ class SimCardEditScreen extends Screen
             'simcard.purchase_date' => 'required|date_format:Y-m-d|before_or_equal:today',
         ]);
 
+        $exists = SimCard::query()->where('id', '=', $simCard->id)->exists();
+
         $simCard->fill($request->get('simcard'));
         if ($this->exists && $simCard->router()->exists() && $this->broken) {
             Toast::error(__('Status kann nicht geändert werden! Sim-Karte ist Teil eines Systems!'));
         }
-        $simCard->broken = $this->exists ? $request->get('simcard.broken') : $this->broken;
+        $simCard->broken = $exists ? $request->simcard['broken'] : false;
 
         $simCard->save();
 

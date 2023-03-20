@@ -7,6 +7,7 @@ use App\Models\SupplyUnit;
 use App\Orchid\Layouts\ReusableComponentEditLayout;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\Relation;
 use Orchid\Screen\Fields\TextArea;
@@ -59,6 +60,9 @@ class CameraEditScreen extends Screen
     public function query(Camera $camera): array
     {
         $this->exists = $camera->exists;
+
+        if ($this->exists == null)
+            $this->exists = false;
 
         if ($this->exists) {
             $this->name = __('Kamera bearbeiten');
@@ -117,15 +121,16 @@ class CameraEditScreen extends Screen
             'camera.purchase_date' => 'required|date_format:Y-m-d|before_or_equal:today',
         ]);
 
+        $exists = Camera::query()->where('id', '=', $camera->id)->exists();
+
         $camera->fill($request->get('camera'));
         if ($this->exists && $camera->supplyUnit()->exists() && $this->broken) {
             Toast::error(__('Kamerastatus kann nicht geändert werden! Kamera ist Teil eines Systems!'));
         }
-        $camera->broken = $this->exists ? $request->get('camera.broken') : $this->broken;
+        $camera->broken = $exists ? $request->camera['broken'] : false;
 
-        if (!$this->exists) {
+        if (!$exists) {
             $cams = Camera::all();
-            Log::debug($cams);
             $highest_id = 1;
             if ($cams) {
                 foreach ($cams as $cam) {
@@ -133,6 +138,7 @@ class CameraEditScreen extends Screen
                 }
             }
             $camera->name = 'cam' . sprintf("%03d", $highest_id);
+            Storage::disk('systems')->makeDirectory($camera->name);
         }
 
         $camera->save();

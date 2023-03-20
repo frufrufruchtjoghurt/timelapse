@@ -15,9 +15,10 @@ use App\Models\Ups;
 use App\Orchid\Layouts\Project\ProjectCompaniesListener;
 use App\Orchid\Layouts\Project\ProjectSystemsListener;
 use App\Rules\alphaNumString;
+use Carbon\Carbon;
 use DateTimeZone;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Orchid\Support\Facades\Alert;
 use \Orchid\Support\Facades\Toast;
 use Orchid\Screen\Actions\Button;
@@ -113,11 +114,6 @@ class ProjectEditScreen extends Screen
                         ->title(__('DeepLink'))
                         ->value($user_features->deeplink)
                         ->sendTrueOrFalse(),
-
-                    CheckBox::make($rawuser->id . '.storage_medium')
-                        ->title(__('Speichermedium'))
-                        ->value($user_features->storage_medium)
-                        ->sendTrueOrFalse(),
                 ]),
             ])->title($companyUsers[$rawuser->id]);
         }
@@ -145,8 +141,6 @@ class ProjectEditScreen extends Screen
         $tmpArray = $this->getAvailableSystems($storedSystems, $activeSystems, $datesQuery);
 
         foreach ($tmpArray as $key => $item) {
-            Log::debug($key);
-            Log::debug($item);
             $selectedSystems[$key] = $item;
         }
 
@@ -251,10 +245,6 @@ class ProjectEditScreen extends Screen
                         CheckBox::make($user . '.deeplink')
                             ->title(__('DeepLink'))
                             ->sendTrueOrFalse(),
-
-                        CheckBox::make($user . '.storage_medium')
-                            ->title(__('Speichermedium'))
-                            ->sendTrueOrFalse(),
                     ]),
                 ])->title($companyUsers[$user]);
             }
@@ -296,7 +286,7 @@ class ProjectEditScreen extends Screen
                     ->required(),
 
                 DateTimer::make('project.rec_end_date')
-                    ->title(__('Aufnahmeenddatum'))
+                    ->title(__('Enddatum'))
                     ->format('Y-m-d')
                     ->required(),
             ])->title(__('Projektdaten')),
@@ -308,7 +298,7 @@ class ProjectEditScreen extends Screen
                     ->fromModel(Company::class, 'name')
                     ->multiple()
                     ->required(),
-            ])->title('Kundenfirmen'),
+            ])->title('Auftraggeber'),
 
             ProjectCompaniesListener::class,
         ];
@@ -317,6 +307,7 @@ class ProjectEditScreen extends Screen
     public function createOrUpdate(Project $project, Request $request)
     {
         $request->validate([
+            'project.id' => 'required',
             'project.name' => ['required', new alphaNumString()],
             'project.start_date' => 'required|date_format:Y-m-d',
             'project.rec_end_date' => 'required|date_format:Y-m-d',
@@ -327,14 +318,36 @@ class ProjectEditScreen extends Screen
         $users = $request->get('users');
         $systems = $request->get('systems');
 
+        Storage::disk('systems')->makeDirectory(sprintf('P%04d-%s', $project->id, $project->name));
+        Storage::disk('systems')->makeDirectory(sprintf('P%04d-%s/latest', $project->id, $project->name));
+
         $project->save();
+
+        $activeSystems = SupplyUnit::query()
+            ->leftJoin('project_systems as s', 's.supply_unit_id', '=', 'supply_units.id')
+            ->leftJoin('projects as p', 'p.id', '=', 's.project_id')
+            ->join('cameras as c', 'c.supply_unit_id', '=' , 'supply_units.id')
+            ->whereBetween('p.rec_end_date', [Carbon::now(), $project->start_date])
+            ->select('supply_units.*', 'c.model', 'c.name')->get();
+
+        ProjectSystem::query()->where('project_id', '=', $project->id)->delete();
 
         foreach ($systems as $system) {
             $projectSystem = new ProjectSystem();
             $projectSystem->supply_unit_id = $system;
             $projectSystem->project_id = $project->id;
             $projectSystem->save();
+
+            $supplyUnit = SupplyUnit::query()->firstWhere('id', '=', $system);
+            $cameras = $supplyUnit->cameras()->get();
+
+            foreach ($cameras as $camera) {
+                $projPath = sprintf('P%04d-%s/%s', $project->id, $project->name, $camera->name);
+                Storage::disk('systems')->makeDirectory($projPath);
+            }
         }
+
+        Feature::query()->where('project_id', '=', $project->id)->delete();
 
         foreach ($users as $user)
         {
@@ -369,7 +382,10 @@ class ProjectEditScreen extends Screen
                 $this->collectSystemDesc($storedSystem, $availableSystems);
             }
 
-            $availableSystems[$storedSystem->id] .= ', ' . $storedSystem->model . ' (' . $storedSystem->name . ')';
+            if (str_contains($availableSystems[$storedSystem->id], $storedSystem->name))
+                continue;
+
+            $availableSystems[$storedSystem->id] .= ', Kamera: ' . $storedSystem->name;
         }
 
         foreach ($activeSystems as $activeSystem) {
@@ -383,7 +399,10 @@ class ProjectEditScreen extends Screen
                 $this->collectSystemDesc($activeSystem, $availableSystems);
             }
 
-            $availableSystems[$activeSystem->id] .= ', ' . $activeSystem->model . ' (' . $activeSystem->name . ')';
+            if (str_contains($availableSystems[$storedSystem->id], $activeSystem->name))
+                continue;
+
+            $availableSystems[$activeSystem->id] .= ', Kamera: ' . $activeSystem->name;
         }
 
         if (empty($availableSystems)) {
@@ -399,8 +418,8 @@ class ProjectEditScreen extends Screen
      */
     private function collectSystemDesc($system, &$array) {
         $router = Router::query()->where('id', '=', $system->router_id)->get()->first();
-        $array[$system->id] .= 'Gehäuse: ' . Fixture::query()->where('id', '=', $system->fixture_id)->get()->first()->model
-            . ', Router: ' . $router->model . ' (' . $router->simCard()->get()->first()->contract . ')';
+        $array[$system->id] .= '[' . $system->serial_nr . '] Gehäuse: ' . Fixture::query()->where('id', '=', $system->fixture_id)->get()->first()->model
+            . ', Router: ' . $router->name;
 
         if ($system->ups_id != null) {
             $array[$system->id] .= ", USV: " . Ups::query()->where('id', '=', $system->ups_id)->get()->first()->model;

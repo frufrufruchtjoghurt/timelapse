@@ -55,6 +55,11 @@ return [
             'visibility' => 'public',
         ],
 
+        'systems' => [
+            'driver' => 'local',
+            'root' => env('TS_PROJECT_PATH'),
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

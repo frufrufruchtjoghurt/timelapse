@@ -32,9 +32,9 @@ class CompanyPresenter extends Presenter implements Searchable, Personable
     {
         $subtitle = "" . $this->email;
 
-        if ($this->phone_nr != "") {
+        /*if ($this->phone_nr != "") {
             $subtitle .= " (" . $this->phone_nr . ")";
-        }
+        }*/
 
         return $subtitle;
     }

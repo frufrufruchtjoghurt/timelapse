@@ -3,29 +3,21 @@
 namespace App\Orchid\Screens\SupplyUnit;
 
 use App\Models\Camera;
-use App\Models\Cooling;
 use App\Models\Fixture;
-use App\Models\Heating;
 use App\Models\Photovoltaic;
 use App\Models\Router;
-use App\Models\SimCard;
 use App\Models\SupplyUnit;
 use App\Models\Ups;
-use App\Orchid\Layouts\ReusableComponentEditLayout;
 use App\Orchid\Layouts\ReusableSupplyUnitEditLayout;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Orchid\Screen\Action;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\CheckBox;
-use Orchid\Screen\Fields\DateTimer;
 use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Relation;
 use Orchid\Screen\Fields\TextArea;
-use Orchid\Screen\Layouts\Modal;
 use Orchid\Screen\Screen;
-use Orchid\Support\Facades\Alert;
 use Orchid\Support\Facades\Layout;
 use Orchid\Support\Facades\Toast;
 
@@ -71,6 +63,17 @@ class SupplyUnitEditScreen extends Screen
 
         if ($this->exists) {
             $this->name = __('Versorgungseinheit bearbeiten');
+
+            $cameras = array();
+
+            foreach ($supplyunit->cameras()->get() as $camera) {
+                $cameras[] = $camera;
+            }
+
+            return [
+                'supplyunit' => $supplyunit,
+                'cameras' => $cameras,
+            ];
         }
 
         return [
@@ -168,6 +171,8 @@ class SupplyUnitEditScreen extends Screen
         $supplyunit->save();
 
         $cameras = $request->get('cameras');
+
+        Camera::query()->where('supply_unit_id', '=', $supplyunit->id)->update(['supply_unit_id' => null]);
 
         if (!empty($cameras)) {
             foreach ($cameras as $id) {

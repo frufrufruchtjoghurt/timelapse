@@ -118,10 +118,11 @@ class ReusableComponentListLayout extends Table
                 });
         } else {
             $layout[] = TD::make('id', __('Projekt'))
+                ->defaultHidden()
                 ->render(function ($component) {
                     if ($component->projects() == null)
                         return __('Im Lager');
-                    $project = $component->projects()->where('rec_end_date', null)->get()->first();
+                    $project = $component->projects()->where('video_editor_send_date', null)->get()->first();
                     return empty($project) ? __('Im Lager') : $project->id;
                 });
         }
@@ -135,7 +136,7 @@ class ReusableComponentListLayout extends Table
                     ->list([
 
                         Link::make(__('Bearbeiten'))
-                            ->route('platform.cameras.edit', $component->id)
+                            ->route('platform.' . $this->target . '.edit', $component->id)
                             ->icon('pencil'),
 
                         Button::make(__('Löschen'))

@@ -106,11 +106,13 @@ class UpsEditScreen extends Screen
             'ups.purchase_date' => 'required|date_format:Y-m-d|before_or_equal:today',
         ]);
 
+        $exists = Ups::query()->where('id', '=', $ups->id)->exists();
+
         $ups->fill($request->get('ups'));
         if ($ups->supplyUnit()->exists()) {
             Toast::error(__('Status kann nicht geändert werden! USV ist Teil einer Versorgungseinheit!'));
         }
-        $ups->broken = $this->exists ? $request->get('ups.broken') : $this->broken;
+        $ups->broken = $exists ? $request->upd['broken'] : false;
 
         $ups->save();
 

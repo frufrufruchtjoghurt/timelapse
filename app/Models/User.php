@@ -30,6 +30,7 @@ class User extends Authenticatable
         'phone_nr',
         'password',
         'permissions',
+        'password_count'
     ];
 
     /**
@@ -41,6 +42,7 @@ class User extends Authenticatable
         'password',
         'remember_token',
         'permissions',
+        'password_count',
     ];
 
     /**
@@ -98,7 +100,11 @@ class User extends Authenticatable
 
     public function projects()
     {
-        return $this->hasManyThrough(Project::class, Feature::class);
+        return $this->hasManyThrough(Project::class, Feature::class, 'user_id', 'id', 'id', 'project_id');
+    }
+
+    public function symlinks() {
+        return $this->hasMany(Symlink::class);
     }
 
     /**

@@ -107,13 +107,15 @@ class RouterEditScreen extends Screen
             'router.purchase_date' => 'required|date_format:Y-m-d|before_or_equal:today',
         ]);
 
+        $exists = Router::query()->where('id', '=', $router->id)->exists();
+
         $router->fill($request->get('router'));
         if ($router->supplyUnit()->exists()) {
             Toast::error(__('Status kann nicht geändert werden! Router ist Teil einer Versorgungseinheit!'));
         }
-        $router->broken = $this->exists ? $request->get('router.broken') : $this->broken;
+        $router->broken = $exists ? $request->router['broken'] : false;
 
-        if (!$this->exists) {
+        if (!$exists) {
             $ruts = Router::all();
             $highest_id = 1;
             if ($ruts) {

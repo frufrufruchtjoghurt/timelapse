@@ -30,6 +30,9 @@ class SupplyUnitListLayout extends Table
     protected function columns(): array
     {
         return [
+            TD::make('serial_nr', __('Seriennummer'))
+                ->cantHide(),
+
             TD::make('model', __('Gehäuse'))
                 ->filter(TD::FILTER_TEXT)
                 ->cantHide()
@@ -42,6 +45,22 @@ class SupplyUnitListLayout extends Table
                 ->cantHide()
                 ->render(function (SupplyUnit $supplyunit) {
                     return new Persona($supplyunit->router()->get()->first()->presenter());
+                }),
+
+            TD::make('model', __('Kamera'))
+                ->filter(TD::FILTER_TEXT)
+                ->cantHide()
+                ->render(function (SupplyUnit $supplyunit) {
+                    $cameras = $supplyunit->cameras()->get();
+                    $text = $cameras->first()->name;
+                    foreach ($cameras as $camera)
+                    {
+                        if (str_contains($text, $camera->name))
+                            continue;
+
+                        $text .= ', ' . $camera->name;
+                    }
+                    return $text;
                 }),
 
             TD::make('model', __('USV'))
@@ -72,7 +91,7 @@ class SupplyUnitListLayout extends Table
                     return 'Nein';
                 }),
 
-            TD::make('model', __('Photovoltaikanlagen'))
+            TD::make('model', __('PV-Anlage'))
                 ->filter(TD::FILTER_TEXT)
                 ->cantHide()
                 ->render(function (SupplyUnit $supplyunit) {
@@ -84,7 +103,7 @@ class SupplyUnitListLayout extends Table
 
             TD::make('project_nr', __('Projekt'))
                 ->render(function (SupplyUnit $supplyunit) {
-                    $project = $supplyunit->projects()->where('rec_end_date')->get()->first();
+                    $project = $supplyunit->projects()->where('video_editor_send_date')->get()->first();
                     return empty($project) ? __('Im Lager') : $project->id;
                 }),
 

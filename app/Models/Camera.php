@@ -29,6 +29,7 @@ class Camera extends Model
         'purchase_date',
         'broken',
         'supply_unit_id',
+        'filemtime',
     ];
 
     /**
@@ -46,6 +47,7 @@ class Camera extends Model
     protected $casts = [
         'broken' => 'bool',
         'purchase_date' => 'datetime',
+        'filemtime' => 'datetime',
     ];
 
     /**

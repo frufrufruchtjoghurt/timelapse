@@ -78,7 +78,7 @@ class SupplyUnitListScreen extends Screen
     {
         $supplyunit = SupplyUnit::findOrFail($request->get('id'));
 
-        if ($supplyunit->projects()->where(['rec_end_date' => null])->get()->first() != null)
+        if ($supplyunit->projects()->where(['video_editor_send_date' => null])->get()->first() != null)
         {
             Alert::error(__('Diese Versorgungseinheit ist einem Projekt zugewiesen und kann nicht gelöscht werden!'));
         }

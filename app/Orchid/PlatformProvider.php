@@ -44,25 +44,24 @@ class PlatformProvider extends OrchidServiceProvider
     public function registerMainMenu(): array
     {
         return [
-            ItemMenu::label(__('Kunden'))
-                ->title('Verwaltung')
-                ->icon('user')
-                ->route('platform.users')
-                ->canSee(Auth::user()->hasAccess('admin') || Auth::user()->hasAccess('manager')),
+            ItemMenu::label(__('Startseite'))
+                ->icon('home')
+                ->route('platform.main'),
 
             ItemMenu::label(__('Firmen'))
+                ->title('Verwaltung')
                 ->icon('building')
                 ->route('platform.companies')
+                ->canSee(Auth::user()->hasAccess('admin') || Auth::user()->hasAccess('manager')),
+
+            ItemMenu::label(__('Zugriffsberechtigte'))
+                ->icon('user')
+                ->route('platform.users')
                 ->canSee(Auth::user()->hasAccess('admin') || Auth::user()->hasAccess('manager')),
 
             ItemMenu::label(__('Kameras'))
                 ->icon('camrecorder')
                 ->route('platform.cameras')
-                ->canSee(Auth::user()->hasAccess('admin') || Auth::user()->hasAccess('manager')),
-
-            ItemMenu::label(__('Versorgungseinheiten'))
-                ->icon('modules')
-                ->route('platform.supplyunits')
                 ->canSee(Auth::user()->hasAccess('admin') || Auth::user()->hasAccess('manager')),
 
             ItemMenu::label(__('Komponenten'))
@@ -101,15 +100,28 @@ class PlatformProvider extends OrchidServiceProvider
                 ->route('platform.photovoltaics')
                 ->canSee(Auth::user()->hasAccess('admin') || Auth::user()->hasAccess('manager')),
 
+            ItemMenu::label(__('Versorgungseinheiten'))
+                ->icon('modules')
+                ->route('platform.supplyunits')
+                ->canSee(Auth::user()->hasAccess('admin') || Auth::user()->hasAccess('manager')),
+
             ItemMenu::label(__('Projekte'))
                 ->icon('notebook')
                 ->route('platform.projects')
                 ->canSee(Auth::user()->hasAccess('admin') || Auth::user()->hasAccess('manager')),
 
+            ItemMenu::label(__('Timelapse Homepage'))
+                ->title(__('Links'))
+                ->icon('link')
+                ->url('https://timelapsesystems.at/'),
+
             ItemMenu::label(__('AGBs'))
-                ->title(__('AGB'))
                 ->icon('docs')
                 ->route('agb.download'),
+
+            ItemMenu::label(__('Dokumentation und Hilfe'))
+                ->icon('help')
+                ->route(('help.download')),
         ];
     }
 

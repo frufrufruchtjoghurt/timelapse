@@ -31,7 +31,7 @@ class CameraListLayout extends Table
     protected function columns(): array
     {
         return [
-            TD::set('model', __('Kamera'))
+            TD::make('model', __('Kamera'))
                 ->sort()
                 ->cantHide()
                 ->filter(TD::FILTER_TEXT)
@@ -39,14 +39,14 @@ class CameraListLayout extends Table
                    return new Persona($camera->presenter());
                 }),
 
-            TD::set('purchase_date', __('Kaufdatum'))
+            TD::make('purchase_date', __('Kaufdatum'))
                 ->sort()
                 ->filter(TD::FILTER_DATE)
                 ->render(function (Camera $camera) {
                     return $camera->purchase_date->toDateString();
                 }),
 
-            TD::set('updated_at', __('Zuletzt Bearbeitet'))
+            TD::make('updated_at', __('Zuletzt Bearbeitet'))
                 ->sort()
                 ->render(function (Camera $camera) {
                     if ($camera->updated_at == null)
@@ -56,13 +56,13 @@ class CameraListLayout extends Table
                     return $camera->updated_at->toDateTimeString();
                 }),
 
-            TD::set('broken', __('Beschädigt'))
+            TD::make('broken', __('Beschädigt'))
                 ->sort()
                 ->render(function (Camera $camera) {
                     return $camera->broken ? __('Ja') : __('Nein');
                 }),
 
-            TD::set(__('Actions'))
+            TD::make(__('Actions'))
                 ->align(TD::ALIGN_CENTER)
                 ->width('100px')
                 ->render(function (Camera $camera) {

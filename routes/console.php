@@ -17,3 +17,15 @@ use Illuminate\Support\Facades\Artisan;
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
+
+Artisan::command('logs:clear', function() {
+    $logs_content = scandir(storage_path('logs'));
+
+    foreach ($logs_content as $file) {
+        if (!preg_match('/^.*\.log$/', $file))
+            continue;
+
+        exec('rm ' . storage_path('logs/' . $file));
+    }
+    $this->comment('Logs have been cleared!');
+})->describe('Clear log files');

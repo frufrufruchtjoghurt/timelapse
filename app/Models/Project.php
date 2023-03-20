@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Support\Facades\Log;
 use Orchid\Filters\Filterable;
 use Orchid\Screen\AsSource;
 
@@ -31,6 +30,7 @@ class Project extends Model
         'patch_notes',
         'inactive',
         'inactivity_date',
+        'has_imagefilm',
     ];
 
     /**
@@ -98,6 +98,11 @@ class Project extends Model
         return $this->hasMany(ProjectSystem::class);
     }
 
+    public function features()
+    {
+        return $this->hasMany(Feature::class);
+    }
+
     /**
      * @return array
      */
@@ -105,7 +110,6 @@ class Project extends Model
     {
         $ids = $this->supplyUnits()->get();
         $cameras = [];
-        Log::debug($ids);
         foreach ($ids as $id) {
             $cams = SupplyUnit::query()->where('id', '=', $id->id)->get()->first()->cameras()->get();
 
@@ -122,6 +126,11 @@ class Project extends Model
      */
     public function users()
     {
-        return $this->hasManyThrough(User::class, Feature::class, 'user_id', 'id', 'id', 'user_id');
+        return $this->hasManyThrough(User::class, Feature::class, 'project_id', 'id', 'id', 'user_id');
+    }
+
+    public function songs()
+    {
+        return $this->hasManyThrough(Song::class, ProjectSong::class, 'project_id', 'id', 'id', 'song_id');
     }
 }

@@ -161,6 +161,8 @@ class UserListScreen extends Screen
         if ($this->sendResetEmail($user, $tokenData->token)) {
             Toast::info(__('Link zum Zurücksetzen des Passworts von ' . $user->last_name . ' ' . $user->first_name
                 . ' wurde an ' . $user->email . ' versandt!'));
+            $user->password_count++;
+            $user->save();
         } else {
             Toast::error('Ein Netzwerkfehler ist aufgetreten!');
         }

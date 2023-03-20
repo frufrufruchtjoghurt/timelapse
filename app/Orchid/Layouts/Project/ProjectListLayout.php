@@ -53,6 +53,7 @@ class ProjectListLayout extends Table
                 }),
 
             TD::make('sid', __('Versorgungseinheit'))
+                ->defaultHidden()
                 ->render(function (Project $project) {
                     $ids = $project->supplyUnits()->get();
                     $text = '';
@@ -61,9 +62,6 @@ class ProjectListLayout extends Table
                     }
                     return $text;
                 }),
-
-            TD::make('url', __('URL'))
-                ->sort(),
 
             TD::make('start_date', __('Startdatum'))
                 ->cantHide()
