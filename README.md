@@ -1,3 +1,7 @@
+# NO LONGER MAINTAINED/NICHT MEHR BETREUT
+
+For a current version of this project, take a look at the forks!
+
 # Timelapse Kundenportal
 
 Das Timelapse Kundenportal soll die Hauptseite um diverse Verwaltungs- und Anzeigefunktionen erweitern. Manager können
